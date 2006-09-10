@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxMenu" name="qtworkbench_menu">
+    <object class="wxMenuItem" name="idQtWbMenuCompile">
+      <label>QMake - &amp;Build</label>
+      <help>Build current project</help>
+    </object>
+    <object class="wxMenuItem" name="idQtWbMenuRebuild">
+      <label>QMake - &amp;Rebuild</label>
+      <help>Rebuild current project</help>
+    </object>
+    <object class="wxMenuItem" name="idQtWbMenuClean">
+      <label>QMake - &amp;Clean</label>
+      <help>Clean current project</help>
+    </object>
+    <object class="wxMenuItem" name="idQtWbMenuDistClean">
+      <label>QMake - &amp;DistClean</label>
+      <help>DistClean current project</help>
+    </object>
+	<object class="separator"/>
+    <object class="wxMenuItem" name="idQtWbMenuCompileWorkspace">
+      <label>QMake - Build Workspace</label>
+      <help>Build the whole workspace</help>
+    </object>
+    <object class="wxMenuItem" name="idQtWbMenuRebuildWorkspace">
+      <label>QMake - Rebuild Workspace</label>
+      <help>Rebuild the whole workspace</help>
+    </object>
+    <object class="wxMenuItem" name="idQtWbMenuCleanWorkspace">
+      <label>QMake - Clean Workspace</label>
+      <help>Clean the whole workspace</help>
+    </object>
+	<object class="separator"/>
+    <object class="wxMenuItem" name="idQtWbMenuOptions">
+      <label>Project QMake &amp;Options</label>
+      <help>Current project's Qt specific options</help>
+    </object>
+    <object class="wxMenuItem" name="idQtWbMenuOptionsEdit">
+      <label>Edit Target's QMake &amp;Options in Editor</label>
+      <help>Current project's Qt specific options</help>
+    </object>
+  </object>
+</resource>
