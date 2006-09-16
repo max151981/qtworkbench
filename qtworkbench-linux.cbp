@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="4" />
+	<FileVersion major="1" minor="5" />
 	<Project>
 		<Option title="QtWorkbench (Unix)" />
 		<Option pch_mode="0" />
+		<Option default_target="" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="" />
 		<Build>
 			<Target title="default">
 				<Option output="../../../devel/share/codeblocks/plugins/libqtworkbench.so" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectResourceIncludeDirsRelation="0" />
+				<Compiler>
+					<Add option="-DCB_PRECOMP" />
+				</Compiler>
 			</Target>
 		</Build>
 		<Compiler>
@@ -19,9 +24,9 @@
 			<Add option="`wx-config --cflags`" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
-			<Add directory="$(#CB)/sdk" />
-			<Add directory="$(#CB)/sdk/tinyxml" />
-			<Add directory="$(#CB)/sdk/wxscintilla/include" />
+			<Add directory="$(#cb)/sdk" />
+			<Add directory="$(#cb)/sdk/tinyxml" />
+			<Add directory="$(#cb)/sdk/wxscintilla/include" />
 			<Add directory="src" />
 		</Compiler>
 		<Linker>
