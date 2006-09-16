@@ -10,12 +10,10 @@
 		<Build>
 			<Target title="default">
 				<Option output="../../../devel/share/codeblocks/plugins/libqtworkbench.so" />
+				<Option working_dir="../../../devel/share/codeblocks/plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectResourceIncludeDirsRelation="0" />
-				<Compiler>
-					<Add option="-DCB_PRECOMP" />
-				</Compiler>
 			</Target>
 		</Build>
 		<Compiler>
@@ -24,6 +22,8 @@
 			<Add option="`wx-config --cflags`" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DCB_PRECOMP" />
 			<Add directory="$(#cb)/sdk" />
 			<Add directory="$(#cb)/sdk/tinyxml" />
 			<Add directory="$(#cb)/sdk/wxscintilla/include" />
@@ -32,9 +32,9 @@
 		<Linker>
 			<Add option="`wx-config --libs`" />
 			<Add library="codeblocks" />
-			<Add directory="$(#CB)/devel" />
-			<Add directory="$(#CB)/sdk/tinyxml" />
-			<Add directory="$(#CB)/sdk/wxscintilla/include" />
+			<Add directory="$(#cb)/devel" />
+			<Add directory="$(#cb)/sdk/tinyxml" />
+			<Add directory="$(#cb)/sdk/wxscintilla/include" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="zip -j ../../../devel/share/codeblocks/qtworkbench.zip res/*.xrc" />
