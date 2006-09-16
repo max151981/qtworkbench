@@ -283,26 +283,26 @@ void QtWorkbench::OnQtwTimer(wxTimerEvent& event)
             prj->SetMakefileCustom(m_prevMakefileState[i]);
             prj->SetModified(m_prevModifiedState[i]);
 
-            int index = prj->GetActiveBuildTarget();
+            wxString activeTarget = prj->GetActiveBuildTarget();
             // If there is only one build target I want it to act as if "ALL" build is selected
-            if(index==-1 || prj->GetBuildTargetsCount() == 1)
+            if(prj->GetBuildTargetsCount() == 1)
                 continue;
             else
             {
                 // The Makefile produced by qmake names the targets as sub-[target name].
                 // I will temporarily change the make command to meet those requirements.
                 // This of cource only applies when building/cleaning/whatever a specific target.
-                wxString buildCommand = prj->GetBuildTarget(index)->GetMakeCommandFor(mcBuild);
+                wxString buildCommand = prj->GetBuildTarget(activeTarget)->GetMakeCommandFor(mcBuild);
                 buildCommand.Replace(_T("sub-$target"),_T("$target"));
-                prj->GetBuildTarget(index)->SetMakeCommandFor(mcBuild,buildCommand);
+                prj->GetBuildTarget(activeTarget)->SetMakeCommandFor(mcBuild,buildCommand);
 
-                buildCommand = prj->GetBuildTarget(index)->GetMakeCommandFor(mcClean);
+                buildCommand = prj->GetBuildTarget(activeTarget)->GetMakeCommandFor(mcClean);
                 buildCommand.Replace(_T("sub-$target"),_T("$target"));
-                prj->GetBuildTarget(index)->SetMakeCommandFor(mcClean,buildCommand);
+                prj->GetBuildTarget(activeTarget)->SetMakeCommandFor(mcClean,buildCommand);
 
-                buildCommand = prj->GetBuildTarget(index)->GetMakeCommandFor(mcDistClean);
+                buildCommand = prj->GetBuildTarget(activeTarget)->GetMakeCommandFor(mcDistClean);
                 buildCommand.Replace(_T("sub-$target"),_T("$target"));
-                prj->GetBuildTarget(index)->SetMakeCommandFor(mcDistClean,buildCommand);
+                prj->GetBuildTarget(activeTarget)->SetMakeCommandFor(mcDistClean,buildCommand);
             }
         }
     }
@@ -406,26 +406,26 @@ void QtWorkbench::OnProcessTerminated(CodeBlocksEvent& event)
         m_prevModifiedState.push_back(prj->GetModified());
         prj->SetMakefileCustom(true);
 
-        int index = prj->GetActiveBuildTarget();
+        wxString activeTarget = prj->GetActiveBuildTarget();
         // If there is only one build target I want it to act as if "ALL" build is selected
-        if(index==-1 || prj->GetBuildTargetsCount() == 1)
+        if(prj->GetBuildTargetsCount() == 1)
             continue;
         else
         {
             // The Makefile produced by qmake names the targets as sub-[target name].
             // I will temporarily change the make command to meet those requirements.
             // This of cource only applies when building/cleaning/whatever a specific target.
-            wxString buildCommand = prj->GetBuildTarget(index)->GetMakeCommandFor(mcBuild);
+            wxString buildCommand = prj->GetBuildTarget(activeTarget)->GetMakeCommandFor(mcBuild);
             buildCommand.Replace(_T("$target"),_T("sub-$target"));
-            prj->GetBuildTarget(index)->SetMakeCommandFor(mcBuild,buildCommand);
+            prj->GetBuildTarget(activeTarget)->SetMakeCommandFor(mcBuild,buildCommand);
 
-            buildCommand = prj->GetBuildTarget(index)->GetMakeCommandFor(mcClean);
+            buildCommand = prj->GetBuildTarget(activeTarget)->GetMakeCommandFor(mcClean);
             buildCommand.Replace(_T("$target"),_T("sub-$target"));
-            prj->GetBuildTarget(index)->SetMakeCommandFor(mcClean,buildCommand);
+            prj->GetBuildTarget(activeTarget)->SetMakeCommandFor(mcClean,buildCommand);
 
-            buildCommand = prj->GetBuildTarget(index)->GetMakeCommandFor(mcDistClean);
+            buildCommand = prj->GetBuildTarget(activeTarget)->GetMakeCommandFor(mcDistClean);
             buildCommand.Replace(_T("$target"),_T("sub-$target"));
-            prj->GetBuildTarget(index)->SetMakeCommandFor(mcDistClean,buildCommand);
+            prj->GetBuildTarget(activeTarget)->SetMakeCommandFor(mcDistClean,buildCommand);
         }
     }
 
@@ -588,12 +588,12 @@ ProjectBuildTarget* QtWorkbench::CurrentBuildTarget()
     cbProject* theCurrentActiveProject = CurrentActiveProject();
     if(theCurrentActiveProject)
     {
-        int index = theCurrentActiveProject->GetActiveBuildTarget();
+        wxString activeBuildTarget = theCurrentActiveProject->GetActiveBuildTarget();
         // If there is only one build target I want it to act as if "ALL" build is selected
-        if(index==-1 || theCurrentActiveProject->GetBuildTargetsCount() == 1)
+        if(theCurrentActiveProject->GetBuildTargetsCount() == 1)
             return NULL;
         else
-            return theCurrentActiveProject->GetBuildTarget(index);
+            return theCurrentActiveProject->GetBuildTarget(activeBuildTarget);
     }
     return NULL;
 }
