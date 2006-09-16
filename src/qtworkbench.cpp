@@ -47,7 +47,7 @@ QtWorkbench::QtWorkbench()
         m_CurrentAction(NONE),
         m_NextOne(0)
 {
-    if(!Manager::LoadResource(_T("qtworkbench.zip")))
+    if (!Manager::LoadResource(_T("qtworkbench.zip")))
     {
         NotifyMissingFile(_T("qtworkbench.zip"));
     }
@@ -180,7 +180,7 @@ void QtWorkbench::OnCompile(wxCommandEvent& event)
     cbCompilerPlugin* compiler = TheCompilerPlugin();
     if (compiler)
     {
-        if(compiler->IsRunning())
+        if (compiler->IsRunning())
             return;
     }
     Compile();
@@ -191,7 +191,7 @@ void QtWorkbench::OnClean(wxCommandEvent& event)
     cbCompilerPlugin* compiler = TheCompilerPlugin();
     if (compiler)
     {
-        if(compiler->IsRunning())
+        if (compiler->IsRunning())
             return;
     }
     Clean();
@@ -202,7 +202,7 @@ void QtWorkbench::OnDistClean(wxCommandEvent& event)
     cbCompilerPlugin* compiler = TheCompilerPlugin();
     if (compiler)
     {
-        if(compiler->IsRunning())
+        if (compiler->IsRunning())
             return;
     }
     DistClean();
@@ -213,7 +213,7 @@ void QtWorkbench::OnRebuild(wxCommandEvent& event)
     cbCompilerPlugin* compiler = TheCompilerPlugin();
     if (compiler)
     {
-        if(compiler->IsRunning())
+        if (compiler->IsRunning())
             return;
     }
     Rebuild();
@@ -224,7 +224,7 @@ void QtWorkbench::OnCompileWorkspace(wxCommandEvent& event)
     cbCompilerPlugin* compiler = TheCompilerPlugin();
     if (compiler)
     {
-        if(compiler->IsRunning())
+        if (compiler->IsRunning())
             return;
     }
     CompileWorkspace();
@@ -235,7 +235,7 @@ void QtWorkbench::OnCleanWorkspace(wxCommandEvent& event)
     cbCompilerPlugin* compiler = TheCompilerPlugin();
     if (compiler)
     {
-        if(compiler->IsRunning())
+        if (compiler->IsRunning())
             return;
     }
     CleanWorkspace();
@@ -246,7 +246,7 @@ void QtWorkbench::OnRebuildWorkspace(wxCommandEvent& event)
     cbCompilerPlugin* compiler = TheCompilerPlugin();
     if (compiler)
     {
-        if(compiler->IsRunning())
+        if (compiler->IsRunning())
             return;
     }
     RebuildWorkspace();
@@ -257,7 +257,7 @@ void QtWorkbench::OnQtwTimer(wxTimerEvent& event)
     cbCompilerPlugin* compiler = TheCompilerPlugin();
     if (compiler)
     {
-        if(compiler->IsRunning())
+        if (compiler->IsRunning())
         {
             m_Timer.Start(500,wxTIMER_ONE_SHOT);
             return;
@@ -273,7 +273,7 @@ void QtWorkbench::OnQtwTimer(wxTimerEvent& event)
     {
         for (size_t i = 0; i < allProjects->GetCount(); ++i)
         {
-            if(i >= m_prevMakefileState.size() || i >= m_prevMakefileState.size())
+            if (i >= m_prevMakefileState.size() || i >= m_prevMakefileState.size())
             {
                 cbMessageBox(_T("QtWorkbench plugin could not recover some of your settings. "
                                 "Make sure that your settings are the intendend ones."), _("Error"), wxICON_ERROR);
@@ -285,24 +285,48 @@ void QtWorkbench::OnQtwTimer(wxTimerEvent& event)
 
             wxString activeTarget = prj->GetActiveBuildTarget();
             // If there is only one build target I want it to act as if "ALL" build is selected
-            if(prj->GetBuildTargetsCount() == 1)
+            if (prj->GetBuildTargetsCount() == 1)
                 continue;
             else
             {
+                wxString buildCommand;
                 // The Makefile produced by qmake names the targets as sub-[target name].
                 // I will temporarily change the make command to meet those requirements.
                 // This of cource only applies when building/cleaning/whatever a specific target.
-                wxString buildCommand = prj->GetBuildTarget(activeTarget)->GetMakeCommandFor(mcBuild);
-                buildCommand.Replace(_T("sub-$target"),_T("$target"));
-                prj->GetBuildTarget(activeTarget)->SetMakeCommandFor(mcBuild,buildCommand);
+                wxArrayString virtuals = prj->GetVirtualBuildTargetGroup(activeTarget);
+                if (virtuals.GetCount())
+                {
+                    for (size_t i=0; i<virtuals.GetCount();i++)
+                    {
+                        buildCommand = prj->GetBuildTarget(virtuals[i])->GetMakeCommandFor(mcBuild);
+                        buildCommand.Replace(_T("sub-$target"),_T("$target"));
+                        prj->GetBuildTarget(virtuals[i])->SetMakeCommandFor(mcBuild,buildCommand);
 
-                buildCommand = prj->GetBuildTarget(activeTarget)->GetMakeCommandFor(mcClean);
-                buildCommand.Replace(_T("sub-$target"),_T("$target"));
-                prj->GetBuildTarget(activeTarget)->SetMakeCommandFor(mcClean,buildCommand);
+                        buildCommand = prj->GetBuildTarget(virtuals[i])->GetMakeCommandFor(mcClean);
+                        buildCommand.Replace(_T("sub-$target"),_T("$target"));
+                        prj->GetBuildTarget(virtuals[i])->SetMakeCommandFor(mcClean,buildCommand);
 
-                buildCommand = prj->GetBuildTarget(activeTarget)->GetMakeCommandFor(mcDistClean);
-                buildCommand.Replace(_T("sub-$target"),_T("$target"));
-                prj->GetBuildTarget(activeTarget)->SetMakeCommandFor(mcDistClean,buildCommand);
+                        buildCommand = prj->GetBuildTarget(virtuals[i])->GetMakeCommandFor(mcDistClean);
+                        buildCommand.Replace(_T("sub-$target"),_T("$target"));
+                        prj->GetBuildTarget(virtuals[i])->SetMakeCommandFor(mcDistClean,buildCommand);
+                    }
+
+                }
+                else
+                {
+
+                    buildCommand = prj->GetBuildTarget(activeTarget)->GetMakeCommandFor(mcBuild);
+                    buildCommand.Replace(_T("sub-$target"),_T("$target"));
+                    prj->GetBuildTarget(activeTarget)->SetMakeCommandFor(mcBuild,buildCommand);
+
+                    buildCommand = prj->GetBuildTarget(activeTarget)->GetMakeCommandFor(mcClean);
+                    buildCommand.Replace(_T("sub-$target"),_T("$target"));
+                    prj->GetBuildTarget(activeTarget)->SetMakeCommandFor(mcClean,buildCommand);
+
+                    buildCommand = prj->GetBuildTarget(activeTarget)->GetMakeCommandFor(mcDistClean);
+                    buildCommand.Replace(_T("sub-$target"),_T("$target"));
+                    prj->GetBuildTarget(activeTarget)->SetMakeCommandFor(mcDistClean,buildCommand);
+                }
             }
         }
     }
@@ -322,7 +346,7 @@ void QtWorkbench::OnQtwTimer(wxTimerEvent& event)
 
 void QtWorkbench::OnProjectOptions(wxCommandEvent& event)
 {
-    if(!CurrentActiveProject())
+    if (!CurrentActiveProject())
     {
         // There are events signaling that a project has been opened etc.
         // The menu item should start deactivated and activate
@@ -337,14 +361,14 @@ void QtWorkbench::OnProjectOptions(wxCommandEvent& event)
 void QtWorkbench::OnProjectOptionsEdit(wxCommandEvent& event)
 {
     cbProject *project = CurrentActiveProject();
-    if(!project)
+    if (!project)
     {
         cbMessageBox(_T("Please open/create a project first."), _("Error"), wxICON_ERROR);
         return;
     }
 
     m_CurrentAction=NONE;
-    if(!RunQMakeAndMake())
+    if (!RunQMakeAndMake())
     {
         return;
     }
@@ -353,7 +377,7 @@ void QtWorkbench::OnProjectOptionsEdit(wxCommandEvent& event)
     filename << _T(".pro");
 
     ProjectBuildTarget* selectedTarget = CurrentBuildTarget();
-    if(selectedTarget)
+    if (selectedTarget)
     {
         filename = selectedTarget->GetTitle();
         filename << wxFileName::GetPathSeparator();
@@ -371,10 +395,10 @@ void QtWorkbench::OnProcessTerminated(CodeBlocksEvent& event)
     m_Process = NULL;
     m_Pid = 0L;
 
-    if(m_CurrentAction==NONE)
+    if (m_CurrentAction==NONE)
         return;
 
-    if((m_CurrentAction == BUILD_ALL || m_CurrentAction == CLEAN_ALL || m_CurrentAction == REBUILD_ALL) && (m_NextOne))
+    if ((m_CurrentAction == BUILD_ALL || m_CurrentAction == CLEAN_ALL || m_CurrentAction == REBUILD_ALL) && (m_NextOne))
     {
         RunQMakeAndMake();
         return;
@@ -388,7 +412,7 @@ void QtWorkbench::OnProcessTerminated(CodeBlocksEvent& event)
     }
 
     cbProject* theCurrentActiveProject = CurrentActiveProject();
-    if(!theCurrentActiveProject)
+    if (!theCurrentActiveProject)
     {
         m_CurrentAction=NONE;
         return;
@@ -408,24 +432,46 @@ void QtWorkbench::OnProcessTerminated(CodeBlocksEvent& event)
 
         wxString activeTarget = prj->GetActiveBuildTarget();
         // If there is only one build target I want it to act as if "ALL" build is selected
-        if(prj->GetBuildTargetsCount() == 1)
+        if (prj->GetBuildTargetsCount() == 1)
             continue;
         else
         {
+            wxString buildCommand;
             // The Makefile produced by qmake names the targets as sub-[target name].
             // I will temporarily change the make command to meet those requirements.
             // This of cource only applies when building/cleaning/whatever a specific target.
-            wxString buildCommand = prj->GetBuildTarget(activeTarget)->GetMakeCommandFor(mcBuild);
-            buildCommand.Replace(_T("$target"),_T("sub-$target"));
-            prj->GetBuildTarget(activeTarget)->SetMakeCommandFor(mcBuild,buildCommand);
+            wxArrayString virtuals = prj->GetVirtualBuildTargetGroup(activeTarget);
+            if (virtuals.GetCount())
+            {
+                for (size_t i=0; i<virtuals.GetCount();i++)
+                {
+                    buildCommand = prj->GetBuildTarget(virtuals[i])->GetMakeCommandFor(mcBuild);
+                    buildCommand.Replace(_T("$target"),_T("sub-$target"));
+                    prj->GetBuildTarget(virtuals[i])->SetMakeCommandFor(mcBuild,buildCommand);
 
-            buildCommand = prj->GetBuildTarget(activeTarget)->GetMakeCommandFor(mcClean);
-            buildCommand.Replace(_T("$target"),_T("sub-$target"));
-            prj->GetBuildTarget(activeTarget)->SetMakeCommandFor(mcClean,buildCommand);
+                    buildCommand = prj->GetBuildTarget(virtuals[i])->GetMakeCommandFor(mcClean);
+                    buildCommand.Replace(_T("$target"),_T("sub-$target"));
+                    prj->GetBuildTarget(virtuals[i])->SetMakeCommandFor(mcClean,buildCommand);
 
-            buildCommand = prj->GetBuildTarget(activeTarget)->GetMakeCommandFor(mcDistClean);
-            buildCommand.Replace(_T("$target"),_T("sub-$target"));
-            prj->GetBuildTarget(activeTarget)->SetMakeCommandFor(mcDistClean,buildCommand);
+                    buildCommand = prj->GetBuildTarget(virtuals[i])->GetMakeCommandFor(mcDistClean);
+                    buildCommand.Replace(_T("$target"),_T("sub-$target"));
+                    prj->GetBuildTarget(virtuals[i])->SetMakeCommandFor(mcDistClean,buildCommand);
+                }
+            }
+            else
+            {
+                buildCommand = prj->GetBuildTarget(activeTarget)->GetMakeCommandFor(mcBuild);
+                buildCommand.Replace(_T("$target"),_T("sub-$target"));
+                prj->GetBuildTarget(activeTarget)->SetMakeCommandFor(mcBuild,buildCommand);
+
+                buildCommand = prj->GetBuildTarget(activeTarget)->GetMakeCommandFor(mcClean);
+                buildCommand.Replace(_T("$target"),_T("sub-$target"));
+                prj->GetBuildTarget(activeTarget)->SetMakeCommandFor(mcClean,buildCommand);
+
+                buildCommand = prj->GetBuildTarget(activeTarget)->GetMakeCommandFor(mcDistClean);
+                buildCommand.Replace(_T("$target"),_T("sub-$target"));
+                prj->GetBuildTarget(activeTarget)->SetMakeCommandFor(mcDistClean,buildCommand);
+            }
         }
     }
 
@@ -438,47 +484,47 @@ void QtWorkbench::OnProcessTerminated(CodeBlocksEvent& event)
         // start building
         switch (m_CurrentAction)
         {
-            case BUILD:
+        case BUILD:
             m_CurrentAction=NONE;
-            if(theCurrentTarget)
+            if (theCurrentTarget)
                 compiler->Build(theCurrentTarget->GetTitle());
             else
                 compiler->Build();
             break;
-            case REBUILD:
+        case REBUILD:
             m_CurrentAction=NONE;
-            if(theCurrentTarget)
+            if (theCurrentTarget)
                 compiler->Rebuild(theCurrentTarget->GetTitle());
             else
                 compiler->Rebuild();
             break;
-            case CLEAN:
+        case CLEAN:
             m_CurrentAction=NONE;
-            if(theCurrentTarget)
+            if (theCurrentTarget)
                 compiler->Clean(theCurrentTarget->GetTitle());
             else
                 compiler->Clean();
             break;
-            case DISTCLEAN:
+        case DISTCLEAN:
             m_CurrentAction=NONE;
-            if(theCurrentTarget)
+            if (theCurrentTarget)
                 compiler->DistClean(theCurrentTarget->GetTitle());
             else
                 compiler->DistClean();
             break;
-            case BUILD_ALL:
+        case BUILD_ALL:
             m_CurrentAction=NONE;
             compiler->BuildWorkspace();
             break;
-            case CLEAN_ALL:
+        case CLEAN_ALL:
             m_CurrentAction=NONE;
             compiler->CleanWorkspace();
             break;
-            case REBUILD_ALL:
+        case REBUILD_ALL:
             m_CurrentAction=NONE;
             compiler->RebuildWorkspace();
             break;
-            default:
+        default:
             m_CurrentAction=NONE;
             break;
         }
@@ -501,7 +547,7 @@ void QtWorkbench::OnProcessTerminated(CodeBlocksEvent& event)
 
 int QtWorkbench::RunQMakeAndMake()
 {
-    if(m_Pid)
+    if (m_Pid)
         return 0;
 
     delete m_Process;
@@ -509,7 +555,7 @@ int QtWorkbench::RunQMakeAndMake()
 
     cbProject *theCurrentActiveProject = CurrentActiveProject();
 
-    if(!theCurrentActiveProject)
+    if (!theCurrentActiveProject)
     {
         cbMessageBox(_T("Please open/create a project first."), _("Error"), wxICON_ERROR);
         m_CurrentAction=NONE;
@@ -517,7 +563,7 @@ int QtWorkbench::RunQMakeAndMake()
         return 0;
     }
 
-    if(m_CurrentAction == BUILD_ALL || m_CurrentAction == CLEAN_ALL || m_CurrentAction == REBUILD_ALL)
+    if (m_CurrentAction == BUILD_ALL || m_CurrentAction == CLEAN_ALL || m_CurrentAction == REBUILD_ALL)
     {
         ProjectsArray* allProjects = Manager::Get()->GetProjectManager()->GetProjects();
         if (!allProjects)
@@ -529,7 +575,7 @@ int QtWorkbench::RunQMakeAndMake()
         }
         theCurrentActiveProject = allProjects->Item(m_NextOne);
         m_NextOne++;
-        if(m_NextOne >= allProjects->GetCount())
+        if (m_NextOne >= allProjects->GetCount())
             m_NextOne=0;
     }
 
@@ -539,7 +585,7 @@ int QtWorkbench::RunQMakeAndMake()
     wxSetWorkingDirectory(theCurrentActiveProject->GetBasePath());
     theMakefile = theCurrentActiveProject->GetMakefile();
     qtwProGenerator Generator(theCurrentActiveProject, theCurrentActiveProject->GetCompilerID(), &QMakeArgument);
-    if(!Generator.CreatePro())
+    if (!Generator.CreatePro())
     {
         cbMessageBox(_T("Could not create .pro file for at least one of the project's "
                         "targets.\n Make sure that you have the QTDIR variable set up correctly and that "
@@ -553,7 +599,7 @@ int QtWorkbench::RunQMakeAndMake()
 
     wxString cmd;
     //TODO(yop##): Make it user configurable (changing QTDIR allows to swap versions)
-    if(!wxGetEnv(_T("QTDIR"),&cmd))
+    if (!wxGetEnv(_T("QTDIR"),&cmd))
     {
         cbMessageBox(_T("The QTDIR variable is not set."
                         "Please check your Qt installation."), _("Error"), wxICON_ERROR);
@@ -563,9 +609,18 @@ int QtWorkbench::RunQMakeAndMake()
     }
     cmd << wxFileName::GetPathSeparator() << _T("bin");
     cmd << wxFileName::GetPathSeparator()<< _T("qmake");
+    if (theCurrentActiveProject->GetVirtualBuildTargetGroup(theCurrentActiveProject->GetActiveBuildTarget()).GetCount())
+    {
+        cmd << _T(" CONFIG+=") << theCurrentActiveProject->GetActiveBuildTarget();
+    }
     cmd << _T(" ") << QMakeArgument;
     cmd << _T(" -o");
     cmd << _T(" ") << theMakefile;
+    if (theCurrentActiveProject->GetVirtualBuildTargetGroup(theCurrentActiveProject->GetActiveBuildTarget()).GetCount())
+    {
+        cmd << _T(" ") << theCurrentActiveProject->GetActiveBuildTarget();
+    }
+
     // If the user switces compilers with an existing makefile then that makefile is kept and the
     // new compiler is not used. If the old makefile is deleted then the new makefile uses the new one.
     // Should I behind the curtains delete the old makefile?
@@ -586,11 +641,11 @@ cbProject* QtWorkbench::CurrentActiveProject()
 ProjectBuildTarget* QtWorkbench::CurrentBuildTarget()
 {
     cbProject* theCurrentActiveProject = CurrentActiveProject();
-    if(theCurrentActiveProject)
+    if (theCurrentActiveProject)
     {
         wxString activeBuildTarget = theCurrentActiveProject->GetActiveBuildTarget();
         // If there is only one build target I want it to act as if "ALL" build is selected
-        if(theCurrentActiveProject->GetBuildTargetsCount() == 1)
+        if (theCurrentActiveProject->GetBuildTargetsCount() == 1)
             return NULL;
         else
             return theCurrentActiveProject->GetBuildTarget(activeBuildTarget);

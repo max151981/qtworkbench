@@ -120,18 +120,18 @@ void qtwProGenerator::AddOrReplace(wxString &buffer, wxString Identifier, wxStri
     while (ProjectElements.HasMoreTokens())
     {
         wxString Element = ProjectElements.GetNextToken();
-        if(Element.Contains(_T("#Code::Blocks Identifier - START")))
+        if (Element.Contains(_T("#Code::Blocks Identifier - START")))
         {
             log = true;
             continue;
         }
-        if(log && Element.Contains(_T("#Code::Blocks Identifier - END")))
+        if (log && Element.Contains(_T("#Code::Blocks Identifier - END")))
         {
-            if(CBElement.StartsWith(Identifier))
+            if (CBElement.StartsWith(Identifier))
             {
-                if(args.IsEmpty())
+                if (args.IsEmpty())
                 {
-                    if(forceReplace)
+                    if (forceReplace)
                     {
                         wxString buffer2Remove = _T("\n#Code::Blocks Identifier - START\n");
                         buffer2Remove << CBElement;
@@ -141,7 +141,7 @@ void qtwProGenerator::AddOrReplace(wxString &buffer, wxString Identifier, wxStri
                 }
                 else
                 {
-                    if(forceReplace)
+                    if (forceReplace)
                     {
                         wxString newElement = Identifier + delim + _T("\t") + args + _T('\n');
                         buffer.Replace(CBElement,newElement);
@@ -153,10 +153,10 @@ void qtwProGenerator::AddOrReplace(wxString &buffer, wxString Identifier, wxStri
                         // \n,\r,\\ and spaces
                         wxStringTokenizer Argumets(args,_T(" "),wxTOKEN_STRTOK);
                         wxString newElement = CBElement;
-                        while(Argumets.HasMoreTokens())
+                        while (Argumets.HasMoreTokens())
                         {
                             wxString Argument = Argumets.GetNextToken();
-                            if(!newElement.Contains(Argument))
+                            if (!newElement.Contains(Argument))
                             {
                                 newElement.RemoveLast(); // NOTE what if crlf after a user edit?
                                 newElement << _T(' ') + Argument + _T('\n');
@@ -171,11 +171,11 @@ void qtwProGenerator::AddOrReplace(wxString &buffer, wxString Identifier, wxStri
             CBElement = _T("");
             continue;
         }
-        if(log)
+        if (log)
             CBElement << Element << _T('\n');
     }
     //We didn't find the element so we'll add it
-    if(!args.IsEmpty())
+    if (!args.IsEmpty())
     {
         buffer << _T("\n#Code::Blocks Identifier - START\n");
         buffer << Identifier + delim + _T('\t') + args + _T('\n');
@@ -192,21 +192,21 @@ void qtwProGenerator::Remove(wxString &buffer, wxString Identifier, wxString arg
     while (ProjectElements.HasMoreTokens())
     {
         wxString Element = ProjectElements.GetNextToken();
-        if(Element.Contains(_T("#Code::Blocks Identifier - START")))
+        if (Element.Contains(_T("#Code::Blocks Identifier - START")))
         {
             log = true;
             continue;
         }
-        if(log && Element.Contains(_T("#Code::Blocks Identifier - END")))
+        if (log && Element.Contains(_T("#Code::Blocks Identifier - END")))
         {
-            if(CBElement.StartsWith(Identifier))
+            if (CBElement.StartsWith(Identifier))
             {
                 wxStringTokenizer Argumets(args,_T(" "),wxTOKEN_STRTOK);
                 wxString newElement = CBElement;
-                while(Argumets.HasMoreTokens())
+                while (Argumets.HasMoreTokens())
                 {
                     wxString Argument = Argumets.GetNextToken();
-                    if(newElement.Contains(Argument))
+                    if (newElement.Contains(Argument))
                     {
                         newElement.Replace(wxString(_T(" "))+Argument,_T(""));
                         newElement.Replace(Argument,_T(""));
@@ -219,7 +219,7 @@ void qtwProGenerator::Remove(wxString &buffer, wxString Identifier, wxString arg
             CBElement = _T("");
             continue;
         }
-        if(log)
+        if (log)
             CBElement << Element << _T('\n');
     }
 }
@@ -235,14 +235,14 @@ wxString qtwProGenerator::GetArgsFor(const wxString &buffer, wxString Identifier
     while ( ProjectElements.HasMoreTokens() )
     {
         wxString Element = ProjectElements.GetNextToken();
-        if(Element.Contains(_T("#Code::Blocks Identifier - START")))
+        if (Element.Contains(_T("#Code::Blocks Identifier - START")))
         {
             log = true;
             continue;
         }
-        if(log && Element.Contains(_T("#Code::Blocks Identifier - END")))
+        if (log && Element.Contains(_T("#Code::Blocks Identifier - END")))
         {
-            if(CBElement.StartsWith(Identifier))
+            if (CBElement.StartsWith(Identifier))
             {
                 return CBElement;
             }
@@ -250,7 +250,7 @@ wxString qtwProGenerator::GetArgsFor(const wxString &buffer, wxString Identifier
             CBElement = _T("");
             continue;
         }
-        if(log)
+        if (log)
             CBElement << Element << _T('\n');
 
     }
@@ -264,7 +264,7 @@ void qtwProGenerator::DoAddCommonVariables(wxString& buffer, ProjectBuildTarget*
     if (!m_CompilerSet)
         return;
 
-    if(GetArgsFor(buffer,_T("CONFIG")).Contains(_T("plugin")))
+    if (GetArgsFor(buffer,_T("CONFIG")).Contains(_T("plugin")))
     {
         AddOrReplace(buffer,_T("TEMPLATE"),_T("lib"),_T("="));
         Remove(buffer,_T("CONFIG"),_T("staticlib"));
@@ -274,7 +274,7 @@ void qtwProGenerator::DoAddCommonVariables(wxString& buffer, ProjectBuildTarget*
     {
         switch (target->GetTargetType())
         {
-            case ttExecutable :
+        case ttExecutable :
 #ifdef __WXMSW__
 
             m_Configuration << _T("windows ");
@@ -282,19 +282,19 @@ void qtwProGenerator::DoAddCommonVariables(wxString& buffer, ProjectBuildTarget*
 
             AddOrReplace(buffer,_T("TEMPLATE"),_T("app"),_T("="));
             break;
-            case ttConsoleOnly :
+        case ttConsoleOnly :
             m_Configuration << _T("console ");
             AddOrReplace(buffer,_T("TEMPLATE"),_T("app"),_T("="));
             break;
-            case ttStaticLib :
+        case ttStaticLib :
             m_Configuration << _T("staticlib ");
             AddOrReplace(buffer,_T("TEMPLATE"),_T("lib"),_T("="));
             break;
-            case ttDynamicLib :
+        case ttDynamicLib :
             m_Configuration << _T("dll ");
             AddOrReplace(buffer,_T("TEMPLATE"),_T("lib"),_T("="));
             break;
-            case ttCommandsOnly :
+        case ttCommandsOnly :
             break;
         }
     }
@@ -318,7 +318,7 @@ wxString qtwProGenerator::MkspecToUse()
     wxString QtBaseDirString;
 
     wxGetEnv(_T("QMAKESPEC"),&MkspecString); // Not present in every installation
-    if(!wxGetEnv(_T("QTDIR"),&QtBaseDirString))
+    if (!wxGetEnv(_T("QTDIR"),&QtBaseDirString))
     {
         // Not a good Qt installation ;)
         return wxString(_T(""));
@@ -357,9 +357,9 @@ wxString qtwProGenerator::MkspecToUse()
 #endif
 #endif
 
-    if(CPPCompilerFileString.Contains(MkspecString.Lower()))
+    if (CPPCompilerFileString.Contains(MkspecString.Lower()))
         return wxString(_T("")); //no need to use other than QMAKESPEC
-    if(CCompilerFileString.Contains(MkspecString.Lower()))
+    if (CCompilerFileString.Contains(MkspecString.Lower()))
         return wxString(_T("")); //no need to use other than QMAKESPEC
 
     // Oh well if we're here the envinroment's QMAKESPEC isn't good for this
@@ -372,7 +372,7 @@ wxString qtwProGenerator::MkspecToUse()
     QtMkspecDir.Traverse(browser);
 
     // Available mkspecs are in mkspecsArray
-    for(unsigned int index = 0; index < mkspecsArray.GetCount(); index++)
+    for (unsigned int index = 0; index < mkspecsArray.GetCount(); index++)
     {
         MkspecString = mkspecsArray[index];
         MkspecString.Remove(0,QtMkspecDir.GetName().Length()+1);
@@ -391,12 +391,12 @@ wxString qtwProGenerator::MkspecToUse()
 #endif
 #endif
 
-        if(CPPCompilerFileString.Contains(MkspecString.Lower()))
+        if (CPPCompilerFileString.Contains(MkspecString.Lower()))
         {
             //Bingo!
             return mkspecsArray[index];
         }
-        else if(CCompilerFileString.Contains(MkspecString.Lower()))
+        else if (CCompilerFileString.Contains(MkspecString.Lower()))
         {
             //Bingo!
             return mkspecsArray[index];
@@ -460,11 +460,11 @@ void qtwProGenerator::DoAppendLinkerLibs(wxString& cmd, ProjectBuildTarget* targ
         libs = m_CompilerSet->GetLinkLibs();
     else
     {
-        if(target)
+        if (target)
             libs = target->GetLinkLibs();
         else
         {
-            if(m_Project)
+            if (m_Project)
                 libs = m_Project->GetLinkLibs();
             else
                 m_CompilerSet->GetLinkLibs();
@@ -612,20 +612,20 @@ void qtwProGenerator::DoAddProOptions(wxString& buffer,ProjectBuildTarget* targe
 
     wxString tempBuffer;
     DoAppendCompilerOptions(tempBuffer, 0L, true);
-    if(relation==orUseTargetOptionsOnly)
+    if (relation==orUseTargetOptionsOnly)
     {
         DoAppendCompilerOptions(tempBuffer, target);
     }
-    else if(relation==orUseParentOptionsOnly)
+    else if (relation==orUseParentOptionsOnly)
     {
         DoAppendCompilerOptions(tempBuffer, 0L);
     }
-    else if(relation==orPrependToParentOptions)
+    else if (relation==orPrependToParentOptions)
     {
         DoAppendCompilerOptions(tempBuffer, target);
         DoAppendCompilerOptions(tempBuffer, 0L);
     }
-    else if(relation==orAppendToParentOptions)
+    else if (relation==orAppendToParentOptions)
     {
         DoAppendCompilerOptions(tempBuffer, 0L);
         DoAppendCompilerOptions(tempBuffer, target);
@@ -634,20 +634,20 @@ void qtwProGenerator::DoAddProOptions(wxString& buffer,ProjectBuildTarget* targe
 
     tempBuffer = _T("");
     DoAppendLinkerOptions(tempBuffer, 0L, true);
-    if(relation==orUseTargetOptionsOnly)
+    if (relation==orUseTargetOptionsOnly)
     {
         DoAppendLinkerOptions(tempBuffer, target);
     }
-    else if(relation==orUseParentOptionsOnly)
+    else if (relation==orUseParentOptionsOnly)
     {
         DoAppendLinkerOptions(tempBuffer, 0L);
     }
-    else if(relation==orPrependToParentOptions)
+    else if (relation==orPrependToParentOptions)
     {
         DoAppendLinkerOptions(tempBuffer, target);
         DoAppendLinkerOptions(tempBuffer, 0L);
     }
-    else if(relation==orAppendToParentOptions)
+    else if (relation==orAppendToParentOptions)
     {
         DoAppendLinkerOptions(tempBuffer, 0L);
         DoAppendLinkerOptions(tempBuffer, target);
@@ -656,20 +656,20 @@ void qtwProGenerator::DoAddProOptions(wxString& buffer,ProjectBuildTarget* targe
 
     tempBuffer = _T("");
     DoAppendIncludeDirs(tempBuffer, 0L, _T(""), true);
-    if(relation==orUseTargetOptionsOnly)
+    if (relation==orUseTargetOptionsOnly)
     {
         DoAppendIncludeDirs(tempBuffer, target, _T(""));
     }
-    else if(relation==orUseParentOptionsOnly)
+    else if (relation==orUseParentOptionsOnly)
     {
         DoAppendIncludeDirs(tempBuffer, 0L, _T(""));
     }
-    else if(relation==orPrependToParentOptions)
+    else if (relation==orPrependToParentOptions)
     {
         DoAppendIncludeDirs(tempBuffer, target, _T(""));
         DoAppendIncludeDirs(tempBuffer, 0L, _T(""));
     }
-    else if(relation==orAppendToParentOptions)
+    else if (relation==orAppendToParentOptions)
     {
         DoAppendIncludeDirs(tempBuffer, 0L, _T(""));
         DoAppendIncludeDirs(tempBuffer, target, _T(""));
@@ -678,20 +678,20 @@ void qtwProGenerator::DoAddProOptions(wxString& buffer,ProjectBuildTarget* targe
 
     tempBuffer = _T("");
     DoAppendLibDirs(tempBuffer, 0L, _T(""), true);
-    if(relation==orUseTargetOptionsOnly)
+    if (relation==orUseTargetOptionsOnly)
     {
         DoAppendLibDirs(tempBuffer, target, _T(""));
     }
-    else if(relation==orUseParentOptionsOnly)
+    else if (relation==orUseParentOptionsOnly)
     {
         DoAppendLibDirs(tempBuffer, 0L, _T(""));
     }
-    else if(relation==orPrependToParentOptions)
+    else if (relation==orPrependToParentOptions)
     {
         DoAppendLibDirs(tempBuffer, target, _T(""));
         DoAppendLibDirs(tempBuffer, 0L, _T(""));
     }
-    else if(relation==orAppendToParentOptions)
+    else if (relation==orAppendToParentOptions)
     {
         DoAppendLibDirs(tempBuffer, 0L, _T(""));
         DoAppendLibDirs(tempBuffer, target, _T(""));
@@ -700,20 +700,20 @@ void qtwProGenerator::DoAddProOptions(wxString& buffer,ProjectBuildTarget* targe
 
     tempBuffer = _T("");
     DoAppendLinkerLibs(tempBuffer, 0L, true);
-    if(relation==orUseTargetOptionsOnly)
+    if (relation==orUseTargetOptionsOnly)
     {
         DoAppendLinkerLibs(tempBuffer, target);
     }
-    else if(relation==orUseParentOptionsOnly)
+    else if (relation==orUseParentOptionsOnly)
     {
         DoAppendLinkerLibs(tempBuffer, 0L);
     }
-    else if(relation==orPrependToParentOptions)
+    else if (relation==orPrependToParentOptions)
     {
         DoAppendLinkerLibs(tempBuffer, target);
         DoAppendLinkerLibs(tempBuffer, 0L);
     }
-    else if(relation==orAppendToParentOptions)
+    else if (relation==orAppendToParentOptions)
     {
         DoAppendLinkerLibs(tempBuffer, 0L);
         DoAppendLinkerLibs(tempBuffer, target);
@@ -743,7 +743,7 @@ void qtwProGenerator::DoAddTargetFiles(wxString& buffer, ProjectBuildTarget* tar
         if (pf->buildTargets.Index(target->GetTitle()) >= 0)
         {
             wxString fname;
-            if(wxFile::Exists(pf->file.GetFullName()))
+            if (wxFile::Exists(pf->file.GetFullName()))
                 // The project file is in the target dir
                 fname = pf->file.GetFullName();
             else
@@ -756,7 +756,7 @@ void qtwProGenerator::DoAddTargetFiles(wxString& buffer, ProjectBuildTarget* tar
             {
                 target_sources << fname << _T(" \n");
             }
-            else if(FileTypeOf(fname) == ftHeader)
+            else if (FileTypeOf(fname) == ftHeader)
             {
                 target_headers << fname << _T(" \n");
                 if (pf->compile)
@@ -764,16 +764,16 @@ void qtwProGenerator::DoAddTargetFiles(wxString& buffer, ProjectBuildTarget* tar
                     target_pch << fname << _T(" \n");
                 }
             }
-            else if(fname.AfterLast(_T('.')).Lower() == _T("ui"))
+            else if (fname.AfterLast(_T('.')).Lower() == _T("ui"))
             {
                 target_forms << fname << _T(" \n");
                 m_Configuration << _T("uic designer uitools ");
             }
-            else if(fname.AfterLast(_T('.')).Lower() == _T("ts"))
+            else if (fname.AfterLast(_T('.')).Lower() == _T("ts"))
             {
                 target_translations << fname << _T(" \n");
             }
-            else if(fname.AfterLast(_T('.')).Lower() == _T("qrc"))
+            else if (fname.AfterLast(_T('.')).Lower() == _T("qrc"))
             {
                 target_resources << fname << _T(" \n");
                 m_Configuration << _T("resources ");
@@ -818,9 +818,37 @@ void qtwProGenerator::DoPrependSubdirsConfiguration(wxString &buffer)
     temp_buffer << _T("######################################################") << _T('\n');
     temp_buffer << _T('\n');
     temp_buffer <<  _T("TEMPLATE =") << _T('\t') << _T("subdirs") << _T('\n');
-    temp_buffer <<  _T("SUBDIRS =");
-    buffer.Remove(0,4);
-    buffer.Prepend(temp_buffer);
+
+    wxArrayString virtuals = m_Project->GetVirtualBuildTargets();
+    size_t virtualsCount = virtuals.GetCount();
+    if (virtualsCount)
+    {
+        for (size_t i=0; i<virtualsCount; i++)
+        {
+            temp_buffer << virtuals[i];
+            temp_buffer << _T(" {\n");
+            temp_buffer <<  _T("SUBDIRS =");
+            wxArrayString contents = m_Project->GetVirtualBuildTargetGroup(virtuals[i]);
+            size_t contentsSize = contents.GetCount();
+            for (size_t j=0; j<contentsSize; j++)
+            {
+                if (j)
+                    temp_buffer << _T(" \\\n");
+                temp_buffer << contents[j];
+            }
+            temp_buffer << _T("\n}\n");
+        }
+        temp_buffer << _T("else {\nSUBDIRS =");
+        buffer.Remove(0,4);
+        buffer.Prepend(temp_buffer);
+        buffer << _T("\n}");
+    }
+    else
+    {
+        temp_buffer <<  _T("SUBDIRS =");
+        buffer.Remove(0,4);
+        buffer.Prepend(temp_buffer);
+    }
 }
 
 void qtwProGenerator::DoAddConfiguration(wxString &buffer,ProjectBuildTarget* target)
@@ -849,7 +877,7 @@ bool qtwProGenerator::CreatePro()
     // The compiler choice is project wide. Inform the user if
     // different selection between the targets.
     wxString MkSpecString = MkspecToUse();
-    if(!MkSpecString.IsEmpty())
+    if (!MkSpecString.IsEmpty())
     {
         // Compiler choice is different than the default one
         m_Arguments->Append(_T(" -spec "));
@@ -869,10 +897,10 @@ bool qtwProGenerator::CreatePro()
         // No spaces in the pro filename (not good must handle this earlier and differently)
         wxString TargetProFilenameString = target->GetTitle();
 
-        if(targetsCount==1)
+        if (targetsCount==1)
         {
             // Only one target
-            if(wxDir::Exists(TargetProFilenameString))
+            if (wxDir::Exists(TargetProFilenameString))
             {
                 // The user is using a dir with the
                 // target name (qt friendly)
@@ -891,7 +919,7 @@ bool qtwProGenerator::CreatePro()
         else
         {
             //Here's the tricky stuff. More than one targets
-            if(!wxDir::Exists(TargetProFilenameString))
+            if (!wxDir::Exists(TargetProFilenameString))
             {
                 // The user is using a custom directory structure for
                 // his project. He can use the code::blocks given functionality
@@ -906,14 +934,14 @@ bool qtwProGenerator::CreatePro()
         }
 
         bool needsHeader = true;
-        if(wxFile::Exists(TargetProFilenameString))
+        if (wxFile::Exists(TargetProFilenameString))
         {
             needsHeader = false;
             wxFile file(TargetProFilenameString, wxFile::read);
             cbRead(file,TargetProBuffer);
         }
 
-        if(needsHeader)
+        if (needsHeader)
         {
             PrependHeader(TargetProBuffer);
             AddOrReplace(TargetProBuffer,_T("CONFIG"),_T("foo"),_T("+="),false); // I just want to prepend the config entry
@@ -930,7 +958,7 @@ bool qtwProGenerator::CreatePro()
     }
 
     wxSetWorkingDirectory(m_Project->GetBasePath());
-    if(!ProjectProBuffer.IsEmpty())
+    if (!ProjectProBuffer.IsEmpty())
     {
         // Subdirs
         DoPrependSubdirsConfiguration(ProjectProBuffer);
