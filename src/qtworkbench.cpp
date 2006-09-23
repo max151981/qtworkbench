@@ -11,8 +11,10 @@
 #include "qtwprogenerator.h"
 #include "qtwprojectoptions.h"
 
-// Implement the plugin's hooks
-CB_IMPLEMENT_PLUGIN(QtWorkbench,"QtWorkbench");
+namespace
+{
+    PluginRegistrant<QtWorkbench> reg(_T("QtWorkbench"));
+}
 
 int idQtWbMenuCompile = XRCID("idQtWbMenuCompile");
 int idQtWbMenuClean = XRCID("idQtWbMenuClean");
@@ -51,16 +53,6 @@ QtWorkbench::QtWorkbench()
     {
         NotifyMissingFile(_T("qtworkbench.zip"));
     }
-    m_PluginInfo.name = _T("QtWorkbench");
-    m_PluginInfo.title = _("Qt Workbench");
-    m_PluginInfo.version = _T("0.4.1 alpha");
-    m_PluginInfo.description = _("Integration of Code::Blocks IDE with Qt");
-    m_PluginInfo.author = _T("Yorgos Pagles");
-    m_PluginInfo.authorEmail = _T("y.pagles@gmail.com");
-    m_PluginInfo.authorWebsite = _T("");
-    m_PluginInfo.thanksTo = _("");
-    m_PluginInfo.license = LICENSE_GPL;
-    m_Timer.SetOwner(this, idQtWbTimer);
 }
 
 QtWorkbench::~QtWorkbench()

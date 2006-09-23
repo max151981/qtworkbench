@@ -9,7 +9,7 @@
 		<Option virtualFolders="" />
 		<Build>
 			<Target title="default">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\qtworkbench.dll" />
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\qtworkbench.dll" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="..\..\..\devel" />
 				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\qtworkbench" />
 				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\QtWorkbench" />
@@ -66,8 +66,15 @@
 		</Linker>
 		<ExtraCommands>
 			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\qtworkbench.zip res\*.xrc" />
+			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\qtworkbench.zip res\*.xml" />
 			<Mode after="always" />
 		</ExtraCommands>
+		<Unit filename="res\manifest.xml">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
 		<Unit filename="res\qtworkbench_menu.xrc">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />

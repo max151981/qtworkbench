@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="1" minor="10" release="0" />
+    <Plugin name="QtWorkbench">
+        <Value title="QtWorkbench" />
+        <Value version="0.4.alpha" />
+        <Value description="Integration of Code::Blocks IDE with Qt" />
+        <Value author="Yorgos Pagles" />
+        <Value authorEmail="y.pagles@gmail.com" />
+        <Value authorWebsite="http://code.google.com/p/qtworkbench/" />
+        <Value thanksTo="" />
+        <Value license="GPL" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>
