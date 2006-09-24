@@ -51,6 +51,7 @@ QtWorkbench::QtWorkbench()
 {
     if (!Manager::LoadResource(_T("qtworkbench.zip")))
     {
+        Manager::Get()->GetMessageManager()->DebugLog(_T("In my constructor not imp"));
         NotifyMissingFile(_T("qtworkbench.zip"));
     }
 }
