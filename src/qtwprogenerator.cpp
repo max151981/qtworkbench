@@ -951,7 +951,7 @@ bool qtwProGenerator::CreatePro()
         DoAddProOptions(TargetProBuffer,target);
         DoAddConfiguration(TargetProBuffer,target);
 
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(TargetProBuffer, true);
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(TargetProBuffer);
 
         wxFile file(TargetProFilenameString, wxFile::write);
         cbWrite(file,TargetProBuffer);
