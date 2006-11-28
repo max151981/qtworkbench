@@ -295,6 +295,7 @@ void qtwProGenerator::DoAddCommonVariables(wxString& buffer, ProjectBuildTarget*
             AddOrReplace(buffer,_T("TEMPLATE"),_T("lib"),_T("="));
             break;
         case ttCommandsOnly :
+        case ttNative :
             break;
         }
     }

@@ -534,7 +534,7 @@ void QtWorkbench::OnProcessTerminated(CodeBlocksEvent& event)
         mbar->Enable(idQtWbMenuRebuildWorkspace,false);
         mbar->Enable(idQtWbMenuCleanWorkspace,false);
     }
-
+    m_Timer.SetOwner(this,idQtWbTimer);
     m_Timer.Start(500,wxTIMER_ONE_SHOT);
 }
 
