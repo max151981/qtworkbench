@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="5" />
+	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="QtWorkbench (Unix)" />
 		<Option pch_mode="0" />
-		<Option default_target="" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="" />
 		<Build>
 			<Target title="default">
-				<Option output="../../../devel/share/codeblocks/plugins/libqtworkbench.so" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="../../../devel/share/codeblocks/plugins" />
+				<Option output="..\..\..\devel\share\codeblocks\plugins\libqtworkbench.so" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="..\..\..\devel\share\codeblocks\plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectResourceIncludeDirsRelation="0" />
@@ -24,64 +22,33 @@
 			<Add option="-fexceptions" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
-			<Add directory="$(#cb)/sdk" />
-			<Add directory="$(#cb)/sdk/tinyxml" />
-			<Add directory="$(#cb)/sdk/wxscintilla/include" />
+			<Add directory="$(#cb)\sdk" />
+			<Add directory="$(#cb)\sdk\tinyxml" />
+			<Add directory="$(#cb)\sdk\wxscintilla\include" />
 			<Add directory="src" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
 			<Add library="codeblocks" />
-			<Add directory="$(#cb)/devel" />
-			<Add directory="$(#cb)/sdk/tinyxml" />
-			<Add directory="$(#cb)/sdk/wxscintilla/include" />
+			<Add directory="$(#cb)\devel" />
+			<Add directory="$(#cb)\sdk\tinyxml" />
+			<Add directory="$(#cb)\sdk\wxscintilla\include" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="zip -j ../../../devel/share/codeblocks/qtworkbench.zip res/*.xrc" />
 			<Add after="zip -j ../../../devel/share/codeblocks/qtworkbench.zip res/*.xml" />
 			<Mode after="always" />
 		</ExtraCommands>
-		<Unit filename="res/qtworkbench_menu.xrc">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="res/qtwprojectoptions.xrc">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="src/qtworkbench.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="src/qtworkbench.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="src/qtwprogenerator.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="src/qtwprogenerator.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="src/qtwprojectoptions.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="src/qtwprojectoptions.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
+		<Unit filename="res\qtworkbench_menu.xrc" />
+		<Unit filename="res\qtwprojectoptions.xrc" />
+		<Unit filename="src\qtworkbench.cpp" />
+		<Unit filename="src\qtworkbench.h" />
+		<Unit filename="src\qtwprogenerator.cpp" />
+		<Unit filename="src\qtwprogenerator.h" />
+		<Unit filename="src\qtwprojectoptions.cpp" />
+		<Unit filename="src\qtwprojectoptions.h" />
+		<Extensions>
+			<code_completion />
+		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

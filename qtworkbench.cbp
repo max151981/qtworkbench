@@ -54,7 +54,7 @@
 		</ResourceCompiler>
 		<Linker>
 			<Add library="libcodeblocks.a" />
-			<Add library="wxmsw26$(WX_SUFFIX)" />
+			<Add library="wxmsw28$(WX_SUFFIX)" />
 			<Add directory="$(#CB)\devel" />
 			<Add directory="$(#CB.LIB)" />
 			<Add directory="$(#CB)\sdk\tinyxml" />
