@@ -9,6 +9,7 @@
 #ifndef QTWORKBENCH_H
 #define QTWORKBENCH_H
 
+
 #if defined(__GNUG__) && !defined(__APPLE__)
  #pragma interface "qtworkbench.h"
 #endif
