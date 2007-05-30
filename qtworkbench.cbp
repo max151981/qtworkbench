@@ -63,17 +63,22 @@
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\qtworkbench.zip res\*.xrc" />
-			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\qtworkbench.zip res\*.xml" />
+			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\QtWorkbench.zip res\*.xrc" />
+			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\QtWorkbench.zip res\*.xml" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="res\manifest.xml" />
-		<Unit filename="res\qtworkbench_menu.xrc" />
+		<Unit filename="res\qtwconfiguration.xrc" />
 		<Unit filename="res\qtwprojectoptions.xrc" />
+		<Unit filename="src\qtwconfiguration.cpp" />
+		<Unit filename="src\qtwconfiguration.h" />
+		<Unit filename="src\qtwmkspecbrowser.h" />
 		<Unit filename="src\qtworkbench.cpp" />
 		<Unit filename="src\qtworkbench.h" />
 		<Unit filename="src\qtwprogenerator.cpp" />
 		<Unit filename="src\qtwprogenerator.h" />
+		<Unit filename="src\qtwprojecthandler.cpp" />
+		<Unit filename="src\qtwprojecthandler.h" />
 		<Unit filename="src\qtwprojectoptions.cpp" />
 		<Unit filename="src\qtwprojectoptions.h" />
 		<Extensions>

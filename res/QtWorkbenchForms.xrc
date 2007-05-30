@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
+	<object class="wxDialog" name="dlgQtWProjectOptions">
+		<style>wxDEFAULT_DIALOG_STYLE</style>
+		<title>Qt Project Options</title>
+		<object class="wxFlexGridSizer">
+			<rows>0</rows>
+			<cols>2</cols>
+			<vgap>5</vgap>
+			<hgap>5</hgap>
+			<growablecols></growablecols>
+			<growablerows></growablerows>
+			<object class="sizeritem">
+				<option>1</option>
+				<flag>wxEXPAND</flag>
+				<border>5</border>
+				<object class="wxStaticBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<label>Targets</label>
+					<object class="sizeritem">
+						<option>1</option>
+						<flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+						<border>5</border>
+						<object class="wxListBox" name="ID_TARGET_LISTBOX">
+							<size>119,369</size>
+							<content />
+						</object>
+					</object>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>1</option>
+				<flag>wxALIGN_CENTER</flag>
+				<border>5</border>
+				<object class="wxFlexGridSizer">
+					<rows>6</rows>
+					<cols>0</cols>
+					<vgap>5</vgap>
+					<hgap>5</hgap>
+					<growablecols></growablecols>
+					<growablerows></growablerows>
+					<object class="sizeritem">
+						<option>1</option>
+						<flag>wxEXPAND</flag>
+						<border>5</border>
+						<object class="wxStaticBoxSizer">
+							<orient>wxVERTICAL</orient>
+							<label>Build Mode</label>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<object class="wxBoxSizer">
+									<orient>wxHORIZONTAL</orient>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<object class="wxCheckBox" name="ID_BUILDMOD_RELEASE_CHECKBOX">
+											<size>132,27</size>
+											<label>Release</label>
+											<checked>0</checked>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxTOP|wxBOTTOM|wxALIGN_CENTER</flag>
+										<border>5</border>
+										<object class="wxCheckBox" name="ID_BUILDMOD_DEBUG_CHECKBOX">
+											<size>128,21</size>
+											<label>Debug</label>
+											<checked>0</checked>
+										</object>
+									</object>
+								</object>
+							</object>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<option>1</option>
+						<flag>wxEXPAND</flag>
+						<border>5</border>
+						<object class="wxStaticBoxSizer">
+							<orient>wxVERTICAL</orient>
+							<label>Requirements</label>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxTOP|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<object class="wxGridSizer">
+									<rows>3</rows>
+									<cols>3</cols>
+									<vgap>0</vgap>
+									<hgap>0</hgap>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<object class="wxCheckBox" name="ID_REQS_QT_CHECKBOX">
+											<label>Qt</label>
+											<checked>0</checked>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxALIGN_CENTER|wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxCheckBox" name="ID_REQS_THREAD_CHECKBOX">
+											<label>Thread</label>
+											<checked>0</checked>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxALIGN_CENTER|wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxCheckBox" name="ID_REQS_EXCEPTIONS_CHECKBOX">
+											<label>Exceptions</label>
+											<checked>0</checked>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<object class="wxCheckBox" name="ID_REQS_OPENGL_CHECKBOX">
+											<size>100,22</size>
+											<label>OpenGL</label>
+											<checked>0</checked>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxALIGN_CENTER|wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxCheckBox" name="ID_REQS_X11_CHECKBOX">
+											<size>124,13</size>
+											<label>X11</label>
+											<checked>0</checked>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxALIGN_CENTER|wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxCheckBox" name="ID_REQS_CONSOLE_CHECKBOX">
+											<label>Console</label>
+											<checked>0</checked>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<object class="wxCheckBox" name="ID_REQS_STL_CHECKBOX">
+											<size>106,22</size>
+											<label>STL</label>
+											<checked>0</checked>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxALIGN_CENTER|wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxCheckBox" name="ID_REQS_RTTI_CHECKBOX">
+											<size>133,27</size>
+											<label>RTTI</label>
+											<checked>0</checked>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxALIGN_CENTER|wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxCheckBox" name="ID_REQS_PREC_CHECKBOX">
+											<label>Precompiled Headers</label>
+											<checked>0</checked>
+										</object>
+									</object>
+								</object>
+							</object>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<option>1</option>
+						<flag>wxEXPAND</flag>
+						<border>10</border>
+						<object class="wxStaticBoxSizer">
+							<orient>wxVERTICAL</orient>
+							<label>Other CONFIG variables (space seperated)</label>
+							<object class="sizeritem">
+								<option>0</option>
+								<flag>wxALL|wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxTextCtrl" name="m_textCtrl5">
+									<value></value>
+									<maxlength>0</maxlength>
+								</object>
+							</object>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<option>1</option>
+						<flag>wxEXPAND</flag>
+						<border>5</border>
+						<object class="wxStaticBoxSizer">
+							<orient>wxVERTICAL</orient>
+							<label>Modules</label>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxALIGN_CENTER</flag>
+								<border>5</border>
+								<object class="wxGridSizer">
+									<rows>2</rows>
+									<cols>3</cols>
+									<vgap>0</vgap>
+									<hgap>0</hgap>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<object class="wxCheckBox" name="ID_MODS_CORE_CHECKBOX">
+											<size>132,20</size>
+											<label>Core</label>
+											<checked>0</checked>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<object class="wxCheckBox" name="ID_MODS_GUI_CHECKBOX">
+											<size>133,20</size>
+											<label>Gui</label>
+											<checked>0</checked>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxTOP|wxALIGN_CENTER|wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxCheckBox" name="ID_MODS_NET_CHECKBOX">
+											<label>Network</label>
+											<checked>0</checked>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<object class="wxCheckBox" name="ID_MODS_OPENGL_CHECKBOX">
+											<size>111,20</size>
+											<label>OpenGL</label>
+											<checked>0</checked>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<object class="wxCheckBox" name="ID_MODS_SQL_CHECKBOX">
+											<size>102,20</size>
+											<label>Sql</label>
+											<checked>0</checked>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxALIGN_CENTER|wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxCheckBox" name="ID_MODS_XML_CHECKBOX">
+											<label>Xml</label>
+											<checked>0</checked>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<object class="wxCheckBox" name="ID_MODS_SVG_CHECKBOX">
+											<size>105,20</size>
+											<label>Svg</label>
+											<checked>0</checked>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxCheckBox" name="ID_MODS_QT3_CHECKBOX">
+											<size>127,20</size>
+											<label>Qt3 Support</label>
+											<checked>0</checked>
+										</object>
+									</object>
+								</object>
+							</object>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<option>1</option>
+						<flag>wxEXPAND</flag>
+						<border>5</border>
+						<object class="wxStaticBoxSizer">
+							<orient>wxVERTICAL</orient>
+							<label>Intermediate file locations</label>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxFlexGridSizer">
+									<rows>3</rows>
+									<cols>3</cols>
+									<vgap>0</vgap>
+									<hgap>0</hgap>
+									<growablecols></growablecols>
+									<growablerows></growablerows>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxRIGHT|wxTOP|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<object class="wxStaticText" name="ID_LOC_MOC_STATICTEXT">
+											<label>moc files:</label>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxRIGHT|wxTOP|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxTextCtrl" name="ID_LOC_MOC_TEXTCTRL">
+											<size>291,23</size>
+											<value></value>
+											<maxlength>0</maxlength>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxLEFT|wxTOP|wxBOTTOM|wxALIGN_CENTER</flag>
+										<border>5</border>
+										<object class="wxButton" name="ID_LOC_MOC_BUTTON">
+											<size>36,23</size>
+											<label>...</label>
+											<default>0</default>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxRIGHT|wxTOP|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<object class="wxStaticText" name="ID_LOC_UIC_STATICTEXT">
+											<label>uic files:</label>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxRIGHT|wxTOP|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxTextCtrl" name="ID_LOC_UIC_TEXTCTRL">
+											<size>275,23</size>
+											<value></value>
+											<maxlength>0</maxlength>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxLEFT|wxTOP|wxBOTTOM|wxALIGN_CENTER</flag>
+										<border>5</border>
+										<object class="wxButton" name="ID_LOC_UIC_BUTTON">
+											<size>36,23</size>
+											<label>...</label>
+											<default>0</default>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxRIGHT|wxTOP|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<object class="wxStaticText" name="ID_LOC_RSS_STATICTEXT">
+											<label>rcc files:</label>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxRIGHT|wxTOP|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxTextCtrl" name="ID_LOC_RCC_TEXTCTRL">
+											<value></value>
+											<maxlength>0</maxlength>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxLEFT|wxTOP|wxBOTTOM|wxALIGN_CENTER</flag>
+										<border>5</border>
+										<object class="wxButton" name="ID_LOC_RCC_BUTTON">
+											<size>36,23</size>
+											<label>...</label>
+											<default>0</default>
+										</object>
+									</object>
+								</object>
+							</object>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<option>1</option>
+						<flag>wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<object class="wxBoxSizer">
+							<orient>wxHORIZONTAL</orient>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxLEFT|wxTOP|wxBOTTOM|wxALIGN_CENTER</flag>
+								<border>5</border>
+								<object class="wxButton" name="wxID_OK">
+									<label>OK</label>
+									<default>0</default>
+								</object>
+							</object>
+						</object>
+					</object>
+				</object>
+			</object>
+		</object>
+	</object>
+	<object class="wxPanel" name="dlgQtWConfig">
+		<style>wxTAB_TRAVERSAL</style>
+		<size>-1,500</size>
+		<object class="wxGridSizer">
+			<rows>3</rows>
+			<cols>1</cols>
+			<vgap>0</vgap>
+			<hgap>0</hgap>
+			<object class="sizeritem">
+				<option>1</option>
+				<flag>wxALIGN_CENTER_VERTICAL</flag>
+				<border>10</border>
+				<object class="wxStaticBoxSizer">
+					<orient>wxHORIZONTAL</orient>
+					<label>Qt Installation Directory</label>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>10</border>
+						<object class="wxTextCtrl" name="ID_TEXTCTRL_QTDIR">
+							<size>450,-1</size>
+							<value></value>
+							<maxlength>0</maxlength>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>0</border>
+						<object class="wxButton" name="ID_BUTTON_QTDIR">
+							<label>Browse...</label>
+							<default>0</default>
+						</object>
+					</object>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>1</option>
+				<flag>wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<object class="wxStaticBoxSizer">
+					<orient>wxHORIZONTAL</orient>
+					<label>Make Specifications Directory</label>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>10</border>
+						<object class="wxTextCtrl" name="ID_TEXTCTRL_QMAKESPEC">
+							<size>450,-1</size>
+							<value></value>
+							<maxlength>0</maxlength>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>0</border>
+						<object class="wxButton" name="ID_BUTTON_QMAKESPEC">
+							<label>Browse...</label>
+							<default>0</default>
+						</object>
+					</object>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>1</option>
+				<flag>wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<object class="wxStaticBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<label>Available Make Specifications</label>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxEXPAND</flag>
+						<border>5</border>
+						<object class="wxChoice" name="ID_CHOICE_MKSPEC">
+							<size>450,-1</size>
+							<content />
+							<selection>0</selection>
+						</object>
+					</object>
+				</object>
+			</object>
+		</object>
+	</object>
+</resource>

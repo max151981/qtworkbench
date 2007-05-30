@@ -1,5 +1,5 @@
 /***************************************************************
- * Name:      qtwprogenerator.h
+ * Name:      qtwprojectoptions.h
  * Purpose:   Code::Blocks plugin
  * Author:    Yorgos Pagles<y.pagles@gmail.com>
  * Copyright: (c) Yorgos Pagles
@@ -8,7 +8,7 @@
 #include <wx/dialog.h>
 
 class cbProject;
-
+class QtWProjectHandler;
 class qtwProjectOptions : public wxDialog
 {
 public:
@@ -18,13 +18,11 @@ private:
     cbProject* CurrentActiveProject();
 
     void PopulateTargetsListBox();
-    void PopulateTargetsArrayString();
     void PopulateWorld();
-    void PopulateBuildMode(const wxString&);
-    void PopulateRequirements(const wxString&);
-    void PopulateModules(const wxString&);
-    void PopulatePluginMode(const wxString&);
-    void PopulateFileLocations(const wxString&);
+    void PopulateBuildMode();
+    void PopulateRequirements();
+    void PopulateModules();
+    void PopulateFileLocations();
 
     void OnNeedsUpdate(wxCommandEvent&);
     void OnBrowseMocButtonClick(wxCommandEvent&);
@@ -33,10 +31,8 @@ private:
     void OnTargetListClick(wxCommandEvent&);
 
     void EndModal(int retCode);
-    wxString GetListedProjectFileContents(int);
-    void UpdateQtTargetSettings();
-    void SaveQtProjectSettings();
+    void UpdateTarget();
 
-    wxArrayString* m_AllProjectOptions;
+    QtWProjectHandler *m_Handler;
     DECLARE_EVENT_TABLE()
 };
