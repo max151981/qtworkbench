@@ -14,7 +14,7 @@
         <property name="relative_path">1</property>
         <property name="use_enum">0</property>
         <property name="use_microsoft_bom">0</property>
-        <object class="Dialog" expanded="0">
+        <object class="Dialog" expanded="1">
             <property name="bg"></property>
             <property name="center"></property>
             <property name="enabled">1</property>
@@ -465,7 +465,7 @@
                                         <property name="maximum_size"></property>
                                         <property name="maxlength">0</property>
                                         <property name="minimum_size"></property>
-                                        <property name="name">m_textCtrl5</property>
+                                        <property name="name">ID_CONFIG_VARIABLES</property>
                                         <property name="permission">protected</property>
                                         <property name="pos"></property>
                                         <property name="size"></property>

@@ -24,15 +24,16 @@ private:
     void PopulateModules();
     void PopulateFileLocations();
 
-    void OnNeedsUpdate(wxCommandEvent&);
     void OnBrowseMocButtonClick(wxCommandEvent&);
     void OnBrowseUicButtonClick(wxCommandEvent&);
     void OnBrowseRccButtonClick(wxCommandEvent&);
     void OnTargetListClick(wxCommandEvent&);
 
     void EndModal(int retCode);
+    void Update();
     void UpdateTarget();
 
     QtWProjectHandler *m_Handler;
+    wxArrayString m_ExtraConfigurations;
     DECLARE_EVENT_TABLE()
 };
