@@ -205,11 +205,11 @@ void QtWorkbench::OnRunQMake(wxCommandEvent& event)
     }
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("qtwb"));
-    wxString cmd = cfg->Read(_T("/QtDir"));
 
-    if (cfg->Read(_T("/QtDir")).IsEmpty())
+    wxString qdir = cfg->Read(_T("/QtDir"));
+    if (qdir.IsEmpty())
     {
-        if (!wxGetEnv(_T("QTDIR"),&cmd))
+        if (!wxGetEnv(_T("QTDIR"),&qdir))
         {
             AnnoyingDialog dlg( _("qmake location could not be establised"),
                                 _("You have not specified a Qt installation directory"
@@ -242,7 +242,7 @@ cbProject* QtWorkbench::CurrentActiveProject()
 wxString QtWorkbench::QMakeCommand(){
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("qtwb"));
     wxString cmd = cfg->Read(_T("/QtDir"));
-
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(cmd);
     if (!cfg->Read(_T("/QtDir")).IsEmpty())
     {
         cmd << wxFileName::GetPathSeparator() << _T("bin") << wxFileName::GetPathSeparator();
@@ -251,6 +251,7 @@ wxString QtWorkbench::QMakeCommand(){
     cmd << _T("qmake -makefile");
 
     wxString QMakeSpec = cfg->Read(_T("/QMkSpec"));
+
     if (!QMakeSpec.IsEmpty())
     {
         cmd << _T(" -spec ") << QMakeSpec;

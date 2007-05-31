@@ -62,6 +62,7 @@ bool QtWProjectHandler::Read()
             end=false;
         }
         str.Trim();
+        str.Trim(false);
         if (str.IsEmpty())
         {
             continue; // Empty line
@@ -114,6 +115,15 @@ bool QtWProjectHandler::Read()
             end=true;
         }
     }
+
+    // Get the last entry
+    if (end)
+    {
+        if (!currentIdentifier.IsEmpty() && !currentContents.IsEmpty())
+        {
+            m_VariableMap[currentIdentifier]=currentContents;
+        }
+    }
     return file.Close();
 }
 
@@ -141,7 +151,8 @@ bool QtWProjectHandler::Write()
         wxString key = it->first, value = it->second;
         value.Replace(wxT("$"),wxT(" "));
         wxString line = key + wxT(" += ") + value;
-        file.InsertLine(line,lineNumber++);
+        file.InsertLine(line,lineNumber);
+        lineNumber++;
     }
     if (lineNumber)
         return file.Write();
@@ -151,6 +162,8 @@ bool QtWProjectHandler::Write()
 wxArrayString QtWProjectHandler::GetValuesFor(const wxString &identifier)
 {
     wxString valuesString = m_VariableMap[identifier];
+    valuesString.Trim();
+    valuesString.Trim(false);
     return wxStringTokenize(valuesString, wxT("$"));
 }
 
@@ -159,7 +172,11 @@ void QtWProjectHandler::SetValuesFor(const wxString &identifier, const wxArraySt
     wxString contents;
     for (size_t i=0; i< contentsArray.GetCount(); i++)
     {
-        contents.Append(contentsArray[i]);
+        wxString content=contentsArray[i];
+        content.Trim();
+        content.Trim(false);
+
+        contents.Append(content);
         contents.Append(wxT("$"));
     }
     m_VariableMap[identifier] = contents;
@@ -179,8 +196,12 @@ bool QtWProjectHandler::Contains(const wxString &identifier, const wxString& val
 
 void QtWProjectHandler::Add(const wxString &identifier, const wxString& value)
 {
-    wxArrayString values = GetValuesFor(identifier);
+    if (value.IsEmpty())
+    {
+        return;
+    }
 
+    wxArrayString values = GetValuesFor(identifier);
     if (values.Index(value) != wxNOT_FOUND)
     {
         return;

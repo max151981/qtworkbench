@@ -108,44 +108,40 @@ void qtwProGenerator::DoAddCommonVariables(ProjectBuildTarget* target)
     wxArrayString values;
     if (m_Handler->Contains(wxT("CONFIG"),wxT("plugin")))
     {
-        values.Clear();
         values.Add(wxT("lib"));
         m_Handler->SetValuesFor(wxT("TEMPLATE"),values);
 
         m_Configuration.Add(wxT("staticlib"));
         m_Configuration.Add(wxT("dll"));
     }
-    else
+
+    switch (target->GetTargetType())
     {
-        values.Clear();
-        switch (target->GetTargetType())
-        {
-        case ttExecutable :
+    case ttExecutable :
 #ifdef __WXMSW__
-            m_Configuration.Add(wxT("windows"));
+        m_Configuration.Add(wxT("windows"));
 #endif
-            values.Add(wxT("app"));
-            m_Handler->SetValuesFor(wxT("TEMPLATE"),values);
-            break;
-        case ttConsoleOnly :
-            m_Configuration.Add(wxT("console"));
-            values.Add(wxT("app"));
-            m_Handler->SetValuesFor(wxT("TEMPLATE"),values);
-            break;
-        case ttStaticLib :
-            m_Configuration.Add(wxT("staticlib"));
-            values.Add(wxT("lib"));
-            m_Handler->SetValuesFor(wxT("TEMPLATE"),values);
-            break;
-        case ttDynamicLib :
-            m_Configuration.Add(wxT("dll"));
-            values.Add(wxT("lib"));
-            m_Handler->SetValuesFor(wxT("TEMPLATE"),values);
-            break;
-        case ttCommandsOnly :
-        case ttNative :
-            break;
-        }
+        values.Add(wxT("app"));
+        m_Handler->SetValuesFor(wxT("TEMPLATE"),values);
+        break;
+    case ttConsoleOnly :
+        m_Configuration.Add(wxT("console"));
+        values.Add(wxT("app"));
+        m_Handler->SetValuesFor(wxT("TEMPLATE"),values);
+        break;
+    case ttStaticLib :
+        m_Configuration.Add(wxT("staticlib"));
+        values.Add(wxT("lib"));
+        m_Handler->SetValuesFor(wxT("TEMPLATE"),values);
+        break;
+    case ttDynamicLib :
+        m_Configuration.Add(wxT("dll"));
+        values.Add(wxT("lib"));
+        m_Handler->SetValuesFor(wxT("TEMPLATE"),values);
+        break;
+    case ttCommandsOnly :
+    case ttNative :
+        break;
     }
 
     wxString thePath = m_Project->GetBasePath();
@@ -276,7 +272,8 @@ void qtwProGenerator::DoAppendCompilerOptions(ProjectBuildTarget* target, bool u
 
 
     wxArrayString currentValues = m_Handler->GetValuesFor(wxT("QMAKE_CXXFLAGS"));
-    for(size_t i=0; opts.GetCount(); i++){
+    for (size_t i=0; opts.GetCount(); i++)
+    {
         Manager::Get()->GetMacrosManager()->ReplaceEnvVars(opts[i]);
         currentValues.Add(opts[i]);
     }
@@ -627,7 +624,11 @@ bool qtwProGenerator::CreatePro()
         DoAddTargetFiles(target);
         DoAddProOptions(target);
 
-        m_Handler->SetValuesFor(wxT("CONFIG"),m_Configuration);
+        for (size_t j=0; j<m_Configuration.GetCount(); j++)
+        {
+            m_Handler->Add(wxT("CONFIG"),m_Configuration[j]);
+        }
+
         m_Handler->Write();
     }
     return true;
