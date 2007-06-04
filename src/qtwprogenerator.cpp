@@ -272,10 +272,11 @@ void qtwProGenerator::DoAppendCompilerOptions(ProjectBuildTarget* target, bool u
 
 
     wxArrayString currentValues = m_Handler->GetValuesFor(wxT("QMAKE_CXXFLAGS"));
-    for (size_t i=0; opts.GetCount(); i++)
+    for (size_t i=0; i<opts.GetCount(); i++)
     {
-        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(opts[i]);
-        currentValues.Add(opts[i]);
+        wxString temp = opts[i];
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(temp);
+        currentValues.Add(temp);
     }
     m_Handler->SetValuesFor(wxT("QMAKE_CXXFLAGS"),currentValues);
 }
@@ -294,8 +295,9 @@ void qtwProGenerator::DoAppendLinkerOptions(ProjectBuildTarget* target, bool use
     wxArrayString currentValues = m_Handler->GetValuesFor(wxT("QMAKE_LFLAGS"));
     for (unsigned int x = 0; x < opts.GetCount(); ++x)
     {
-        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(opts[x]);
-        currentValues.Add(opts[x]);
+        wxString temp = opts[x];
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(temp);
+        currentValues.Add(temp);
     }
     m_Handler->SetValuesFor(wxT("QMAKE_LFLAGS"),currentValues);
 }

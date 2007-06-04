@@ -150,7 +150,7 @@ bool QtWProjectHandler::Write()
     {
         wxString key = it->first, value = it->second;
         value.Replace(wxT("$"),wxT(" "));
-        wxString line = key + wxT(" += ") + value;
+        wxString line = key + wxT(" = ") + value;
         file.InsertLine(line,lineNumber);
         lineNumber++;
     }
