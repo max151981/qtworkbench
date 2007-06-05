@@ -7,9 +7,9 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\qtworkbench.dll" prefix_auto="0" extension_auto="0" />
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\QtWorkbench.dll" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="..\..\..\devel" />
-				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\qtworkbench" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\QtWorkbench" />
 				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\QtWorkbench" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -63,21 +63,30 @@
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\qtworkbench.zip res\*.xrc" />
-			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\qtworkbench.zip res\*.xml" />
+			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\QtWorkbench.zip res\*.xrc" />
+			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\QtWorkbench.zip res\*.xml" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="res\manifest.xml" />
-		<Unit filename="res\qtworkbench_menu.xrc" />
+		<Unit filename="res\qtwconfiguration.xrc" />
 		<Unit filename="res\qtwprojectoptions.xrc" />
+		<Unit filename="src\qtwconfiguration.cpp" />
+		<Unit filename="src\qtwconfiguration.h" />
+		<Unit filename="src\qtwmkspecbrowser.h" />
 		<Unit filename="src\qtworkbench.cpp" />
 		<Unit filename="src\qtworkbench.h" />
 		<Unit filename="src\qtwprogenerator.cpp" />
 		<Unit filename="src\qtwprogenerator.h" />
+		<Unit filename="src\qtwprojecthandler.cpp" />
+		<Unit filename="src\qtwprojecthandler.h" />
 		<Unit filename="src\qtwprojectoptions.cpp" />
 		<Unit filename="src\qtwprojectoptions.h" />
 		<Extensions>
-			<code_completion />
+			<code_completion>
+				<search_path add="$(#qt.include)" />
+				<search_path add="$(#qt.include)/QtCore" />
+				<search_path add="$(#qt.include)/QtGui" />
+			</code_completion>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

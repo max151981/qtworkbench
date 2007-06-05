@@ -5,159 +5,88 @@
  * Copyright: (c) Yorgos Pagles
  * License:   GPL
  **************************************************************/
+#include <wx/tokenzr.h>
 #include <sdk.h>
 
 #include "qtwprojectoptions.h"
-#include "qtwprogenerator.h"
+#include "qtwprojecthandler.h"
 
 BEGIN_EVENT_TABLE(qtwProjectOptions, wxDialog)
 EVT_BUTTON(XRCID("ID_LOC_MOC_BUTTON"),qtwProjectOptions::OnBrowseMocButtonClick)
 EVT_BUTTON(XRCID("ID_LOC_UIC_BUTTON"),qtwProjectOptions::OnBrowseUicButtonClick)
 EVT_BUTTON(XRCID("ID_LOC_RCC_BUTTON"),qtwProjectOptions::OnBrowseRccButtonClick)
 EVT_LISTBOX(XRCID("ID_TARGET_LISTBOX"),qtwProjectOptions::OnTargetListClick)
-EVT_CHECKBOX(XRCID("ID_BUILDMOD_RELEASE_CHECKBOX"),qtwProjectOptions::OnNeedsUpdate)
-EVT_CHECKBOX(XRCID("ID_BUILDMOD_DEBUG_CHECKBOX"),qtwProjectOptions::OnNeedsUpdate)
-EVT_CHECKBOX(XRCID("ID_REQS_QT_CHECKBOX"),qtwProjectOptions::OnNeedsUpdate)
-EVT_CHECKBOX(XRCID("ID_REQS_THREAD_CHECKBOX"),qtwProjectOptions::OnNeedsUpdate)
-EVT_CHECKBOX(XRCID("ID_REQS_EXCEPTIONS_CHECKBOX"),qtwProjectOptions::OnNeedsUpdate)
-EVT_CHECKBOX(XRCID("ID_REQS_OPENGL_CHECKBOX"),qtwProjectOptions::OnNeedsUpdate)
-EVT_CHECKBOX(XRCID("ID_REQS_X11_CHECKBOX"),qtwProjectOptions::OnNeedsUpdate)
-EVT_CHECKBOX(XRCID("ID_REQS_CONSOLE_CHECKBOX"),qtwProjectOptions::OnNeedsUpdate)
-EVT_CHECKBOX(XRCID("ID_REQS_STL_CHECKBOX"),qtwProjectOptions::OnNeedsUpdate)
-EVT_CHECKBOX(XRCID("ID_REQS_RTTI_CHECKBOX"),qtwProjectOptions::OnNeedsUpdate)
-EVT_CHECKBOX(XRCID("ID_REQS_PREC_CHECKBOX"),qtwProjectOptions::OnNeedsUpdate)
-EVT_CHECKBOX(XRCID("ID_MODS_CORE_CHECKBOX"),qtwProjectOptions::OnNeedsUpdate)
-EVT_CHECKBOX(XRCID("ID_MODS_GUI_CHECKBOX"),qtwProjectOptions::OnNeedsUpdate)
-EVT_CHECKBOX(XRCID("ID_MODS_NET_CHECKBOX"),qtwProjectOptions::OnNeedsUpdate)
-EVT_CHECKBOX(XRCID("ID_MODS_OPENGL_CHECKBOX"),qtwProjectOptions::OnNeedsUpdate)
-EVT_CHECKBOX(XRCID("ID_MODS_SQL_CHECKBOX"),qtwProjectOptions::OnNeedsUpdate)
-EVT_CHECKBOX(XRCID("ID_MODS_XML_CHECKBOX"),qtwProjectOptions::OnNeedsUpdate)
-EVT_CHECKBOX(XRCID("ID_MODS_SVG_CHECKBOX"),qtwProjectOptions::OnNeedsUpdate)
-EVT_CHECKBOX(XRCID("ID_MODS_QT3_CHECKBOX"),qtwProjectOptions::OnNeedsUpdate)
-EVT_CHECKBOX(XRCID("ID_QTPLUGIN_CHECKBOX"),qtwProjectOptions::OnNeedsUpdate)
-EVT_TEXT(XRCID("ID_LOC_MOC_TEXTCTRL"),qtwProjectOptions::OnNeedsUpdate)
-EVT_TEXT(XRCID("ID_LOC_UIC_TEXTCTRL"),qtwProjectOptions::OnNeedsUpdate)
-EVT_TEXT(XRCID("ID_LOC_RCC_TEXTCTRL"),qtwProjectOptions::OnNeedsUpdate)
 END_EVENT_TABLE()
 
-qtwProjectOptions::qtwProjectOptions(wxWindow* parent) : m_AllProjectOptions(0L)
+qtwProjectOptions::qtwProjectOptions(wxWindow* parent)
 {
-    m_AllProjectOptions = new wxArrayString;
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("qtwprojectoptions"));
+    m_Handler = new QtWProjectHandler;
+
+    wxXmlResource::Get()->LoadDialog(this, parent, wxT("dlgQtWProjectOptions"));
+
     PopulateTargetsListBox();
-    PopulateTargetsArrayString();
+    UpdateTarget();
     PopulateWorld();
 }
 
 qtwProjectOptions::~qtwProjectOptions()
-{}
+{
+    delete m_Handler;
+}
 
 cbProject* qtwProjectOptions::CurrentActiveProject()
 {
-    // The active project is always be valid as it is checked
+    // The active project is always valid as it is checked
     // before this dialog appears.
     return Manager::Get()->GetProjectManager()->GetActiveProject();
-}
-
-wxString qtwProjectOptions::GetListedProjectFileContents(int index)
-{
-    wxListBox *list = XRCCTRL(*this, "ID_TARGET_LISTBOX", wxListBox);
-    cbProject *CurrentProject = CurrentActiveProject();
-    wxString TargetBuffer;
-    if(CurrentProject)
-    {
-        wxString CurrentTarget = CurrentProject->GetBasePath();
-        CurrentTarget << wxFileName::GetPathSeparator() << list->GetString(index);
-        if(wxDir::Exists(CurrentTarget))
-        {
-            CurrentTarget << wxFileName::GetPathSeparator();
-            CurrentTarget << list->GetString(index) + _T(".pro");
-            if(wxFile::Exists(CurrentTarget))
-            {
-                wxFile file(CurrentTarget, wxFile::read);
-                cbRead(file,TargetBuffer);
-            }
-        }
-        else if (index==0)
-        {
-            // probably one target only
-            CurrentTarget = CurrentProject->GetBasePath();
-            CurrentTarget << CurrentActiveProject()->GetTitle() + _T(".pro");
-            if(wxFile::Exists(CurrentTarget))
-            {
-                wxFile file(CurrentTarget, wxFile::read);
-                cbRead(file,TargetBuffer);
-            }
-        }
-        else
-        {
-            wxString message = _T("Folder ");
-            message << CurrentTarget;
-            message << _T(" does not exist,");
-            message << _T('\n');
-            message << _T("in the project's folder");
-            cbMessageBox(message, _("Error"), wxICON_ERROR);
-        }
-    }
-    return TargetBuffer;
 }
 
 void qtwProjectOptions::PopulateTargetsListBox()
 {
     wxListBox *list = XRCCTRL(*this, "ID_TARGET_LISTBOX", wxListBox);
-    cbProject *CurrentProject = CurrentActiveProject();
-
-    if(CurrentProject)
+    int TargetsCount = CurrentActiveProject()->GetBuildTargetsCount();
+    wxArrayString TargetsArray;
+    for (int i=0; i<TargetsCount; i++)
     {
-        int TargetsCount = CurrentProject->GetBuildTargetsCount();
-        wxArrayString TargetsArray;
-        for(int i=0; i<TargetsCount; i++)
-        {
-            TargetsArray.Add(CurrentProject->GetBuildTarget(i)->GetTitle());
-        }
-        list->Set(TargetsArray);
-        list->SetSelection(0);
+        TargetsArray.Add(CurrentActiveProject()->GetBuildTarget(i)->GetTitle());
     }
-
+    list->Set(TargetsArray);
+    list->SetSelection(0);
 }
 
-void qtwProjectOptions::PopulateTargetsArrayString()
-{
-    wxListBox *list = XRCCTRL(*this, "ID_TARGET_LISTBOX", wxListBox);
-    int TargetsCount = list->GetCount();
-    for(int i=0; i<TargetsCount; i++)
-    {
-        m_AllProjectOptions->Add(GetListedProjectFileContents(i));
-    }
-}
-
-void qtwProjectOptions::PopulateWorld()
+void qtwProjectOptions::UpdateTarget()
 {
     wxListBox *list = XRCCTRL(*this, "ID_TARGET_LISTBOX", wxListBox);
 
     int currentSelection = list->GetSelection();
-    if(currentSelection == wxNOT_FOUND)
+    if (currentSelection == wxNOT_FOUND)
         return;
 
-    wxString TargetBuffer = m_AllProjectOptions->Item(currentSelection);
+    wxString CurrentTarget = CurrentActiveProject()->GetBasePath();
+    CurrentTarget << list->GetString(currentSelection) + wxT(".pro");
 
-    PopulateBuildMode(TargetBuffer);
-    PopulateRequirements(TargetBuffer);
-    PopulateModules(TargetBuffer);
-    PopulatePluginMode(TargetBuffer);
-    PopulateFileLocations(TargetBuffer);
+    m_Handler->SetFilename(CurrentTarget);
+    m_Handler->Read();
 }
 
-void qtwProjectOptions::PopulateBuildMode(const wxString &buffer)
+void qtwProjectOptions::PopulateWorld()
+{
+    PopulateBuildMode();
+    PopulateRequirements();
+    PopulateModules();
+    PopulateFileLocations();
+}
+
+void qtwProjectOptions::PopulateBuildMode()
 {
     wxCheckBox *choiceRelease = XRCCTRL(*this, "ID_BUILDMOD_RELEASE_CHECKBOX", wxCheckBox);
     wxCheckBox *choiceDebug = XRCCTRL(*this, "ID_BUILDMOD_DEBUG_CHECKBOX", wxCheckBox);
 
-    choiceRelease->SetValue(qtwProGenerator::GetArgsFor(buffer,_T("CONFIG")).Contains(_T("release")));
-    choiceDebug->SetValue(qtwProGenerator::GetArgsFor(buffer,_T("CONFIG")).Contains(_T("debug")));
+    choiceRelease->SetValue(m_Handler->Contains(wxT("CONFIG"),wxT("release")));
+    choiceDebug->SetValue(m_Handler->Contains(wxT("CONFIG"),wxT("debug")));
 }
 
-void qtwProjectOptions::PopulateRequirements(const wxString &buffer)
+void qtwProjectOptions::PopulateRequirements()
 {
     wxCheckBox *choiceQt = XRCCTRL(*this, "ID_REQS_QT_CHECKBOX", wxCheckBox);
     wxCheckBox *choiceThread = XRCCTRL(*this, "ID_REQS_THREAD_CHECKBOX", wxCheckBox);
@@ -169,18 +98,49 @@ void qtwProjectOptions::PopulateRequirements(const wxString &buffer)
     wxCheckBox *choiceRTTI = XRCCTRL(*this, "ID_REQS_RTTI_CHECKBOX", wxCheckBox);
     wxCheckBox *choicePCH = XRCCTRL(*this, "ID_REQS_PREC_CHECKBOX", wxCheckBox);
 
-    choiceQt->SetValue(qtwProGenerator::GetArgsFor(buffer,_T("CONFIG")).Contains(_T("qt")));
-    choiceThread->SetValue(qtwProGenerator::GetArgsFor(buffer,_T("CONFIG")).Contains(_T("thread")));
-    choiceExceptions->SetValue(qtwProGenerator::GetArgsFor(buffer,_T("CONFIG")).Contains(_T("exceptions")));
-    choiceOpenGL->SetValue(qtwProGenerator::GetArgsFor(buffer,_T("CONFIG")).Contains(_T("opengl")));
-    choiceX11->SetValue(qtwProGenerator::GetArgsFor(buffer,_T("CONFIG")).Contains(_T("x11")));
-    choiceConsole->SetValue(qtwProGenerator::GetArgsFor(buffer,_T("CONFIG")).Contains(_T("console")));
-    choiceSTL->SetValue(qtwProGenerator::GetArgsFor(buffer,_T("CONFIG")).Contains(_T("stl")));
-    choiceRTTI->SetValue(qtwProGenerator::GetArgsFor(buffer,_T("CONFIG")).Contains(_T("rtti")));
-    choicePCH->SetValue(qtwProGenerator::GetArgsFor(buffer,_T("CONFIG")).Contains(_T("precompile_header")));
+    choiceQt->SetValue(m_Handler->Contains(wxT("CONFIG"),wxT("qt")));
+    choiceThread->SetValue(m_Handler->Contains(wxT("CONFIG"),wxT("thread")));
+    choiceExceptions->SetValue(m_Handler->Contains(wxT("CONFIG"),wxT("exceptions")));
+    choiceOpenGL->SetValue(m_Handler->Contains(wxT("CONFIG"),wxT("opengl")));
+    choiceX11->SetValue(m_Handler->Contains(wxT("CONFIG"),wxT("x11")));
+    choiceConsole->SetValue(m_Handler->Contains(wxT("CONFIG"),wxT("console")));
+    choiceSTL->SetValue(m_Handler->Contains(wxT("CONFIG"),wxT("stl")));
+    choiceRTTI->SetValue(m_Handler->Contains(wxT("CONFIG"),wxT("rtti")));
+    choicePCH->SetValue(m_Handler->Contains(wxT("CONFIG"),wxT("precompile_header")));
+
+    wxTextCtrl *configChoices = XRCCTRL(*this, "ID_CONFIG_VARIABLES", wxTextCtrl);
+    wxArrayString values = m_Handler->GetValuesFor(wxT("CONFIG"));
+    wxString value;
+    m_ExtraConfigurations.Clear();
+    for (size_t i=0; i<values.GetCount(); i++)
+    {
+        if (values[i] != wxT("release") &&
+                values[i] != wxT("debug") &&
+                values[i] != wxT("qt") &&
+                values[i] != wxT("thread") &&
+                values[i] != wxT("exceptions") &&
+                values[i] != wxT("opengl") &&
+                values[i] != wxT("x11") &&
+                values[i] != wxT("console") &&
+                values[i] != wxT("stl") &&
+                values[i] != wxT("rtti") &&
+                values[i] != wxT("precompile_header") &&
+                values[i] != wxT("staticlib") &&
+                values[i] != wxT("windows") &&
+                values[i] != wxT("console") &&
+                values[i] != wxT("staticlib") &&
+                values[i] != wxT("dll"))
+
+        {
+            value += wxT(" ");
+            value += values[i];
+            m_ExtraConfigurations.Add(values[i]);
+        }
+    }
+    configChoices->SetValue(value);
 }
 
-void qtwProjectOptions::PopulateModules(const wxString &buffer)
+void qtwProjectOptions::PopulateModules()
 {
     wxCheckBox *choiceCore = XRCCTRL(*this, "ID_MODS_CORE_CHECKBOX", wxCheckBox);
     wxCheckBox *choiceGui = XRCCTRL(*this, "ID_MODS_GUI_CHECKBOX", wxCheckBox);
@@ -191,45 +151,213 @@ void qtwProjectOptions::PopulateModules(const wxString &buffer)
     wxCheckBox *choiceSvg = XRCCTRL(*this, "ID_MODS_SVG_CHECKBOX", wxCheckBox);
     wxCheckBox *choiceQt3 = XRCCTRL(*this, "ID_MODS_QT3_CHECKBOX", wxCheckBox);
 
-    choiceCore->SetValue(qtwProGenerator::GetArgsFor(buffer,_T("QT")).Contains(_T("core")));
-    choiceGui->SetValue(qtwProGenerator::GetArgsFor(buffer,_T("QT")).Contains(_T("gui")));
-    choiceNetwork->SetValue(qtwProGenerator::GetArgsFor(buffer,_T("QT")).Contains(_T("network")));
-    choiceOpenGL->SetValue(qtwProGenerator::GetArgsFor(buffer,_T("QT")).Contains(_T("opengl")));
-    choiceSql->SetValue(qtwProGenerator::GetArgsFor(buffer,_T("QT")).Contains(_T("sql")));
-    choiceXml->SetValue(qtwProGenerator::GetArgsFor(buffer,_T("QT")).Contains(_T("xml")));
-    choiceSvg->SetValue(qtwProGenerator::GetArgsFor(buffer,_T("QT")).Contains(_T("svg")));
-    choiceQt3->SetValue(qtwProGenerator::GetArgsFor(buffer,_T("QT")).Contains(_T("qt3support")));
+    choiceCore->SetValue(m_Handler->Contains(wxT("QT"),wxT("core")));
+    choiceGui->SetValue(m_Handler->Contains(wxT("QT"),wxT("gui")));
+    choiceNetwork->SetValue(m_Handler->Contains(wxT("QT"),wxT("network")));
+    choiceOpenGL->SetValue(m_Handler->Contains(wxT("QT"),wxT("opengl")));
+    choiceSql->SetValue(m_Handler->Contains(wxT("QT"),wxT("sql")));
+    choiceXml->SetValue(m_Handler->Contains(wxT("QT"),wxT("xml")));
+    choiceSvg->SetValue(m_Handler->Contains(wxT("QT"),wxT("svg")));
+    choiceQt3->SetValue(m_Handler->Contains(wxT("QT"),wxT("qt3support")));
 }
 
-void qtwProjectOptions::PopulatePluginMode(const wxString &buffer)
-{
-    wxCheckBox *choicePlugin = XRCCTRL(*this, "ID_QTPLUGIN_CHECKBOX", wxCheckBox);
-    choicePlugin->SetValue(qtwProGenerator::GetArgsFor(buffer,_T("CONFIG")).Contains(_T("plugin")));
-}
-
-void qtwProjectOptions::PopulateFileLocations(const wxString &buffer)
+void qtwProjectOptions::PopulateFileLocations()
 {
     wxTextCtrl *choiceMocDir = XRCCTRL(*this, "ID_LOC_MOC_TEXTCTRL", wxTextCtrl);
     wxTextCtrl *choiceUicDir = XRCCTRL(*this, "ID_LOC_UIC_TEXTCTRL", wxTextCtrl);
     wxTextCtrl *choiceRccDir = XRCCTRL(*this, "ID_LOC_RCC_TEXTCTRL", wxTextCtrl);
 
-    wxString value = qtwProGenerator::GetArgsFor(buffer,_T("MOC_DIR"));
-    value.Replace(_T("MOC_DIR=\t"),_T(""));
-    value.Pad(0);
-    choiceMocDir->SetValue(value);
-    value = qtwProGenerator::GetArgsFor(buffer,_T("UI_DIR"));
-    value.Replace(_T("UI_DIR=\t"),_T(""));
-    value.Pad(0);
-    choiceUicDir->SetValue(value);
-    value = qtwProGenerator::GetArgsFor(buffer,_T("RCC_DIR"));
-    value.Replace(_T("RCC_DIR=\t"),_T(""));
-    value.Pad(0);
-    choiceRccDir->SetValue(value);
+    wxArrayString MocValues = m_Handler->GetValuesFor(wxT("MOC_DIR"));
+    choiceMocDir->Clear();
+    for (size_t i=0 ; i<MocValues.GetCount(); i++)
+    {
+        if (!MocValues[i].IsEmpty())
+        {
+            choiceMocDir->SetValue(MocValues[i]);
+            break;
+        }
+    }
+
+    wxArrayString UiValues = m_Handler->GetValuesFor(wxT("UI_DIR"));
+    choiceUicDir->Clear();
+    for (size_t i=0 ; i<UiValues.GetCount(); i++)
+    {
+        if (!UiValues[i].IsEmpty())
+        {
+            choiceUicDir->SetValue(UiValues[i]);
+            break;
+        }
+    }
+
+    wxArrayString RccValues = m_Handler->GetValuesFor(wxT("RCC_DIR"));
+    choiceRccDir->Clear();
+    for (size_t i=0 ; i<RccValues.GetCount(); i++)
+    {
+        if (!RccValues[i].IsEmpty())
+        {
+            choiceRccDir->SetValue(RccValues[i]);
+            break;
+        }
+    }
 }
 
-void qtwProjectOptions::OnNeedsUpdate(wxCommandEvent& event)
+void qtwProjectOptions::Update()
 {
-    UpdateQtTargetSettings();
+
+    wxCheckBox *choiceRelease = XRCCTRL(*this, "ID_BUILDMOD_RELEASE_CHECKBOX", wxCheckBox);
+    if (choiceRelease->GetValue())
+        m_Handler->Add(wxT("CONFIG"),wxT("release"));
+    else
+        m_Handler->Remove(wxT("CONFIG"),wxT("release"));
+
+    wxCheckBox *choiceDebug = XRCCTRL(*this, "ID_BUILDMOD_DEBUG_CHECKBOX", wxCheckBox);
+    if (choiceDebug->GetValue())
+        m_Handler->Add(wxT("CONFIG"),wxT("debug"));
+    else
+        m_Handler->Remove(wxT("CONFIG"),wxT("debug"));
+
+    wxCheckBox *choiceQt = XRCCTRL(*this, "ID_REQS_QT_CHECKBOX", wxCheckBox);
+    if (choiceQt->GetValue())
+        m_Handler->Add(wxT("CONFIG"),wxT("qt"));
+    else
+        m_Handler->Remove(wxT("CONFIG"),wxT("qt"));
+
+    wxCheckBox *choiceThread = XRCCTRL(*this, "ID_REQS_THREAD_CHECKBOX", wxCheckBox);
+    if (choiceThread->GetValue())
+        m_Handler->Add(wxT("CONFIG"),wxT("thread"));
+    else
+        m_Handler->Remove(wxT("CONFIG"),wxT("thread"));
+
+    wxCheckBox *choiceExceptions = XRCCTRL(*this, "ID_REQS_EXCEPTIONS_CHECKBOX", wxCheckBox);
+    if (choiceExceptions->GetValue())
+        m_Handler->Add(wxT("CONFIG"),wxT("exceptions"));
+    else
+        m_Handler->Remove(wxT("CONFIG"),wxT("exceptions"));
+
+    wxCheckBox *choiceOpenGL = XRCCTRL(*this, "ID_REQS_OPENGL_CHECKBOX", wxCheckBox);
+    if (choiceOpenGL->GetValue())
+        m_Handler->Add(wxT("CONFIG"),wxT("opengl"));
+    else
+        m_Handler->Remove(wxT("CONFIG"),wxT("opengl"));
+
+    wxCheckBox *choiceX11 = XRCCTRL(*this, "ID_REQS_X11_CHECKBOX", wxCheckBox);
+    if (choiceX11->GetValue())
+        m_Handler->Add(wxT("CONFIG"),wxT("x11"));
+    else
+        m_Handler->Remove(wxT("CONFIG"),wxT("x11"));
+
+    wxCheckBox *choiceConsole = XRCCTRL(*this, "ID_REQS_CONSOLE_CHECKBOX", wxCheckBox);
+    if (choiceConsole->GetValue())
+        m_Handler->Add(wxT("CONFIG"),wxT("console"));
+    else
+        m_Handler->Remove(wxT("CONFIG"),wxT("console"));
+
+    wxCheckBox *choiceSTL = XRCCTRL(*this, "ID_REQS_STL_CHECKBOX", wxCheckBox);
+    if (choiceSTL->GetValue())
+        m_Handler->Add(wxT("CONFIG"),wxT("stl"));
+    else
+        m_Handler->Remove(wxT("CONFIG"),wxT("stl"));
+
+    wxCheckBox *choiceRTTI = XRCCTRL(*this, "ID_REQS_RTTI_CHECKBOX", wxCheckBox);
+    if (choiceRTTI->GetValue())
+        m_Handler->Add(wxT("CONFIG"),wxT("rtti"));
+    else
+        m_Handler->Remove(wxT("CONFIG"),wxT("rtti"));
+
+    wxCheckBox *choicePCH = XRCCTRL(*this, "ID_REQS_PREC_CHECKBOX", wxCheckBox);
+    if (choicePCH->GetValue())
+        m_Handler->Add(wxT("CONFIG"),wxT("precompile_header"));
+    else
+        m_Handler->Remove(wxT("CONFIG"),wxT("precompile_header"));
+
+    wxCheckBox *choiceCore = XRCCTRL(*this, "ID_MODS_CORE_CHECKBOX", wxCheckBox);
+    if (choiceCore->GetValue())
+        m_Handler->Add(wxT("QT"),wxT("core"));
+    else
+        m_Handler->Remove(wxT("QT"),wxT("core"));
+
+    wxCheckBox *choiceGui = XRCCTRL(*this, "ID_MODS_GUI_CHECKBOX", wxCheckBox);
+    if (choiceGui->GetValue())
+        m_Handler->Add(wxT("QT"),wxT("gui"));
+    else
+        m_Handler->Remove(wxT("QT"),wxT("gui"));
+
+    wxCheckBox *choiceNetwork = XRCCTRL(*this, "ID_MODS_NET_CHECKBOX", wxCheckBox);
+    if (choiceNetwork->GetValue())
+        m_Handler->Add(wxT("QT"),wxT("network"));
+    else
+        m_Handler->Remove(wxT("QT"),wxT("network"));
+
+    wxCheckBox *choiceModOpenGL = XRCCTRL(*this, "ID_MODS_OPENGL_CHECKBOX", wxCheckBox);
+    if (choiceModOpenGL->GetValue())
+        m_Handler->Add(wxT("QT"),wxT("opengl"));
+    else
+        m_Handler->Remove(wxT("QT"),wxT("opengl"));
+
+    wxCheckBox *choiceSql = XRCCTRL(*this, "ID_MODS_SQL_CHECKBOX", wxCheckBox);
+    if (choiceSql->GetValue())
+        m_Handler->Add(wxT("QT"),wxT("sql"));
+    else
+        m_Handler->Remove(wxT("QT"),wxT("sql"));
+
+    wxCheckBox *choiceXml = XRCCTRL(*this, "ID_MODS_XML_CHECKBOX", wxCheckBox);
+    if (choiceXml->GetValue())
+        m_Handler->Add(wxT("QT"),wxT("xml"));
+    else
+        m_Handler->Remove(wxT("QT"),wxT("xml"));
+
+    wxCheckBox *choiceSvg = XRCCTRL(*this, "ID_MODS_SVG_CHECKBOX", wxCheckBox);
+    if (choiceSvg->GetValue())
+        m_Handler->Add(wxT("QT"),wxT("svg"));
+    else
+        m_Handler->Remove(wxT("QT"),wxT("svg"));
+
+    wxCheckBox *choiceQt3 = XRCCTRL(*this, "ID_MODS_QT3_CHECKBOX", wxCheckBox);
+    if (choiceQt3->GetValue())
+        m_Handler->Add(wxT("QT"),wxT("qt3support"));
+    else
+        m_Handler->Remove(wxT("QT"),wxT("qt3support"));
+
+    wxTextCtrl *choiceMocDir = XRCCTRL(*this, "ID_LOC_MOC_TEXTCTRL", wxTextCtrl);
+    wxString selectedPath = choiceMocDir->GetValue();
+    selectedPath.Trim();
+    selectedPath.Trim(false);
+    wxArrayString values;
+    values.Add(selectedPath);
+    m_Handler->SetValuesFor(wxT("MOC_DIR"),values);
+
+    wxTextCtrl *choiceUicDir = XRCCTRL(*this, "ID_LOC_UIC_TEXTCTRL", wxTextCtrl);
+    selectedPath = choiceUicDir->GetValue();
+    selectedPath.Trim();
+    selectedPath.Trim(false);
+    values.Clear();
+    values.Add(selectedPath);
+    m_Handler->SetValuesFor(wxT("UI_DIR"),values);
+
+    wxTextCtrl *choiceRccDir = XRCCTRL(*this, "ID_LOC_RCC_TEXTCTRL", wxTextCtrl);
+    selectedPath = choiceRccDir->GetValue();
+    selectedPath.Trim();
+    selectedPath.Trim(false);
+    values.Clear();
+    values.Add(selectedPath);
+    m_Handler->SetValuesFor(wxT("RCC_DIR"),values);
+
+    wxTextCtrl *configChoices = XRCCTRL(*this, "ID_CONFIG_VARIABLES", wxTextCtrl);
+    values.Clear();
+    values = wxStringTokenize(configChoices->GetValue(), wxT(" "));
+    wxArrayString configsToRemove = m_ExtraConfigurations;
+    for (size_t i=0; i < values.GetCount(); i++)
+    {
+        m_Handler->Add(wxT("CONFIG"),values[i]);
+        if (configsToRemove.Index(values[i]))
+        {
+            configsToRemove.Remove(values[i]);
+        }
+    }
+    for (size_t i=0; i < configsToRemove.GetCount(); i++)
+    {
+        m_Handler->Remove(wxT("CONFIG"),configsToRemove[i]);
+    }
 }
 
 void qtwProjectOptions::OnBrowseMocButtonClick(wxCommandEvent& event)
@@ -237,7 +365,7 @@ void qtwProjectOptions::OnBrowseMocButtonClick(wxCommandEvent& event)
     wxString targetDir = CurrentActiveProject()->GetBasePath() +
                          XRCCTRL(*this, "ID_TARGET_LISTBOX", wxListBox)->GetStringSelection();
     wxString mocDir = ChooseDirectory(this,
-                                      _T("Select moc output directory (relative to target directory)"),
+                                      _("Select moc output directory (relative to target directory)"),
                                       targetDir,
                                       targetDir,
                                       true,
@@ -251,7 +379,7 @@ void qtwProjectOptions::OnBrowseUicButtonClick(wxCommandEvent& event)
     wxString targetDir = CurrentActiveProject()->GetBasePath() +
                          XRCCTRL(*this, "ID_TARGET_LISTBOX", wxListBox)->GetStringSelection();
     wxString uicDir = ChooseDirectory(this,
-                                      _T("Select uic output directory (relative to target directory)"),
+                                      _("Select uic output directory (relative to target directory)"),
                                       targetDir,
                                       targetDir,
                                       true,
@@ -265,7 +393,7 @@ void qtwProjectOptions::OnBrowseRccButtonClick(wxCommandEvent& event)
     wxString targetDir = CurrentActiveProject()->GetBasePath() +
                          XRCCTRL(*this, "ID_TARGET_LISTBOX", wxListBox)->GetStringSelection();
     wxString rccDir = ChooseDirectory(this,
-                                      _T("Select rcc output directory (relative to target directory)"),
+                                      wxT("Select rcc output directory (relative to target directory)"),
                                       targetDir,
                                       targetDir,
                                       true,
@@ -276,234 +404,17 @@ void qtwProjectOptions::OnBrowseRccButtonClick(wxCommandEvent& event)
 
 void qtwProjectOptions::OnTargetListClick(wxCommandEvent& event)
 {
+    Update();
+    m_Handler->Write();
+
+    UpdateTarget();
     PopulateWorld();
-}
-
-void qtwProjectOptions::SaveQtProjectSettings()
-{
-    wxListBox *list = XRCCTRL(*this, "ID_TARGET_LISTBOX", wxListBox);
-    cbProject *CurrentProject = CurrentActiveProject();
-    if(CurrentProject)
-    {
-        for (int index=0; index<list->GetCount(); index++)
-        {
-            wxString CurrentTarget = CurrentProject->GetBasePath();
-            CurrentTarget << wxFileName::GetPathSeparator() << list->GetString(index);
-            if(wxDir::Exists(CurrentTarget))
-            {
-                CurrentTarget << wxFileName::GetPathSeparator();
-                CurrentTarget << list->GetString(index) + _T(".pro");
-                wxFile file(CurrentTarget, wxFile::write);
-                cbWrite(file,m_AllProjectOptions->Item(index));
-            }
-            else if(list->GetCount()==1)
-            {
-                // One target only this is an easy one
-                CurrentTarget = CurrentProject->GetBasePath();
-                CurrentTarget << CurrentActiveProject()->GetTitle() + _T(".pro");
-                wxFile file(CurrentTarget, wxFile::write);
-                cbWrite(file,m_AllProjectOptions->Item(index));
-            }
-            else
-            {
-                wxString message = _T("Folder ");
-                message << CurrentTarget;
-                message << _T(" does not exist,");
-                message << _T('\n');
-                message << _T("in the project's folder");
-                cbMessageBox(message, _("Error"), wxICON_ERROR);
-            }
-        }
-    }
-}
-
-void qtwProjectOptions::UpdateQtTargetSettings()
-{
-    wxListBox *list = XRCCTRL(*this, "ID_TARGET_LISTBOX", wxListBox);
-    int currentIndex = list->GetSelection();
-    if(currentIndex == wxNOT_FOUND)
-        return;
-    cbProject *CurrentProject = CurrentActiveProject();
-    if(CurrentProject)
-    {
-        wxString TargetBuffer;
-        wxString CurrentTarget = CurrentProject->GetBasePath();
-        CurrentTarget << wxFileName::GetPathSeparator() << list->GetStringSelection();
-        if(wxDir::Exists(CurrentTarget) || list->GetCount()==1)
-        {
-            TargetBuffer = m_AllProjectOptions->Item(currentIndex);
-            if((TargetBuffer.IsEmpty()))
-            {
-                qtwProGenerator::PrependHeader(TargetBuffer);
-            }
-
-            wxString argumentsToAdd;
-            wxString argumentsToRemove;
-            wxCheckBox *choiceRelease = XRCCTRL(*this, "ID_BUILDMOD_RELEASE_CHECKBOX", wxCheckBox);
-            wxCheckBox *choiceDebug = XRCCTRL(*this, "ID_BUILDMOD_DEBUG_CHECKBOX", wxCheckBox);
-            if(choiceRelease->GetValue())
-                argumentsToAdd.Append(_T(" release"));
-            else
-                argumentsToRemove.Append(_T(" release"));
-            if(choiceDebug->GetValue())
-                argumentsToAdd.Append(_T(" debug"));
-            else
-                argumentsToRemove.Append(_T(" debug"));
-            argumentsToAdd.Remove(0,1);
-            qtwProGenerator::Remove(TargetBuffer,_T("CONFIG"),argumentsToRemove);
-            qtwProGenerator::AddOrReplace(TargetBuffer,_T("CONFIG"),argumentsToAdd,_T("+="),false);
-            argumentsToAdd = _T("");
-            argumentsToRemove = _T("");
-
-            wxCheckBox *choiceQt = XRCCTRL(*this, "ID_REQS_QT_CHECKBOX", wxCheckBox);
-            wxCheckBox *choiceThread = XRCCTRL(*this, "ID_REQS_THREAD_CHECKBOX", wxCheckBox);
-            wxCheckBox *choiceExceptions = XRCCTRL(*this, "ID_REQS_EXCEPTIONS_CHECKBOX", wxCheckBox);
-            wxCheckBox *choiceOpenGL = XRCCTRL(*this, "ID_REQS_OPENGL_CHECKBOX", wxCheckBox);
-            wxCheckBox *choiceX11 = XRCCTRL(*this, "ID_REQS_X11_CHECKBOX", wxCheckBox);
-            wxCheckBox *choiceConsole = XRCCTRL(*this, "ID_REQS_CONSOLE_CHECKBOX", wxCheckBox);
-            wxCheckBox *choiceSTL = XRCCTRL(*this, "ID_REQS_STL_CHECKBOX", wxCheckBox);
-            wxCheckBox *choiceRTTI = XRCCTRL(*this, "ID_REQS_RTTI_CHECKBOX", wxCheckBox);
-            wxCheckBox *choicePCH = XRCCTRL(*this, "ID_REQS_PREC_CHECKBOX", wxCheckBox);
-            if(choiceQt->GetValue())
-                argumentsToAdd.Append(_T(" qt"));
-            else
-                argumentsToRemove.Append(_T(" qt"));
-            if(choiceThread->GetValue())
-                argumentsToAdd.Append(_T(" thread"));
-            else
-                argumentsToRemove.Append(_T(" thread"));
-            if(choiceExceptions->GetValue())
-                argumentsToAdd.Append(_T(" exceptions"));
-            else
-                argumentsToRemove.Append(_T(" exceptions"));
-            if(choiceOpenGL->GetValue())
-                argumentsToAdd.Append(_T(" opengl"));
-            else
-                argumentsToRemove.Append(_T(" opengl"));
-            if(choiceX11->GetValue())
-                argumentsToAdd.Append(_T(" x11"));
-            else
-                argumentsToRemove.Append(_T(" x11"));
-            if(choiceConsole->GetValue())
-                argumentsToAdd.Append(_T(" console"));
-            else
-                argumentsToRemove.Append(_T(" console"));
-            if(choiceSTL->GetValue())
-                argumentsToAdd.Append(_T(" stl"));
-            else
-                argumentsToRemove.Append(_T(" stl"));
-            if(choiceRTTI->GetValue())
-                argumentsToAdd.Append(_T(" rtti"));
-            else
-                argumentsToRemove.Append(_T(" rtti"));
-            if(choicePCH->GetValue())
-                argumentsToAdd.Append(_T(" precompile_header"));
-            else
-                argumentsToRemove.Append(_T(" precompile_header"));
-            argumentsToAdd.Remove(0,1);
-            qtwProGenerator::Remove(TargetBuffer,_T("CONFIG"),argumentsToRemove);
-            qtwProGenerator::AddOrReplace(TargetBuffer,_T("CONFIG"),argumentsToAdd,_T("+="),false);
-            argumentsToAdd = _T("");
-            argumentsToRemove = _T("");
-
-            wxCheckBox *choiceCore = XRCCTRL(*this, "ID_MODS_CORE_CHECKBOX", wxCheckBox);
-            wxCheckBox *choiceGui = XRCCTRL(*this, "ID_MODS_GUI_CHECKBOX", wxCheckBox);
-            wxCheckBox *choiceNetwork = XRCCTRL(*this, "ID_MODS_NET_CHECKBOX", wxCheckBox);
-            wxCheckBox *choiceModOpenGL = XRCCTRL(*this, "ID_MODS_OPENGL_CHECKBOX", wxCheckBox);
-            wxCheckBox *choiceSql = XRCCTRL(*this, "ID_MODS_SQL_CHECKBOX", wxCheckBox);
-            wxCheckBox *choiceXml = XRCCTRL(*this, "ID_MODS_XML_CHECKBOX", wxCheckBox);
-            wxCheckBox *choiceSvg = XRCCTRL(*this, "ID_MODS_SVG_CHECKBOX", wxCheckBox);
-            wxCheckBox *choiceQt3 = XRCCTRL(*this, "ID_MODS_QT3_CHECKBOX", wxCheckBox);
-            if(choiceCore->GetValue())
-                argumentsToAdd.Append(_T(" core"));
-            else
-                argumentsToRemove.Append(_T(" core"));
-            if(choiceGui->GetValue())
-                argumentsToAdd.Append(_T(" gui"));
-            else
-                argumentsToRemove.Append(_T(" gui"));
-            if(choiceNetwork->GetValue())
-                argumentsToAdd.Append(_T(" network"));
-            else
-                argumentsToRemove.Append(_T(" network"));
-            if(choiceModOpenGL->GetValue())
-                argumentsToAdd.Append(_T(" opengl"));
-            else
-                argumentsToRemove.Append(_T(" opengl"));
-            if(choiceSql->GetValue())
-                argumentsToAdd.Append(_T(" sql"));
-            else
-                argumentsToRemove.Append(_T(" sql"));
-            if(choiceXml->GetValue())
-                argumentsToAdd.Append(_T(" xml"));
-            else
-                argumentsToRemove.Append(_T(" xml"));
-            if(choiceSvg->GetValue())
-                argumentsToAdd.Append(_T(" svg"));
-            else
-                argumentsToRemove.Append(_T(" svg"));
-            if(choiceQt3->GetValue())
-                argumentsToAdd.Append(_T(" qt3support"));
-            else
-                argumentsToRemove.Append(_T(" qt3support"));
-            argumentsToAdd.Remove(0,1);
-            qtwProGenerator::Remove(TargetBuffer,_T("QT"),argumentsToRemove);
-            qtwProGenerator::AddOrReplace(TargetBuffer,_T("QT"),argumentsToAdd,_T("+="),false);
-            argumentsToAdd = _T("");
-            argumentsToRemove = _T("");
-
-            wxCheckBox *choicePlugin = XRCCTRL(*this, "ID_QTPLUGIN_CHECKBOX", wxCheckBox);
-            if(choicePlugin->GetValue())
-                argumentsToAdd.Append(_T("plugin"));
-            else
-                argumentsToRemove.Append(_T("plugin"));
-            qtwProGenerator::Remove(TargetBuffer,_T("CONFIG"),argumentsToRemove);
-            qtwProGenerator::AddOrReplace(TargetBuffer,_T("CONFIG"),argumentsToAdd,_T("+="),false);
-            argumentsToAdd = _T("");
-            argumentsToRemove = _T("");
-
-            wxTextCtrl *choiceMocDir = XRCCTRL(*this, "ID_LOC_MOC_TEXTCTRL", wxTextCtrl);
-            wxTextCtrl *choiceUicDir = XRCCTRL(*this, "ID_LOC_UIC_TEXTCTRL", wxTextCtrl);
-            wxTextCtrl *choiceRccDir = XRCCTRL(*this, "ID_LOC_RCC_TEXTCTRL", wxTextCtrl);
-
-            wxString selectedPath = choiceMocDir->GetValue();
-            // I kept getting some trash (extra whitespace) that messed up the .pro file
-            selectedPath.Replace(_T("\n"),_T(""));
-            selectedPath.Replace(_T("\r"),_T(""));
-            selectedPath.Trim();
-            selectedPath.Trim(false);
-            qtwProGenerator::AddOrReplace(TargetBuffer,_T("MOC_DIR"),selectedPath,_T("="),true);
-
-            selectedPath = choiceUicDir->GetValue();
-            selectedPath.Replace(_T("\n"),_T(""));
-            selectedPath.Replace(_T("\r"),_T(""));
-            selectedPath.Trim();
-            selectedPath.Trim(false);
-            qtwProGenerator::AddOrReplace(TargetBuffer,_T("UI_DIR"),selectedPath,_T("="),true);
-
-            selectedPath = choiceRccDir->GetValue();
-            selectedPath.Replace(_T("\n"),_T(""));
-            selectedPath.Replace(_T("\r"),_T(""));
-            selectedPath.Trim();
-            selectedPath.Trim(false);
-            qtwProGenerator::AddOrReplace(TargetBuffer,_T("RCC_DIR"),selectedPath,_T("="),true);
-
-            if(!TargetBuffer.IsEmpty())
-            {
-                m_AllProjectOptions->RemoveAt(currentIndex);
-                m_AllProjectOptions->Insert(TargetBuffer,currentIndex);
-            }
-        }
-    }
 }
 
 void qtwProjectOptions::EndModal(int retCode)
 {
-    if (retCode == wxID_OK)
-    {
-        SaveQtProjectSettings();
-    }
-
+    Update();
+    m_Handler->Write();
     wxDialog::EndModal(retCode);
 }
 
