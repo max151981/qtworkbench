@@ -417,17 +417,16 @@ void qtwProGenerator::DoAppendLibDirs(ProjectBuildTarget* target, const wxString
             opts = m_Project ? m_Project->GetLibDirs() : m_CompilerSet->GetLibDirs();
     }
 
-    wxArrayString currentValues = m_Handler->GetValuesFor(wxT("QMAKE_LIBDIR"));
+    wxArrayString currentValues = m_Handler->GetValuesFor(wxT("LIBS"));
     for (unsigned int x = 0; x < opts.GetCount(); ++x)
     {
-        if (opts[x].IsEmpty())
+        if (opts[x].Trim().IsEmpty())
             continue;
         wxString out = UnixFilename(opts[x]);
         Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
-        QuoteStringIfNeeded(out);
-        currentValues.Add(out);
+        currentValues.Add(wxT("-L\"") + out + wxT("\""));
     }
-    m_Handler->SetValuesFor(wxT("QMAKE_LIBDIR"),currentValues);
+    m_Handler->SetValuesFor(wxT("LIBS"),currentValues);
 }
 
 void qtwProGenerator::DoAddProOptions(ProjectBuildTarget* target)
@@ -501,7 +500,7 @@ void qtwProGenerator::DoAddProOptions(ProjectBuildTarget* target)
         DoAppendIncludeDirs(target, _T(""));
     }
 
-    m_Handler->SetValuesFor(wxT("QMAKE_LIBDIR"),wxArrayString());
+    m_Handler->SetValuesFor(wxT("LIBS"),wxArrayString());
     DoAppendLibDirs(0L, _T(""), true);
     if (relation==orUseTargetOptionsOnly)
     {
@@ -522,7 +521,8 @@ void qtwProGenerator::DoAddProOptions(ProjectBuildTarget* target)
         DoAppendLibDirs(target, _T(""));
     }
 
-    m_Handler->SetValuesFor(wxT("LIBS"),wxArrayString());
+    // Both Lib dirs and Libs are in LIBS
+    // m_Handler->SetValuesFor(wxT("LIBS"),wxArrayString());
     DoAppendLinkerLibs(0L, true);
     if (relation==orUseTargetOptionsOnly)
     {

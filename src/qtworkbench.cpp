@@ -158,6 +158,7 @@ void QtWorkbench::OnProcessTerminated(CodeBlocksEvent& event)
     }
 
     wxString theMakefile = CurrentActiveProject()->GetMakefile();
+    wxRemoveFile(CurrentActiveProject()->GetBasePath() + wxFileName::GetPathSeparator() + theMakefile);
     wxString cmd = QMakeCommand();
     cmd += theMakefile;
     cmd += wxT(".");
