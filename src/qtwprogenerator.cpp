@@ -106,10 +106,10 @@ void qtwProGenerator::DoAddCommonVariables(ProjectBuildTarget* target)
         return;
 
     wxArrayString values;
-    if (m_Handler->Contains(wxT("CONFIG"),wxT("plugin")))
+    if (m_Handler->Contains(wxT("CONFIG"),wxT("plugin"),wxT("+=")))
     {
         values.Add(wxT("lib"));
-        m_Handler->SetValuesFor(wxT("TEMPLATE"),values);
+        m_Handler->SetValuesFor(wxT("TEMPLATE"),values,wxT("="));
 
         m_Configuration.Add(wxT("staticlib"));
         m_Configuration.Add(wxT("dll"));
@@ -122,22 +122,22 @@ void qtwProGenerator::DoAddCommonVariables(ProjectBuildTarget* target)
         m_Configuration.Add(wxT("windows"));
 #endif
         values.Add(wxT("app"));
-        m_Handler->SetValuesFor(wxT("TEMPLATE"),values);
+        m_Handler->SetValuesFor(wxT("TEMPLATE"),values,wxT("="));
         break;
     case ttConsoleOnly :
         m_Configuration.Add(wxT("console"));
         values.Add(wxT("app"));
-        m_Handler->SetValuesFor(wxT("TEMPLATE"),values);
+        m_Handler->SetValuesFor(wxT("TEMPLATE"),values,wxT("="));
         break;
     case ttStaticLib :
         m_Configuration.Add(wxT("staticlib"));
         values.Add(wxT("lib"));
-        m_Handler->SetValuesFor(wxT("TEMPLATE"),values);
+        m_Handler->SetValuesFor(wxT("TEMPLATE"),values,wxT("="));
         break;
     case ttDynamicLib :
         m_Configuration.Add(wxT("dll"));
         values.Add(wxT("lib"));
-        m_Handler->SetValuesFor(wxT("TEMPLATE"),values);
+        m_Handler->SetValuesFor(wxT("TEMPLATE"),values,wxT("="));
         break;
     case ttCommandsOnly :
     case ttNative :
@@ -149,7 +149,7 @@ void qtwProGenerator::DoAddCommonVariables(ProjectBuildTarget* target)
     QuoteStringIfNeeded(thePath);
     values.Clear();
     values.Add(thePath);
-    m_Handler->SetValuesFor(wxT("OBJECTS_DIR"),values);
+    m_Handler->SetValuesFor(wxT("OBJECTS_DIR"),values,wxT("="));
 
     wxFileName out(target->GetOutputFilename());
     thePath = m_Project->GetBasePath();
@@ -158,11 +158,11 @@ void qtwProGenerator::DoAddCommonVariables(ProjectBuildTarget* target)
 
     values.Clear();
     values.Add(thePath);
-    m_Handler->SetValuesFor(wxT("DESTDIR"),values);
+    m_Handler->SetValuesFor(wxT("DESTDIR"),values,wxT("="));
 
     values.Clear();
     values.Add(out.GetName());
-    m_Handler->SetValuesFor(wxT("TARGET"),values);
+    m_Handler->SetValuesFor(wxT("TARGET"),values,wxT("="));
 }
 
 /*wxString qtwProGenerator::MkspecToUse()
@@ -271,14 +271,14 @@ void qtwProGenerator::DoAppendCompilerOptions(ProjectBuildTarget* target, bool u
     }
 
 
-    wxArrayString currentValues = m_Handler->GetValuesFor(wxT("QMAKE_CXXFLAGS"));
+    wxArrayString currentValues = m_Handler->GetValuesFor(wxT("QMAKE_CXXFLAGS"),wxT("+="));
     for (size_t i=0; i<opts.GetCount(); i++)
     {
         wxString temp = opts[i];
         Manager::Get()->GetMacrosManager()->ReplaceEnvVars(temp);
         currentValues.Add(temp);
     }
-    m_Handler->SetValuesFor(wxT("QMAKE_CXXFLAGS"),currentValues);
+    m_Handler->SetValuesFor(wxT("QMAKE_CXXFLAGS"),currentValues,wxT("+="));
 }
 
 void qtwProGenerator::DoAppendLinkerOptions(ProjectBuildTarget* target, bool useGlobalOptions)
@@ -292,14 +292,14 @@ void qtwProGenerator::DoAppendLinkerOptions(ProjectBuildTarget* target, bool use
         obj = target ? (CompileOptionsBase*)target : (m_Project ? (CompileOptionsBase*)m_Project : m_CompilerSet);
 
     wxArrayString opts = obj->GetLinkerOptions();
-    wxArrayString currentValues = m_Handler->GetValuesFor(wxT("QMAKE_LFLAGS"));
+    wxArrayString currentValues = m_Handler->GetValuesFor(wxT("QMAKE_LFLAGS"),wxT("+="));
     for (unsigned int x = 0; x < opts.GetCount(); ++x)
     {
         wxString temp = opts[x];
         Manager::Get()->GetMacrosManager()->ReplaceEnvVars(temp);
         currentValues.Add(temp);
     }
-    m_Handler->SetValuesFor(wxT("QMAKE_LFLAGS"),currentValues);
+    m_Handler->SetValuesFor(wxT("QMAKE_LFLAGS"),currentValues,wxT("+="));
 }
 
 void qtwProGenerator::DoAppendLinkerLibs(ProjectBuildTarget* target, bool useGlobalOptions)
@@ -325,7 +325,7 @@ void qtwProGenerator::DoAppendLinkerLibs(ProjectBuildTarget* target, bool useGlo
         m_CompilerSet = CompilerFactory::GetCompiler(compID);
     }
 
-    wxArrayString currentValues = m_Handler->GetValuesFor(wxT("LIBS"));
+    wxArrayString currentValues = m_Handler->GetValuesFor(wxT("LIBS"),wxT("+="));
     for (unsigned int x = 0; x < libs.GetCount(); ++x)
     {
         if (libs[x].IsEmpty())
@@ -371,7 +371,7 @@ void qtwProGenerator::DoAppendLinkerLibs(ProjectBuildTarget* target, bool useGlo
         Manager::Get()->GetMacrosManager()->ReplaceEnvVars(lib);
         currentValues.Add(lib);
     }
-    m_Handler->SetValuesFor(wxT("LIBS"),currentValues);
+    m_Handler->SetValuesFor(wxT("LIBS"),currentValues,wxT("+="));
 }
 
 void qtwProGenerator::DoAppendIncludeDirs(ProjectBuildTarget* target, const wxString& prefix, bool useGlobalOptions)
@@ -389,7 +389,7 @@ void qtwProGenerator::DoAppendIncludeDirs(ProjectBuildTarget* target, const wxSt
             opts = m_Project ? m_Project->GetIncludeDirs() : m_CompilerSet->GetIncludeDirs();
     }
 
-    wxArrayString currentValues = m_Handler->GetValuesFor(wxT("INCLUDEPATH"));
+    wxArrayString currentValues = m_Handler->GetValuesFor(wxT("INCLUDEPATH"),wxT("+="));
     for (unsigned int x = 0; x < opts.GetCount(); ++x)
     {
         if (opts[x].IsEmpty())
@@ -399,7 +399,7 @@ void qtwProGenerator::DoAppendIncludeDirs(ProjectBuildTarget* target, const wxSt
         QuoteStringIfNeeded(out);
         currentValues.Add(opts[x]);
     }
-    m_Handler->SetValuesFor(wxT("INCLUDEPATH"),currentValues);
+    m_Handler->SetValuesFor(wxT("INCLUDEPATH"),currentValues,wxT("+="));
 }
 
 void qtwProGenerator::DoAppendLibDirs(ProjectBuildTarget* target, const wxString& prefix, bool useGlobalOptions)
@@ -417,7 +417,7 @@ void qtwProGenerator::DoAppendLibDirs(ProjectBuildTarget* target, const wxString
             opts = m_Project ? m_Project->GetLibDirs() : m_CompilerSet->GetLibDirs();
     }
 
-    wxArrayString currentValues = m_Handler->GetValuesFor(wxT("LIBS"));
+    wxArrayString currentValues = m_Handler->GetValuesFor(wxT("LIBS"),wxT("+="));
     for (unsigned int x = 0; x < opts.GetCount(); ++x)
     {
         if (opts[x].Trim().IsEmpty())
@@ -426,7 +426,7 @@ void qtwProGenerator::DoAppendLibDirs(ProjectBuildTarget* target, const wxString
         Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
         currentValues.Add(wxT("-L\"") + out + wxT("\""));
     }
-    m_Handler->SetValuesFor(wxT("LIBS"),currentValues);
+    m_Handler->SetValuesFor(wxT("LIBS"),currentValues,wxT("+="));
 }
 
 void qtwProGenerator::DoAddProOptions(ProjectBuildTarget* target)
@@ -437,7 +437,7 @@ void qtwProGenerator::DoAddProOptions(ProjectBuildTarget* target)
 
     OptionsRelation relation = target->GetOptionRelation(ortCompilerOptions);
 
-    m_Handler->SetValuesFor(wxT("QMAKE_CXXFLAGS"),wxArrayString());
+    m_Handler->SetValuesFor(wxT("QMAKE_CXXFLAGS"),wxArrayString(),wxT("+="));
     DoAppendCompilerOptions(0L, true);
     if (relation==orUseTargetOptionsOnly)
     {
@@ -458,7 +458,7 @@ void qtwProGenerator::DoAddProOptions(ProjectBuildTarget* target)
         DoAppendCompilerOptions(target);
     }
 
-    m_Handler->SetValuesFor(wxT("QMAKE_LFLAGS"),wxArrayString());
+    m_Handler->SetValuesFor(wxT("QMAKE_LFLAGS"),wxArrayString(),wxT("+="));
     DoAppendLinkerOptions(0L, true);
     if (relation==orUseTargetOptionsOnly)
     {
@@ -479,7 +479,7 @@ void qtwProGenerator::DoAddProOptions(ProjectBuildTarget* target)
         DoAppendLinkerOptions(target);
     }
 
-    m_Handler->SetValuesFor(wxT("INCLUDEPATH"),wxArrayString());
+    m_Handler->SetValuesFor(wxT("INCLUDEPATH"),wxArrayString(),wxT("+="));
     DoAppendIncludeDirs(0L, _T(""), true);
     if (relation==orUseTargetOptionsOnly)
     {
@@ -500,7 +500,7 @@ void qtwProGenerator::DoAddProOptions(ProjectBuildTarget* target)
         DoAppendIncludeDirs(target, _T(""));
     }
 
-    m_Handler->SetValuesFor(wxT("LIBS"),wxArrayString());
+    m_Handler->SetValuesFor(wxT("LIBS"),wxArrayString(),wxT("+="));
     DoAppendLibDirs(0L, _T(""), true);
     if (relation==orUseTargetOptionsOnly)
     {
@@ -522,7 +522,6 @@ void qtwProGenerator::DoAddProOptions(ProjectBuildTarget* target)
     }
 
     // Both Lib dirs and Libs are in LIBS
-    // m_Handler->SetValuesFor(wxT("LIBS"),wxArrayString());
     DoAppendLinkerLibs(0L, true);
     if (relation==orUseTargetOptionsOnly)
     {
@@ -594,12 +593,12 @@ void qtwProGenerator::DoAddTargetFiles(ProjectBuildTarget* target)
         }
     }
 
-    m_Handler->SetValuesFor(wxT("HEADERS"),target_headers);
-    m_Handler->SetValuesFor(wxT("SOURCES"),target_sources);
-    m_Handler->SetValuesFor(wxT("FORMS"),target_forms);
-    m_Handler->SetValuesFor(wxT("RESOURCES"),target_resources);
-    m_Handler->SetValuesFor(wxT("TRANSLATIONS"),target_translations);
-    m_Handler->SetValuesFor(wxT("PRECOMPILED_HEADER"),target_pch);
+    m_Handler->SetValuesFor(wxT("HEADERS"),target_headers,wxT("="));
+    m_Handler->SetValuesFor(wxT("SOURCES"),target_sources,wxT("="));
+    m_Handler->SetValuesFor(wxT("FORMS"),target_forms,wxT("="));
+    m_Handler->SetValuesFor(wxT("RESOURCES"),target_resources,wxT("="));
+    m_Handler->SetValuesFor(wxT("TRANSLATIONS"),target_translations,wxT("="));
+    m_Handler->SetValuesFor(wxT("PRECOMPILED_HEADER"),target_pch,wxT("="));
 }
 
 bool qtwProGenerator::CreatePro()
@@ -628,7 +627,7 @@ bool qtwProGenerator::CreatePro()
 
         for (size_t j=0; j<m_Configuration.GetCount(); j++)
         {
-            m_Handler->Add(wxT("CONFIG"),m_Configuration[j]);
+            m_Handler->Add(wxT("CONFIG"),m_Configuration[j],wxT("="));
         }
 
         m_Handler->Write();

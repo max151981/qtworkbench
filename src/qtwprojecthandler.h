@@ -19,18 +19,22 @@ class QtWProjectHandler
     bool Read();
     bool Write();
 
-    wxArrayString GetValuesFor(const wxString &identifier);
-    void SetValuesFor(const wxString &identifier, const wxArrayString& contents);
+    wxArrayString GetValuesFor(const wxString &identifierconst,const wxString &qmakeOperator);
+    void SetValuesFor(const wxString &identifier, const wxArrayString& contents,const wxString &qmakeOperator);
 
-    bool Contains(const wxString &identifier, const wxString& value);
-    void Add(const wxString &identifier, const wxString& value);
-    void Remove(const wxString &identifier, const wxString& value);
+    bool Contains(const wxString &identifier, const wxString& value,const wxString &qmakeOperator);
+    void Add(const wxString &identifier, const wxString& value,const wxString &qmakeOperator);
+    void Remove(const wxString &identifier, const wxString& value,const wxString &qmakeOperator);
 
     private:
     wxString m_FileName;
 
-    WX_DECLARE_STRING_HASH_MAP(wxString, wxMap);
-    wxMap m_VariableMap;
+    WX_DECLARE_STRING_HASH_MAP(wxArrayString, wxArrayStringMap);
+    WX_DECLARE_STRING_HASH_MAP(wxArrayStringMap, QMakeVariablesMap);
+    QMakeVariablesMap m_VariableMap;
+
+    WX_DECLARE_STRING_HASH_MAP(wxString, wxStringMap);
+    //wxStringMap m_VariableMap;
 };
 
 #endif

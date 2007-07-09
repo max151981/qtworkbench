@@ -42,7 +42,8 @@ bool QtWProjectHandler::Read()
     }
 
     wxString currentIdentifier(wxT(""));
-    wxString currentContents(wxT(""));
+    wxString currentOperator(wxT(""));
+    wxArrayStringMap currentContents;
     const wxChar EQ('=');
     const wxChar AND('+');
     const wxChar OR('*');
@@ -53,11 +54,11 @@ bool QtWProjectHandler::Read()
         if (end)
         {
             //FIXME what if double entries?
-            if (!currentIdentifier.IsEmpty() && !currentContents.IsEmpty())
+            if (!currentIdentifier.IsEmpty() && !currentContents.empty())
             {
                 m_VariableMap[currentIdentifier]=currentContents;
             }
-            currentContents= wxT("");
+            currentContents.clear();
             currentIdentifier = wxT("");
             end=false;
         }
@@ -86,11 +87,13 @@ bool QtWProjectHandler::Read()
             {
                 if (token[token.Len()-1] == EQ)
                 {
+                    currentOperator.Append(EQ);
                     token.Remove(token.Len()-1);
                     if (token[token.Len()-1] == AND ||
                             token[token.Len()-1] == OR ||
                             token[token.Len()-1] == NOT)
                     {
+                        currentOperator.Append(token[token.Len()-1]);
                         token.Remove(token.Len()-1);
                     }
                 }
@@ -102,12 +105,12 @@ bool QtWProjectHandler::Read()
                     token == wxString(wxString(OR) + wxString(EQ)) ||
                     token == wxString(wxString(NOT) + wxString(EQ)))
             {
+                currentOperator = token;
                 continue;
             }
             if (token != wxString(lineContinueChar))
             {
-                currentContents.Append(wxT("$"));
-                currentContents.Append(token);
+                currentContents[currentOperator].Add(token);
             }
         }
         if (str[str.Len()-1] != lineContinueChar)
@@ -119,7 +122,7 @@ bool QtWProjectHandler::Read()
     // Get the last entry
     if (end)
     {
-        if (!currentIdentifier.IsEmpty() && !currentContents.IsEmpty())
+        if (!currentIdentifier.IsEmpty() && !currentContents.empty())
         {
             m_VariableMap[currentIdentifier]=currentContents;
         }
@@ -144,77 +147,74 @@ bool QtWProjectHandler::Write()
     }
 
     file.Clear();
-    wxMap::iterator it;
+    QMakeVariablesMap::iterator it;
     size_t lineNumber=0;
     for ( it = m_VariableMap.begin(); it != m_VariableMap.end(); ++it )
     {
-        wxString key = it->first, value = it->second;
-        value.Replace(wxT("$"),wxT(" "));
-        wxString line = key + wxT(" += ") + value;
-        file.InsertLine(line,lineNumber);
-        lineNumber++;
+        wxString key = it->first;
+        wxArrayStringMap values = it->second;
+
+        wxArrayStringMap::iterator valueit;
+        for (valueit = values.begin(); valueit != values.end(); ++valueit)
+        {
+            wxString qmakeOperator = valueit->first;
+            wxArrayString value = valueit->second;
+
+            wxString line = key + wxT(" ") + qmakeOperator;
+            for(size_t i=0; i<value.GetCount(); i++){
+                line << wxT(" ");
+                line << value[i];
+            }
+            file.InsertLine(line,lineNumber);
+            lineNumber++;
+        }
     }
     if (lineNumber)
         return file.Write();
     return true;
 }
 
-wxArrayString QtWProjectHandler::GetValuesFor(const wxString &identifier)
+wxArrayString QtWProjectHandler::GetValuesFor(const wxString &identifier,const wxString &qmakeOperator)
 {
-    wxString valuesString = m_VariableMap[identifier];
-    valuesString.Trim();
-    valuesString.Trim(false);
-    return wxStringTokenize(valuesString, wxT("$"));
+    wxArrayStringMap values = m_VariableMap[identifier];
+    return values[qmakeOperator];
 }
 
-void QtWProjectHandler::SetValuesFor(const wxString &identifier, const wxArrayString& contentsArray)
+void QtWProjectHandler::SetValuesFor(const wxString &identifier, const wxArrayString& contentsArray,const wxString &qmakeOperator)
 {
-    wxString contents;
-    for (size_t i=0; i< contentsArray.GetCount(); i++)
-    {
-        wxString content=contentsArray[i];
-        content.Trim();
-        content.Trim(false);
-
-        contents.Append(content);
-        contents.Append(wxT("$"));
-    }
-    m_VariableMap[identifier] = contents;
+    wxArrayStringMap values = m_VariableMap[identifier];
+    values[qmakeOperator] = contentsArray;
+    m_VariableMap[identifier] = values;
 }
 
-bool QtWProjectHandler::Contains(const wxString &identifier, const wxString& value)
+bool QtWProjectHandler::Contains(const wxString &identifier, const wxString& value, const wxString &qmakeOperator)
 {
-    wxArrayString values = GetValuesFor(identifier);
-
-    if (values.Index(value) != wxNOT_FOUND)
-    {
-        return true;
-    }
-
-    return false;
+    wxArrayStringMap values = m_VariableMap[identifier];
+    wxArrayString contentsArray = values[qmakeOperator];
+    return (contentsArray.Index(value) != wxNOT_FOUND);
 }
 
-void QtWProjectHandler::Add(const wxString &identifier, const wxString& value)
+void QtWProjectHandler::Add(const wxString &identifier, const wxString& value, const wxString &qmakeOperator)
 {
     if (value.IsEmpty())
     {
         return;
     }
 
-    wxArrayString values = GetValuesFor(identifier);
+    wxArrayString values = GetValuesFor(identifier,qmakeOperator);
     if (values.Index(value) != wxNOT_FOUND)
     {
         return;
     }
 
     values.Add(value);
-    SetValuesFor(identifier,values);
+    SetValuesFor(identifier,values,qmakeOperator);
 }
 
-void QtWProjectHandler::Remove(const wxString &identifier, const wxString& value)
+void QtWProjectHandler::Remove(const wxString &identifier, const wxString& value, const wxString &qmakeOperator)
 {
-    wxArrayString values = GetValuesFor(identifier);
+    wxArrayString values = GetValuesFor(identifier,qmakeOperator);
     values.Remove(value);
-    SetValuesFor(identifier,values);
+    SetValuesFor(identifier,values,qmakeOperator);
 }
 
