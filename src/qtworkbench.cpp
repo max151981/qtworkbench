@@ -208,9 +208,9 @@ void QtWorkbench::OnRunQMake(wxCommandEvent& event)
         if (!wxGetEnv(_T("QTDIR"),&qdir))
         {
             AnnoyingDialog dlg( _("qmake location could not be establised"),
-                                _("You have not specified a Qt installation directory"
-                                   "and the QTDIR environmental variable is not set."
-                                   "If qmake is also not located in a directory listed in"
+                                _("You have not specified a Qt installation directory\n"
+                                   "and the QTDIR environmental variable is not set.\n"
+                                   "If qmake is also not located in a directory listed in\n"
                                    "your PATH environmental variable then invoking qmake will fail."),
                                 wxART_INFORMATION,AnnoyingDialog::OK,wxID_OK);
             dlg.ShowModal();

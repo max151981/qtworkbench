@@ -180,6 +180,7 @@ wxArrayString QtWProjectHandler::GetValuesFor(const wxString &identifier,const w
     return values[qmakeOperator];
 }
 
+#include <annoyingdialog.h>
 void QtWProjectHandler::SetValuesFor(const wxString &identifier, const wxArrayString& contentsArray,const wxString &qmakeOperator)
 {
     wxArrayStringMap values = m_VariableMap[identifier];
