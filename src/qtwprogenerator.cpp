@@ -627,7 +627,7 @@ bool qtwProGenerator::CreatePro()
 
         for (size_t j=0; j<m_Configuration.GetCount(); j++)
         {
-            m_Handler->Add(wxT("CONFIG"),m_Configuration[j],wxT("="));
+            m_Handler->Add(wxT("CONFIG"),m_Configuration[j],wxT("+="));
         }
 
         m_Handler->Write();

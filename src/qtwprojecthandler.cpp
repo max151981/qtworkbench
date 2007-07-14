@@ -182,6 +182,9 @@ wxArrayString QtWProjectHandler::GetValuesFor(const wxString &identifier,const w
 
 void QtWProjectHandler::SetValuesFor(const wxString &identifier, const wxArrayString& contentsArray,const wxString &qmakeOperator)
 {
+    if(contentsArray.IsEmpty()){
+        return;
+    }
     wxArrayStringMap values = m_VariableMap[identifier];
     values[qmakeOperator] = contentsArray;
     m_VariableMap[identifier] = values;
