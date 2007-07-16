@@ -3,7 +3,7 @@
     <SdkVersion major="1" minor="10" release="0" />
     <Plugin name="QtWorkbench">
         <Value title="QtWorkbench" />
-        <Value version="0.5.0alpha" />
+        <Value version="0.5.1 alpha" />
         <Value description="Integration of Code::Blocks IDE with Qt" />
         <Value author="Yorgos Pagles" />
         <Value authorEmail="y.pagles@gmail.com" />

@@ -12,10 +12,10 @@
 #include "qtwprojecthandler.h"
 
 BEGIN_EVENT_TABLE(qtwProjectOptions, wxDialog)
-EVT_BUTTON(XRCID("ID_LOC_MOC_BUTTON"),qtwProjectOptions::OnBrowseMocButtonClick)
-EVT_BUTTON(XRCID("ID_LOC_UIC_BUTTON"),qtwProjectOptions::OnBrowseUicButtonClick)
-EVT_BUTTON(XRCID("ID_LOC_RCC_BUTTON"),qtwProjectOptions::OnBrowseRccButtonClick)
-EVT_LISTBOX(XRCID("ID_TARGET_LISTBOX"),qtwProjectOptions::OnTargetListClick)
+    EVT_BUTTON(XRCID("ID_LOC_MOC_BUTTON"),qtwProjectOptions::OnBrowseMocButtonClick)
+    EVT_BUTTON(XRCID("ID_LOC_UIC_BUTTON"),qtwProjectOptions::OnBrowseUicButtonClick)
+    EVT_BUTTON(XRCID("ID_LOC_RCC_BUTTON"),qtwProjectOptions::OnBrowseRccButtonClick)
+    EVT_LISTBOX(XRCID("ID_TARGET_LISTBOX"),qtwProjectOptions::OnTargetListClick)
 END_EVENT_TABLE()
 
 qtwProjectOptions::qtwProjectOptions(wxWindow* parent)
@@ -406,7 +406,6 @@ void qtwProjectOptions::OnTargetListClick(wxCommandEvent& event)
 {
     Update();
     m_Handler->Write();
-
     UpdateTarget();
     PopulateWorld();
 }

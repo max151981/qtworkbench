@@ -170,7 +170,11 @@ bool QtWProjectHandler::Write()
         }
     }
     if (lineNumber)
+    {
+        // Parser needs an empty line in the end
+        file.InsertLine(wxT(""),lineNumber);
         return file.Write();
+    }
     return true;
 }
 
