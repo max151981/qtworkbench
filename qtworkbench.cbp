@@ -67,9 +67,8 @@
 			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\QtWorkbench.zip res\*.xml" />
 			<Mode after="always" />
 		</ExtraCommands>
+		<Unit filename="res\QtWorkbenchForms.xrc" />
 		<Unit filename="res\manifest.xml" />
-		<Unit filename="res\qtwconfiguration.xrc" />
-		<Unit filename="res\qtwprojectoptions.xrc" />
 		<Unit filename="src\qtwconfiguration.cpp" />
 		<Unit filename="src\qtwconfiguration.h" />
 		<Unit filename="src\qtwmkspecbrowser.h" />
@@ -87,6 +86,7 @@
 				<search_path add="$(#qt.include)/QtCore" />
 				<search_path add="$(#qt.include)/QtGui" />
 			</code_completion>
+			<envvars />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
