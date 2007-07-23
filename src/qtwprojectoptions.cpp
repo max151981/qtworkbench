@@ -107,37 +107,6 @@ void qtwProjectOptions::PopulateRequirements()
     choiceSTL->SetValue(m_Handler->Contains(wxT("CONFIG"),wxT("stl"),wxT("+=")));
     choiceRTTI->SetValue(m_Handler->Contains(wxT("CONFIG"),wxT("rtti"),wxT("+=")));
     choicePCH->SetValue(m_Handler->Contains(wxT("CONFIG"),wxT("precompile_header"),wxT("+=")));
-
-    wxTextCtrl *configChoices = XRCCTRL(*this, "ID_CONFIG_VARIABLES", wxTextCtrl);
-    wxArrayString values = m_Handler->GetValuesFor(wxT("CONFIG"),wxT("+="));
-    wxString value;
-    m_ExtraConfigurations.Clear();
-    for (size_t i=0; i<values.GetCount(); i++)
-    {
-        if (values[i] != wxT("release") &&
-                values[i] != wxT("debug") &&
-                values[i] != wxT("qt") &&
-                values[i] != wxT("thread") &&
-                values[i] != wxT("exceptions") &&
-                values[i] != wxT("opengl") &&
-                values[i] != wxT("x11") &&
-                values[i] != wxT("console") &&
-                values[i] != wxT("stl") &&
-                values[i] != wxT("rtti") &&
-                values[i] != wxT("precompile_header") &&
-                values[i] != wxT("staticlib") &&
-                values[i] != wxT("windows") &&
-                values[i] != wxT("console") &&
-                values[i] != wxT("staticlib") &&
-                values[i] != wxT("dll"))
-
-        {
-            value += wxT(" ");
-            value += values[i];
-            m_ExtraConfigurations.Add(values[i]);
-        }
-    }
-    configChoices->SetValue(value);
 }
 
 void qtwProjectOptions::PopulateModules()
@@ -341,23 +310,6 @@ void qtwProjectOptions::Update()
     values.Clear();
     values.Add(selectedPath);
     m_Handler->SetValuesFor(wxT("RCC_DIR"),values,wxT("="));
-
-    wxTextCtrl *configChoices = XRCCTRL(*this, "ID_CONFIG_VARIABLES", wxTextCtrl);
-    values.Clear();
-    values = wxStringTokenize(configChoices->GetValue(), wxT(" "));
-    wxArrayString configsToRemove = m_ExtraConfigurations;
-    for (size_t i=0; i < values.GetCount(); i++)
-    {
-        m_Handler->Add(wxT("CONFIG"),values[i],wxT("+="));
-        if (configsToRemove.Index(values[i]))
-        {
-            configsToRemove.Remove(values[i]);
-        }
-    }
-    for (size_t i=0; i < configsToRemove.GetCount(); i++)
-    {
-        m_Handler->Remove(wxT("CONFIG"),configsToRemove[i],wxT("+="));
-    }
 }
 
 void qtwProjectOptions::OnBrowseMocButtonClick(wxCommandEvent& event)

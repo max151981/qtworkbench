@@ -125,6 +125,7 @@ void QtWorkbench::OnProjectOptions(wxCommandEvent& event)
         return;
     }
     qtwProjectOptions qtwpo(Manager::Get()->GetAppWindow());
+    PlaceWindow(&qtwpo);
     qtwpo.ShowModal();
 }
 
