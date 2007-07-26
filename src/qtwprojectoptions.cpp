@@ -11,14 +11,27 @@
 #include "qtwprojectoptions.h"
 #include "qtwprojecthandler.h"
 
-BEGIN_EVENT_TABLE(qtwProjectOptions, wxDialog)
-    EVT_BUTTON(XRCID("ID_LOC_MOC_BUTTON"),qtwProjectOptions::OnBrowseMocButtonClick)
-    EVT_BUTTON(XRCID("ID_LOC_UIC_BUTTON"),qtwProjectOptions::OnBrowseUicButtonClick)
-    EVT_BUTTON(XRCID("ID_LOC_RCC_BUTTON"),qtwProjectOptions::OnBrowseRccButtonClick)
-    EVT_LISTBOX(XRCID("ID_TARGET_LISTBOX"),qtwProjectOptions::OnTargetListClick)
+static const wxChar * const QMakeOperators[]  = {wxT("+="),wxT("="),wxT("-="),wxT("~="),wxT("*=")};
+
+BEGIN_EVENT_TABLE(QtWProjectOptions, wxDialog)
+    EVT_NOTEBOOK_PAGE_CHANGING(XRCID("ID_NOTEBOOK"),QtWProjectOptions::OnNotebookPageChange)
+
+    EVT_BUTTON(XRCID("ID_LOC_MOC_BUTTON"),QtWProjectOptions::OnBrowseMocButtonClick)
+    EVT_BUTTON(XRCID("ID_LOC_UIC_BUTTON"),QtWProjectOptions::OnBrowseUicButtonClick)
+    EVT_BUTTON(XRCID("ID_LOC_RCC_BUTTON"),QtWProjectOptions::OnBrowseRccButtonClick)
+    EVT_LISTBOX(XRCID("ID_TARGET_LISTBOX"),QtWProjectOptions::OnTargetListClick)
+
+    EVT_LISTBOX(XRCID("ID_VARIABLES_LISTBOX"),QtWProjectOptions::OnUpdateAdvancedView)
+    EVT_CHOICE(XRCID("ID_OPERATORS_CHOICE"),QtWProjectOptions::OnUpdateAdvancedView)
+
+//    ID_VARIABLE_ADD_BUTTON
+//    ID_VARIABLE_DELETE_BUTTON
+//    ID_VALUE_ADD_BUTTON
+//    ID_VALUE_REMOVE_BUTTON
+
 END_EVENT_TABLE()
 
-qtwProjectOptions::qtwProjectOptions(wxWindow* parent)
+QtWProjectOptions::QtWProjectOptions(wxWindow* parent)
 {
     m_Handler = new QtWProjectHandler;
 
@@ -29,19 +42,19 @@ qtwProjectOptions::qtwProjectOptions(wxWindow* parent)
     PopulateWorld();
 }
 
-qtwProjectOptions::~qtwProjectOptions()
+QtWProjectOptions::~QtWProjectOptions()
 {
     delete m_Handler;
 }
 
-cbProject* qtwProjectOptions::CurrentActiveProject()
+cbProject* QtWProjectOptions::CurrentActiveProject()
 {
     // The active project is always valid as it is checked
     // before this dialog appears.
     return Manager::Get()->GetProjectManager()->GetActiveProject();
 }
 
-void qtwProjectOptions::PopulateTargetsListBox()
+void QtWProjectOptions::PopulateTargetsListBox()
 {
     wxListBox *list = XRCCTRL(*this, "ID_TARGET_LISTBOX", wxListBox);
     int TargetsCount = CurrentActiveProject()->GetBuildTargetsCount();
@@ -54,7 +67,7 @@ void qtwProjectOptions::PopulateTargetsListBox()
     list->SetSelection(0);
 }
 
-void qtwProjectOptions::UpdateTarget()
+void QtWProjectOptions::UpdateTarget()
 {
     wxListBox *list = XRCCTRL(*this, "ID_TARGET_LISTBOX", wxListBox);
 
@@ -69,15 +82,17 @@ void qtwProjectOptions::UpdateTarget()
     m_Handler->Read();
 }
 
-void qtwProjectOptions::PopulateWorld()
+void QtWProjectOptions::PopulateWorld()
 {
     PopulateBuildMode();
     PopulateRequirements();
     PopulateModules();
     PopulateFileLocations();
+    PopulateVariablesList();
+    PopulateValuesList();
 }
 
-void qtwProjectOptions::PopulateBuildMode()
+void QtWProjectOptions::PopulateBuildMode()
 {
     wxCheckBox *choiceRelease = XRCCTRL(*this, "ID_BUILDMOD_RELEASE_CHECKBOX", wxCheckBox);
     wxCheckBox *choiceDebug = XRCCTRL(*this, "ID_BUILDMOD_DEBUG_CHECKBOX", wxCheckBox);
@@ -86,7 +101,7 @@ void qtwProjectOptions::PopulateBuildMode()
     choiceDebug->SetValue(m_Handler->Contains(wxT("CONFIG"),wxT("debug"),wxT("+=")));
 }
 
-void qtwProjectOptions::PopulateRequirements()
+void QtWProjectOptions::PopulateRequirements()
 {
     wxCheckBox *choiceQt = XRCCTRL(*this, "ID_REQS_QT_CHECKBOX", wxCheckBox);
     wxCheckBox *choiceThread = XRCCTRL(*this, "ID_REQS_THREAD_CHECKBOX", wxCheckBox);
@@ -109,7 +124,7 @@ void qtwProjectOptions::PopulateRequirements()
     choicePCH->SetValue(m_Handler->Contains(wxT("CONFIG"),wxT("precompile_header"),wxT("+=")));
 }
 
-void qtwProjectOptions::PopulateModules()
+void QtWProjectOptions::PopulateModules()
 {
     wxCheckBox *choiceCore = XRCCTRL(*this, "ID_MODS_CORE_CHECKBOX", wxCheckBox);
     wxCheckBox *choiceGui = XRCCTRL(*this, "ID_MODS_GUI_CHECKBOX", wxCheckBox);
@@ -130,7 +145,7 @@ void qtwProjectOptions::PopulateModules()
     choiceQt3->SetValue(m_Handler->Contains(wxT("QT"),wxT("qt3support"),wxT("+=")));
 }
 
-void qtwProjectOptions::PopulateFileLocations()
+void QtWProjectOptions::PopulateFileLocations()
 {
     wxTextCtrl *choiceMocDir = XRCCTRL(*this, "ID_LOC_MOC_TEXTCTRL", wxTextCtrl);
     wxTextCtrl *choiceUicDir = XRCCTRL(*this, "ID_LOC_UIC_TEXTCTRL", wxTextCtrl);
@@ -170,7 +185,38 @@ void qtwProjectOptions::PopulateFileLocations()
     }
 }
 
-void qtwProjectOptions::Update()
+void QtWProjectOptions::PopulateVariablesList()
+{
+    wxListBox *list = XRCCTRL(*this, "ID_VARIABLES_LISTBOX", wxListBox);
+    if(list)
+    {
+        wxArrayString variables = m_Handler->GetAvailableVariables();
+        list->Clear();
+        list->Append(variables);
+    }
+}
+
+void QtWProjectOptions::PopulateValuesList()
+{
+    wxListBox *variablesList = XRCCTRL(*this, "ID_VARIABLES_LISTBOX", wxListBox);
+    wxListBox *valuesList = XRCCTRL(*this, "ID_VALUES_LISTBOX", wxListBox);
+    wxChoice * choice = XRCCTRL(*this, "ID_OPERATORS_CHOICE", wxChoice);
+
+    if(variablesList && valuesList && choice)
+    {
+        if(variablesList->GetSelection() != wxNOT_FOUND)
+        {
+            wxString variable = variablesList->GetStringSelection();
+            wxString qmakeOperator = QMakeOperators[choice->GetSelection()];
+
+            wxArrayString variables = m_Handler->GetValuesFor(variable,qmakeOperator);
+            valuesList->Clear();
+            valuesList->Append(variables);
+       }
+    }
+}
+
+void QtWProjectOptions::Update()
 {
 
     wxCheckBox *choiceRelease = XRCCTRL(*this, "ID_BUILDMOD_RELEASE_CHECKBOX", wxCheckBox);
@@ -312,7 +358,7 @@ void qtwProjectOptions::Update()
     m_Handler->SetValuesFor(wxT("RCC_DIR"),values,wxT("="));
 }
 
-void qtwProjectOptions::OnBrowseMocButtonClick(wxCommandEvent& event)
+void QtWProjectOptions::OnBrowseMocButtonClick(wxCommandEvent& event)
 {
     wxString targetDir = CurrentActiveProject()->GetBasePath() +
                          XRCCTRL(*this, "ID_TARGET_LISTBOX", wxListBox)->GetStringSelection();
@@ -326,7 +372,7 @@ void qtwProjectOptions::OnBrowseMocButtonClick(wxCommandEvent& event)
     choiceMocDir->SetValue(mocDir);
 }
 
-void qtwProjectOptions::OnBrowseUicButtonClick(wxCommandEvent& event)
+void QtWProjectOptions::OnBrowseUicButtonClick(wxCommandEvent& event)
 {
     wxString targetDir = CurrentActiveProject()->GetBasePath() +
                          XRCCTRL(*this, "ID_TARGET_LISTBOX", wxListBox)->GetStringSelection();
@@ -340,7 +386,7 @@ void qtwProjectOptions::OnBrowseUicButtonClick(wxCommandEvent& event)
     choiceUicDir->SetValue(uicDir);
 }
 
-void qtwProjectOptions::OnBrowseRccButtonClick(wxCommandEvent& event)
+void QtWProjectOptions::OnBrowseRccButtonClick(wxCommandEvent& event)
 {
     wxString targetDir = CurrentActiveProject()->GetBasePath() +
                          XRCCTRL(*this, "ID_TARGET_LISTBOX", wxListBox)->GetStringSelection();
@@ -354,7 +400,7 @@ void qtwProjectOptions::OnBrowseRccButtonClick(wxCommandEvent& event)
     choiceRccDir->SetValue(rccDir);
 }
 
-void qtwProjectOptions::OnTargetListClick(wxCommandEvent& event)
+void QtWProjectOptions::OnTargetListClick(wxCommandEvent& event)
 {
     Update();
     m_Handler->Write();
@@ -362,10 +408,20 @@ void qtwProjectOptions::OnTargetListClick(wxCommandEvent& event)
     PopulateWorld();
 }
 
-void qtwProjectOptions::EndModal(int retCode)
+void QtWProjectOptions::OnNotebookPageChange(wxNotebookEvent&)
+{
+    Update();
+    PopulateWorld();
+}
+
+void QtWProjectOptions::OnUpdateAdvancedView(wxCommandEvent&)
+{
+   PopulateValuesList();
+}
+
+void QtWProjectOptions::EndModal(int retCode)
 {
     Update();
     m_Handler->Write();
     wxDialog::EndModal(retCode);
 }
-

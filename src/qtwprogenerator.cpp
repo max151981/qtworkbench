@@ -14,19 +14,19 @@
 #include "qtwprojecthandler.h"
 #include "qtwprogenerator.h"
 
-qtwProGenerator::qtwProGenerator(cbProject* project)
+QtWProGenerator::QtWProGenerator(cbProject* project)
         :m_Project(project)
 {
     m_Handler = new QtWProjectHandler;
     m_CompilerSet=CompilerFactory::GetCompiler(project->GetCompilerID());
 }
 
-qtwProGenerator::~qtwProGenerator()
+QtWProGenerator::~QtWProGenerator()
 {
     delete m_Handler;
 }
 
-void qtwProGenerator::DoPrepareFiles()
+void QtWProGenerator::DoPrepareFiles()
 {
     m_Files.Clear();
     int filesCount = m_Project->GetFilesCount();
@@ -37,7 +37,7 @@ void qtwProGenerator::DoPrepareFiles()
     }
 }
 
-void qtwProGenerator::DoPrepareValidTargets()
+void QtWProGenerator::DoPrepareValidTargets()
 {
     m_LinkableTargets.Clear();
     int targetsCount = m_Project->GetBuildTargetsCount();
@@ -64,7 +64,7 @@ void qtwProGenerator::DoPrepareValidTargets()
     }
 }
 
-void qtwProGenerator::UpdateCompiler(ProjectBuildTarget* target)
+void QtWProGenerator::UpdateCompiler(ProjectBuildTarget* target)
 {
     wxString compID = target
                       ? target->GetCompilerID()
@@ -75,7 +75,7 @@ void qtwProGenerator::UpdateCompiler(ProjectBuildTarget* target)
         m_CompilerSet = CompilerFactory::GetDefaultCompiler();
 }
 
-bool qtwProGenerator::IsTargetValid(ProjectBuildTarget* target)
+bool QtWProGenerator::IsTargetValid(ProjectBuildTarget* target)
 {
     UpdateCompiler(target);
     if (!m_CompilerSet || !target)
@@ -86,7 +86,7 @@ bool qtwProGenerator::IsTargetValid(ProjectBuildTarget* target)
     return hasBin && (hasCmds || m_LinkableTargets.Index(target) != -1);
 }
 
-void qtwProGenerator::QuoteStringIfNeeded(wxString& str, bool force)
+void QtWProGenerator::QuoteStringIfNeeded(wxString& str, bool force)
 {
     if (!force)
         return;
@@ -98,7 +98,7 @@ void qtwProGenerator::QuoteStringIfNeeded(wxString& str, bool force)
     }
 }
 
-void qtwProGenerator::DoAddCommonVariables(ProjectBuildTarget* target)
+void QtWProGenerator::DoAddCommonVariables(ProjectBuildTarget* target)
 {
     if (!IsTargetValid(target))
         return;
@@ -165,7 +165,7 @@ void qtwProGenerator::DoAddCommonVariables(ProjectBuildTarget* target)
     m_Handler->SetValuesFor(wxT("TARGET"),values,wxT("="));
 }
 
-/*wxString qtwProGenerator::MkspecToUse()
+/*wxString QtWProGenerator::MkspecToUse()
 {
     wxString MkspecString;
 
@@ -255,7 +255,7 @@ void qtwProGenerator::DoAddCommonVariables(ProjectBuildTarget* target)
     return wxString(_T(""));
 }*/
 
-void qtwProGenerator::DoAppendCompilerOptions(ProjectBuildTarget* target, bool useGlobalOptions)
+void QtWProGenerator::DoAppendCompilerOptions(ProjectBuildTarget* target, bool useGlobalOptions)
 {
     wxArrayString opts;
     if (!m_CompilerSet)
@@ -281,7 +281,7 @@ void qtwProGenerator::DoAppendCompilerOptions(ProjectBuildTarget* target, bool u
     m_Handler->SetValuesFor(wxT("QMAKE_CXXFLAGS"),currentValues,wxT("+="));
 }
 
-void qtwProGenerator::DoAppendLinkerOptions(ProjectBuildTarget* target, bool useGlobalOptions)
+void QtWProGenerator::DoAppendLinkerOptions(ProjectBuildTarget* target, bool useGlobalOptions)
 {
     CompileOptionsBase* obj;
     if (!m_CompilerSet)
@@ -302,7 +302,7 @@ void qtwProGenerator::DoAppendLinkerOptions(ProjectBuildTarget* target, bool use
     m_Handler->SetValuesFor(wxT("QMAKE_LFLAGS"),currentValues,wxT("+="));
 }
 
-void qtwProGenerator::DoAppendLinkerLibs(ProjectBuildTarget* target, bool useGlobalOptions)
+void QtWProGenerator::DoAppendLinkerLibs(ProjectBuildTarget* target, bool useGlobalOptions)
 {
     if (!m_CompilerSet)
         return;
@@ -374,7 +374,7 @@ void qtwProGenerator::DoAppendLinkerLibs(ProjectBuildTarget* target, bool useGlo
     m_Handler->SetValuesFor(wxT("LIBS"),currentValues,wxT("+="));
 }
 
-void qtwProGenerator::DoAppendIncludeDirs(ProjectBuildTarget* target, const wxString& prefix, bool useGlobalOptions)
+void QtWProGenerator::DoAppendIncludeDirs(ProjectBuildTarget* target, const wxString& prefix, bool useGlobalOptions)
 {
     wxArrayString opts;
     if (!m_CompilerSet)
@@ -402,7 +402,7 @@ void qtwProGenerator::DoAppendIncludeDirs(ProjectBuildTarget* target, const wxSt
     m_Handler->SetValuesFor(wxT("INCLUDEPATH"),currentValues,wxT("+="));
 }
 
-void qtwProGenerator::DoAppendLibDirs(ProjectBuildTarget* target, const wxString& prefix, bool useGlobalOptions)
+void QtWProGenerator::DoAppendLibDirs(ProjectBuildTarget* target, const wxString& prefix, bool useGlobalOptions)
 {
     wxArrayString opts;
     if (!m_CompilerSet)
@@ -429,7 +429,7 @@ void qtwProGenerator::DoAppendLibDirs(ProjectBuildTarget* target, const wxString
     m_Handler->SetValuesFor(wxT("LIBS"),currentValues,wxT("+="));
 }
 
-void qtwProGenerator::DoAddProOptions(ProjectBuildTarget* target)
+void QtWProGenerator::DoAddProOptions(ProjectBuildTarget* target)
 {
     UpdateCompiler(target);
     if (!m_CompilerSet)
@@ -543,7 +543,7 @@ void qtwProGenerator::DoAddProOptions(ProjectBuildTarget* target)
     }
 }
 
-void qtwProGenerator::DoAddTargetFiles(ProjectBuildTarget* target)
+void QtWProGenerator::DoAddTargetFiles(ProjectBuildTarget* target)
 {
     if (!IsTargetValid(target))
         return;
@@ -601,7 +601,7 @@ void qtwProGenerator::DoAddTargetFiles(ProjectBuildTarget* target)
     m_Handler->SetValuesFor(wxT("PRECOMPILED_HEADER"),target_pch,wxT("="));
 }
 
-bool qtwProGenerator::CreatePro()
+bool QtWProGenerator::CreatePro()
 {
     DoPrepareFiles();
     DoPrepareValidTargets();

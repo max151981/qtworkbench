@@ -73,7 +73,7 @@ int QtWorkbench::Configure()
 
 cbConfigurationPanel* QtWorkbench::GetConfigurationPanel(wxWindow* parent)
 {
-    qtwConfiguration* dlg = new qtwConfiguration(parent);
+    QtWConfiguration* dlg = new QtWConfiguration(parent);
     // deleted by the caller
 
     return dlg;
@@ -124,7 +124,7 @@ void QtWorkbench::OnProjectOptions(wxCommandEvent& event)
         cbMessageBox(_T("Please open/create a project first."), _("Error"), wxICON_ERROR);
         return;
     }
-    qtwProjectOptions qtwpo(Manager::Get()->GetAppWindow());
+    QtWProjectOptions qtwpo(Manager::Get()->GetAppWindow());
     PlaceWindow(&qtwpo);
     qtwpo.ShowModal();
 }
@@ -192,7 +192,7 @@ void QtWorkbench::OnRunQMake(wxCommandEvent& event)
         return;
     }
 
-    qtwProGenerator Generator(theCurrentActiveProject);
+    QtWProGenerator Generator(theCurrentActiveProject);
     if (!Generator.CreatePro())
     {
         cbMessageBox(_T("Could not create .pro file for at least one of the project's targets."), _("Error"), wxICON_ERROR);

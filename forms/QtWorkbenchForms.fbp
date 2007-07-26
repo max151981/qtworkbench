@@ -9,7 +9,7 @@
         <property name="icons"></property>
         <property name="internationalize">0</property>
         <property name="name">QtWorkbench</property>
-        <property name="path">..\res</property>
+        <property name="path">../res</property>
         <property name="precompiled_header">wx/wxprec.h</property>
         <property name="relative_path">1</property>
         <property name="use_enum">0</property>
@@ -45,7 +45,7 @@
                 <property name="minimum_size"></property>
                 <property name="name">fgSizer10</property>
                 <property name="non_flexible_grow_mode">wxFLEX_GROWMODE_ALL</property>
-                <property name="rows">1</property>
+                <property name="rows">2</property>
                 <property name="vgap">5</property>
                 <object class="sizeritem" expanded="1">
                     <property name="border">5</property>
@@ -65,7 +65,7 @@
                                 <property name="choices"></property>
                                 <property name="enabled">1</property>
                                 <property name="fg"></property>
-                                <property name="font">Arial,90,92,10</property>
+                                <property name="font"></property>
                                 <property name="hidden">0</property>
                                 <property name="id">wxID_ANY</property>
                                 <property name="maximum_size"></property>
@@ -99,7 +99,7 @@
                         <property name="id">wxID_ANY</property>
                         <property name="maximum_size"></property>
                         <property name="minimum_size"></property>
-                        <property name="name">m_notebook2</property>
+                        <property name="name">ID_NOTEBOOK</property>
                         <property name="permission">protected</property>
                         <property name="pos"></property>
                         <property name="size"></property>
@@ -111,8 +111,8 @@
                         <object class="notebookpage" expanded="1">
                             <property name="bitmap"></property>
                             <property name="label">Simple View</property>
-                            <property name="select">0</property>
-                            <object class="wxPanel" expanded="0">
+                            <property name="select">1</property>
+                            <object class="wxPanel" expanded="1">
                                 <property name="bg"></property>
                                 <property name="enabled">1</property>
                                 <property name="fg"></property>
@@ -129,7 +129,7 @@
                                 <property name="tooltip"></property>
                                 <property name="window_extra_style"></property>
                                 <property name="window_style">wxTAB_TRAVERSAL</property>
-                                <object class="wxFlexGridSizer" expanded="0">
+                                <object class="wxFlexGridSizer" expanded="1">
                                     <property name="cols">1</property>
                                     <property name="flexible_direction">wxBOTH</property>
                                     <property name="growablecols">0</property>
@@ -138,7 +138,7 @@
                                     <property name="minimum_size"></property>
                                     <property name="name">fgSizer5</property>
                                     <property name="non_flexible_grow_mode">wxFLEX_GROWMODE_ALL</property>
-                                    <property name="rows">5</property>
+                                    <property name="rows">4</property>
                                     <property name="vgap">0</property>
                                     <object class="sizeritem" expanded="1">
                                         <property name="border">5</property>
@@ -1000,49 +1000,13 @@
                                             </object>
                                         </object>
                                     </object>
-                                    <object class="sizeritem" expanded="1">
-                                        <property name="border">5</property>
-                                        <property name="flag">wxALIGN_RIGHT|wxALL</property>
-                                        <property name="proportion">1</property>
-                                        <object class="wxBoxSizer" expanded="0">
-                                            <property name="minimum_size"></property>
-                                            <property name="name">bSizer19</property>
-                                            <property name="orient">wxHORIZONTAL</property>
-                                            <object class="sizeritem" expanded="1">
-                                                <property name="border">5</property>
-                                                <property name="flag">wxALL|wxEXPAND</property>
-                                                <property name="proportion">1</property>
-                                                <object class="wxButton" expanded="1">
-                                                    <property name="bg"></property>
-                                                    <property name="enabled">1</property>
-                                                    <property name="fg"></property>
-                                                    <property name="font"></property>
-                                                    <property name="hidden">0</property>
-                                                    <property name="id">wxID_ANY</property>
-                                                    <property name="label">OK</property>
-                                                    <property name="maximum_size">-1,-1</property>
-                                                    <property name="minimum_size"></property>
-                                                    <property name="name">wxID_OK</property>
-                                                    <property name="permission">protected</property>
-                                                    <property name="pos"></property>
-                                                    <property name="size"></property>
-                                                    <property name="style"></property>
-                                                    <property name="subclass"></property>
-                                                    <property name="tooltip"></property>
-                                                    <property name="window_extra_style"></property>
-                                                    <property name="window_style"></property>
-                                                    <event name="OnButtonClick"></event>
-                                                </object>
-                                            </object>
-                                        </object>
-                                    </object>
                                 </object>
                             </object>
                         </object>
                         <object class="notebookpage" expanded="1">
                             <property name="bitmap"></property>
                             <property name="label">Advanced View</property>
-                            <property name="select">1</property>
+                            <property name="select">0</property>
                             <object class="wxPanel" expanded="1">
                                 <property name="bg"></property>
                                 <property name="enabled">1</property>
@@ -1061,269 +1025,140 @@
                                 <property name="window_extra_style"></property>
                                 <property name="window_style">wxTAB_TRAVERSAL</property>
                                 <object class="wxFlexGridSizer" expanded="1">
-                                    <property name="cols">1</property>
+                                    <property name="cols">2</property>
                                     <property name="flexible_direction">wxBOTH</property>
-                                    <property name="growablecols">0</property>
+                                    <property name="growablecols">0,1</property>
                                     <property name="growablerows">0</property>
                                     <property name="hgap">0</property>
                                     <property name="minimum_size"></property>
                                     <property name="name">fgSizer6</property>
                                     <property name="non_flexible_grow_mode">wxFLEX_GROWMODE_NONE</property>
-                                    <property name="rows">2</property>
+                                    <property name="rows">1</property>
                                     <property name="vgap">0</property>
                                     <object class="sizeritem" expanded="1">
                                         <property name="border">5</property>
                                         <property name="flag">wxALL|wxEXPAND</property>
                                         <property name="proportion">1</property>
-                                        <object class="wxFlexGridSizer" expanded="1">
-                                            <property name="cols">2</property>
-                                            <property name="flexible_direction">wxBOTH</property>
-                                            <property name="growablecols">0,1</property>
-                                            <property name="growablerows">0</property>
-                                            <property name="hgap">0</property>
+                                        <object class="wxStaticBoxSizer" expanded="1">
+                                            <property name="label">QMake Variables</property>
                                             <property name="minimum_size"></property>
-                                            <property name="name">fgSizer7</property>
-                                            <property name="non_flexible_grow_mode">wxFLEX_GROWMODE_ALL</property>
-                                            <property name="rows">2</property>
-                                            <property name="vgap">0</property>
+                                            <property name="name">sbSizer10</property>
+                                            <property name="orient">wxVERTICAL</property>
                                             <object class="sizeritem" expanded="1">
                                                 <property name="border">5</property>
-                                                <property name="flag">wxALL|wxEXPAND</property>
+                                                <property name="flag">wxEXPAND</property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxStaticBoxSizer" expanded="1">
-                                                    <property name="label">QMake Variables</property>
+                                                <object class="wxFlexGridSizer" expanded="1">
+                                                    <property name="cols">1</property>
+                                                    <property name="flexible_direction">wxBOTH</property>
+                                                    <property name="growablecols">0</property>
+                                                    <property name="growablerows">1</property>
+                                                    <property name="hgap">0</property>
                                                     <property name="minimum_size"></property>
-                                                    <property name="name">sbSizer10</property>
-                                                    <property name="orient">wxVERTICAL</property>
+                                                    <property name="name">fgSizer101</property>
+                                                    <property name="non_flexible_grow_mode">wxFLEX_GROWMODE_ALL</property>
+                                                    <property name="rows">4</property>
+                                                    <property name="vgap">0</property>
                                                     <object class="sizeritem" expanded="1">
                                                         <property name="border">5</property>
-                                                        <property name="flag">wxEXPAND</property>
-                                                        <property name="proportion">1</property>
-                                                        <object class="wxFlexGridSizer" expanded="0">
-                                                            <property name="cols">1</property>
-                                                            <property name="flexible_direction">wxBOTH</property>
-                                                            <property name="growablecols">0</property>
-                                                            <property name="growablerows">1</property>
-                                                            <property name="hgap">0</property>
+                                                        <property name="flag">wxALL|wxEXPAND</property>
+                                                        <property name="proportion">0</property>
+                                                        <object class="wxStaticText" expanded="1">
+                                                            <property name="bg"></property>
+                                                            <property name="enabled">1</property>
+                                                            <property name="fg"></property>
+                                                            <property name="font"></property>
+                                                            <property name="hidden">0</property>
+                                                            <property name="id">wxID_ANY</property>
+                                                            <property name="label">Select the qmake variable&#x0A;you want to change values for.&#x0A;The changed or added variables&#x0A;will be updated in the&#x0A;resulting configuration file&#x0A;using the selected operaror.</property>
+                                                            <property name="maximum_size"></property>
                                                             <property name="minimum_size"></property>
-                                                            <property name="name">fgSizer101</property>
-                                                            <property name="non_flexible_grow_mode">wxFLEX_GROWMODE_ALL</property>
-                                                            <property name="rows">4</property>
-                                                            <property name="vgap">0</property>
-                                                            <object class="sizeritem" expanded="1">
-                                                                <property name="border">5</property>
-                                                                <property name="flag">wxALL|wxEXPAND</property>
-                                                                <property name="proportion">0</property>
-                                                                <object class="wxStaticText" expanded="1">
-                                                                    <property name="bg"></property>
-                                                                    <property name="enabled">1</property>
-                                                                    <property name="fg"></property>
-                                                                    <property name="font">Arial,90,90,8</property>
-                                                                    <property name="hidden">0</property>
-                                                                    <property name="id">wxID_ANY</property>
-                                                                    <property name="label">Select the qmake variable&#x0A;you want to change values for.&#x0A;The changed or added variables&#x0A;will be updated in the&#x0A;resulting configuration file&#x0A;using the selected operaror.</property>
-                                                                    <property name="maximum_size"></property>
-                                                                    <property name="minimum_size"></property>
-                                                                    <property name="name">m_staticText4</property>
-                                                                    <property name="permission">protected</property>
-                                                                    <property name="pos"></property>
-                                                                    <property name="size"></property>
-                                                                    <property name="style"></property>
-                                                                    <property name="subclass"></property>
-                                                                    <property name="tooltip"></property>
-                                                                    <property name="window_extra_style"></property>
-                                                                    <property name="window_style"></property>
-                                                                </object>
-                                                            </object>
-                                                            <object class="sizeritem" expanded="1">
-                                                                <property name="border">5</property>
-                                                                <property name="flag">wxALL|wxEXPAND</property>
-                                                                <property name="proportion">0</property>
-                                                                <object class="wxListBox" expanded="1">
-                                                                    <property name="bg"></property>
-                                                                    <property name="choices"></property>
-                                                                    <property name="enabled">1</property>
-                                                                    <property name="fg"></property>
-                                                                    <property name="font"></property>
-                                                                    <property name="hidden">0</property>
-                                                                    <property name="id">wxID_ANY</property>
-                                                                    <property name="maximum_size"></property>
-                                                                    <property name="minimum_size"></property>
-                                                                    <property name="name">m_listBox4</property>
-                                                                    <property name="permission">protected</property>
-                                                                    <property name="pos"></property>
-                                                                    <property name="size"></property>
-                                                                    <property name="style"></property>
-                                                                    <property name="subclass"></property>
-                                                                    <property name="tooltip"></property>
-                                                                    <property name="window_extra_style"></property>
-                                                                    <property name="window_style"></property>
-                                                                    <event name="OnListBox"></event>
-                                                                    <event name="OnListBoxDClick"></event>
-                                                                </object>
-                                                            </object>
-                                                            <object class="sizeritem" expanded="1">
-                                                                <property name="border">5</property>
-                                                                <property name="flag">wxALL|wxEXPAND</property>
-                                                                <property name="proportion">0</property>
-                                                                <object class="wxChoice" expanded="1">
-                                                                    <property name="bg"></property>
-                                                                    <property name="choices">&apos;Operator: Append ( += )&apos; &apos;Operator: Set ( = )&apos; &apos;Operator: Remove ( -= )&apos; &apos;Operator: Replace ( ~= )&apos; &apos;Operator: Unique ( *= )&apos;</property>
-                                                                    <property name="enabled">1</property>
-                                                                    <property name="fg"></property>
-                                                                    <property name="font"></property>
-                                                                    <property name="hidden">0</property>
-                                                                    <property name="id">wxID_ANY</property>
-                                                                    <property name="maximum_size"></property>
-                                                                    <property name="minimum_size"></property>
-                                                                    <property name="name">m_choice3</property>
-                                                                    <property name="permission">protected</property>
-                                                                    <property name="pos"></property>
-                                                                    <property name="size"></property>
-                                                                    <property name="subclass"></property>
-                                                                    <property name="tooltip"></property>
-                                                                    <property name="window_extra_style"></property>
-                                                                    <property name="window_style"></property>
-                                                                    <event name="OnChoice"></event>
-                                                                </object>
-                                                            </object>
-                                                            <object class="sizeritem" expanded="1">
-                                                                <property name="border">5</property>
-                                                                <property name="flag">wxEXPAND</property>
-                                                                <property name="proportion">1</property>
-                                                                <object class="wxBoxSizer" expanded="0">
-                                                                    <property name="minimum_size"></property>
-                                                                    <property name="name">bSizer6</property>
-                                                                    <property name="orient">wxHORIZONTAL</property>
-                                                                    <object class="sizeritem" expanded="1">
-                                                                        <property name="border">5</property>
-                                                                        <property name="flag">wxALL|wxEXPAND</property>
-                                                                        <property name="proportion">0</property>
-                                                                        <object class="wxButton" expanded="1">
-                                                                            <property name="bg"></property>
-                                                                            <property name="enabled">1</property>
-                                                                            <property name="fg"></property>
-                                                                            <property name="font"></property>
-                                                                            <property name="hidden">0</property>
-                                                                            <property name="id">wxID_ANY</property>
-                                                                            <property name="label">Add</property>
-                                                                            <property name="maximum_size"></property>
-                                                                            <property name="minimum_size"></property>
-                                                                            <property name="name">m_button10</property>
-                                                                            <property name="permission">protected</property>
-                                                                            <property name="pos"></property>
-                                                                            <property name="size"></property>
-                                                                            <property name="style"></property>
-                                                                            <property name="subclass"></property>
-                                                                            <property name="tooltip"></property>
-                                                                            <property name="window_extra_style"></property>
-                                                                            <property name="window_style"></property>
-                                                                            <event name="OnButtonClick"></event>
-                                                                        </object>
-                                                                    </object>
-                                                                    <object class="spacer" expanded="1">
-                                                                        <property name="border">0</property>
-                                                                        <property name="flag">wxEXPAND</property>
-                                                                        <property name="height">0</property>
-                                                                        <property name="proportion">1</property>
-                                                                        <property name="width">0</property>
-                                                                    </object>
-                                                                    <object class="sizeritem" expanded="1">
-                                                                        <property name="border">5</property>
-                                                                        <property name="flag">wxALL|wxEXPAND</property>
-                                                                        <property name="proportion">0</property>
-                                                                        <object class="wxButton" expanded="1">
-                                                                            <property name="bg"></property>
-                                                                            <property name="enabled">1</property>
-                                                                            <property name="fg"></property>
-                                                                            <property name="font"></property>
-                                                                            <property name="hidden">0</property>
-                                                                            <property name="id">wxID_ANY</property>
-                                                                            <property name="label">Remove</property>
-                                                                            <property name="maximum_size"></property>
-                                                                            <property name="minimum_size"></property>
-                                                                            <property name="name">m_button9</property>
-                                                                            <property name="permission">protected</property>
-                                                                            <property name="pos"></property>
-                                                                            <property name="size"></property>
-                                                                            <property name="style"></property>
-                                                                            <property name="subclass"></property>
-                                                                            <property name="tooltip"></property>
-                                                                            <property name="window_extra_style"></property>
-                                                                            <property name="window_style"></property>
-                                                                            <event name="OnButtonClick"></event>
-                                                                        </object>
-                                                                    </object>
-                                                                </object>
-                                                            </object>
+                                                            <property name="name">m_staticText4</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="pos"></property>
+                                                            <property name="size"></property>
+                                                            <property name="style"></property>
+                                                            <property name="subclass"></property>
+                                                            <property name="tooltip"></property>
+                                                            <property name="window_extra_style"></property>
+                                                            <property name="window_style"></property>
                                                         </object>
                                                     </object>
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem" expanded="1">
-                                                <property name="border">5</property>
-                                                <property name="flag">wxALL|wxEXPAND</property>
-                                                <property name="proportion">1</property>
-                                                <object class="wxStaticBoxSizer" expanded="1">
-                                                    <property name="label">QMake Variable Values</property>
-                                                    <property name="minimum_size"></property>
-                                                    <property name="name">sbSizer13</property>
-                                                    <property name="orient">wxVERTICAL</property>
+                                                    <object class="sizeritem" expanded="1">
+                                                        <property name="border">5</property>
+                                                        <property name="flag">wxALL|wxEXPAND</property>
+                                                        <property name="proportion">0</property>
+                                                        <object class="wxListBox" expanded="1">
+                                                            <property name="bg"></property>
+                                                            <property name="choices"></property>
+                                                            <property name="enabled">1</property>
+                                                            <property name="fg"></property>
+                                                            <property name="font"></property>
+                                                            <property name="hidden">0</property>
+                                                            <property name="id">wxID_ANY</property>
+                                                            <property name="maximum_size"></property>
+                                                            <property name="minimum_size"></property>
+                                                            <property name="name">ID_VARIABLES_LISTBOX</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="pos"></property>
+                                                            <property name="size"></property>
+                                                            <property name="style"></property>
+                                                            <property name="subclass"></property>
+                                                            <property name="tooltip"></property>
+                                                            <property name="window_extra_style"></property>
+                                                            <property name="window_style"></property>
+                                                            <event name="OnListBox"></event>
+                                                            <event name="OnListBoxDClick"></event>
+                                                        </object>
+                                                    </object>
+                                                    <object class="sizeritem" expanded="1">
+                                                        <property name="border">5</property>
+                                                        <property name="flag">wxALL|wxEXPAND</property>
+                                                        <property name="proportion">0</property>
+                                                        <object class="wxChoice" expanded="1">
+                                                            <property name="bg"></property>
+                                                            <property name="choices">&apos;Operator: Append ( += )&apos; &apos;Operator: Set ( = )&apos; &apos;Operator: Remove ( -= )&apos; &apos;Operator: Replace ( ~= )&apos; &apos;Operator: Unique ( *= )&apos;</property>
+                                                            <property name="enabled">1</property>
+                                                            <property name="fg"></property>
+                                                            <property name="font"></property>
+                                                            <property name="hidden">0</property>
+                                                            <property name="id">wxID_ANY</property>
+                                                            <property name="maximum_size"></property>
+                                                            <property name="minimum_size"></property>
+                                                            <property name="name">ID_OPERATORS_CHOICE</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="pos"></property>
+                                                            <property name="size"></property>
+                                                            <property name="subclass"></property>
+                                                            <property name="tooltip"></property>
+                                                            <property name="window_extra_style"></property>
+                                                            <property name="window_style"></property>
+                                                            <event name="OnChoice"></event>
+                                                        </object>
+                                                    </object>
                                                     <object class="sizeritem" expanded="1">
                                                         <property name="border">5</property>
                                                         <property name="flag">wxEXPAND</property>
                                                         <property name="proportion">1</property>
-                                                        <object class="wxFlexGridSizer" expanded="0">
-                                                            <property name="cols">1</property>
-                                                            <property name="flexible_direction">wxBOTH</property>
-                                                            <property name="growablecols">0</property>
-                                                            <property name="growablerows">1</property>
-                                                            <property name="hgap">0</property>
+                                                        <object class="wxBoxSizer" expanded="1">
                                                             <property name="minimum_size"></property>
-                                                            <property name="name">fgSizer11</property>
-                                                            <property name="non_flexible_grow_mode">wxFLEX_GROWMODE_ALL</property>
-                                                            <property name="rows">3</property>
-                                                            <property name="vgap">0</property>
+                                                            <property name="name">bSizer6</property>
+                                                            <property name="orient">wxHORIZONTAL</property>
                                                             <object class="sizeritem" expanded="1">
                                                                 <property name="border">5</property>
                                                                 <property name="flag">wxALL|wxEXPAND</property>
                                                                 <property name="proportion">0</property>
-                                                                <object class="wxStaticText" expanded="1">
+                                                                <object class="wxButton" expanded="1">
                                                                     <property name="bg"></property>
-                                                                    <property name="enabled">1</property>
-                                                                    <property name="fg"></property>
-                                                                    <property name="font">Arial,90,90,8</property>
-                                                                    <property name="hidden">0</property>
-                                                                    <property name="id">wxID_ANY</property>
-                                                                    <property name="label">Edit the values for the selected&#x0A;qmake variable with respect to&#x0A;the selected operator.&#x0A;Some variables are not available for&#x0A;changing, as they will be overwritten&#x0A;by QtWorkbench.</property>
-                                                                    <property name="maximum_size"></property>
-                                                                    <property name="minimum_size"></property>
-                                                                    <property name="name">m_staticText5</property>
-                                                                    <property name="permission">protected</property>
-                                                                    <property name="pos"></property>
-                                                                    <property name="size"></property>
-                                                                    <property name="style"></property>
-                                                                    <property name="subclass"></property>
-                                                                    <property name="tooltip"></property>
-                                                                    <property name="window_extra_style"></property>
-                                                                    <property name="window_style"></property>
-                                                                </object>
-                                                            </object>
-                                                            <object class="sizeritem" expanded="1">
-                                                                <property name="border">5</property>
-                                                                <property name="flag">wxALL|wxEXPAND</property>
-                                                                <property name="proportion">0</property>
-                                                                <object class="wxListBox" expanded="1">
-                                                                    <property name="bg"></property>
-                                                                    <property name="choices"></property>
                                                                     <property name="enabled">1</property>
                                                                     <property name="fg"></property>
                                                                     <property name="font"></property>
                                                                     <property name="hidden">0</property>
                                                                     <property name="id">wxID_ANY</property>
+                                                                    <property name="label">Add</property>
                                                                     <property name="maximum_size"></property>
                                                                     <property name="minimum_size"></property>
-                                                                    <property name="name">m_listBox5</property>
+                                                                    <property name="name">ID_VARIABLE_ADD_BUTTON</property>
                                                                     <property name="permission">protected</property>
                                                                     <property name="pos"></property>
                                                                     <property name="size"></property>
@@ -1332,77 +1167,40 @@
                                                                     <property name="tooltip"></property>
                                                                     <property name="window_extra_style"></property>
                                                                     <property name="window_style"></property>
-                                                                    <event name="OnListBox"></event>
-                                                                    <event name="OnListBoxDClick"></event>
+                                                                    <event name="OnButtonClick"></event>
                                                                 </object>
+                                                            </object>
+                                                            <object class="spacer" expanded="1">
+                                                                <property name="border">0</property>
+                                                                <property name="flag">wxEXPAND</property>
+                                                                <property name="height">0</property>
+                                                                <property name="proportion">1</property>
+                                                                <property name="width">0</property>
                                                             </object>
                                                             <object class="sizeritem" expanded="1">
                                                                 <property name="border">5</property>
-                                                                <property name="flag">wxEXPAND</property>
-                                                                <property name="proportion">1</property>
-                                                                <object class="wxBoxSizer" expanded="1">
+                                                                <property name="flag">wxALL|wxEXPAND</property>
+                                                                <property name="proportion">0</property>
+                                                                <object class="wxButton" expanded="1">
+                                                                    <property name="bg"></property>
+                                                                    <property name="enabled">1</property>
+                                                                    <property name="fg"></property>
+                                                                    <property name="font"></property>
+                                                                    <property name="hidden">0</property>
+                                                                    <property name="id">wxID_ANY</property>
+                                                                    <property name="label">Remove</property>
+                                                                    <property name="maximum_size"></property>
                                                                     <property name="minimum_size"></property>
-                                                                    <property name="name">bSizer61</property>
-                                                                    <property name="orient">wxHORIZONTAL</property>
-                                                                    <object class="sizeritem" expanded="1">
-                                                                        <property name="border">5</property>
-                                                                        <property name="flag">wxALL|wxEXPAND</property>
-                                                                        <property name="proportion">0</property>
-                                                                        <object class="wxButton" expanded="1">
-                                                                            <property name="bg"></property>
-                                                                            <property name="enabled">1</property>
-                                                                            <property name="fg"></property>
-                                                                            <property name="font"></property>
-                                                                            <property name="hidden">0</property>
-                                                                            <property name="id">wxID_ANY</property>
-                                                                            <property name="label">Add</property>
-                                                                            <property name="maximum_size"></property>
-                                                                            <property name="minimum_size"></property>
-                                                                            <property name="name">m_button101</property>
-                                                                            <property name="permission">protected</property>
-                                                                            <property name="pos"></property>
-                                                                            <property name="size"></property>
-                                                                            <property name="style"></property>
-                                                                            <property name="subclass"></property>
-                                                                            <property name="tooltip"></property>
-                                                                            <property name="window_extra_style"></property>
-                                                                            <property name="window_style"></property>
-                                                                            <event name="OnButtonClick"></event>
-                                                                        </object>
-                                                                    </object>
-                                                                    <object class="spacer" expanded="1">
-                                                                        <property name="border">0</property>
-                                                                        <property name="flag">wxEXPAND</property>
-                                                                        <property name="height">0</property>
-                                                                        <property name="proportion">1</property>
-                                                                        <property name="width">0</property>
-                                                                    </object>
-                                                                    <object class="sizeritem" expanded="1">
-                                                                        <property name="border">5</property>
-                                                                        <property name="flag">wxALL|wxEXPAND</property>
-                                                                        <property name="proportion">0</property>
-                                                                        <object class="wxButton" expanded="1">
-                                                                            <property name="bg"></property>
-                                                                            <property name="enabled">1</property>
-                                                                            <property name="fg"></property>
-                                                                            <property name="font"></property>
-                                                                            <property name="hidden">0</property>
-                                                                            <property name="id">wxID_ANY</property>
-                                                                            <property name="label">Remove</property>
-                                                                            <property name="maximum_size"></property>
-                                                                            <property name="minimum_size"></property>
-                                                                            <property name="name">m_button91</property>
-                                                                            <property name="permission">protected</property>
-                                                                            <property name="pos"></property>
-                                                                            <property name="size"></property>
-                                                                            <property name="style"></property>
-                                                                            <property name="subclass"></property>
-                                                                            <property name="tooltip"></property>
-                                                                            <property name="window_extra_style"></property>
-                                                                            <property name="window_style"></property>
-                                                                            <event name="OnButtonClick"></event>
-                                                                        </object>
-                                                                    </object>
+                                                                    <property name="name">ID_VARIABLE_DELETE_BUTTON</property>
+                                                                    <property name="permission">protected</property>
+                                                                    <property name="pos"></property>
+                                                                    <property name="size"></property>
+                                                                    <property name="style"></property>
+                                                                    <property name="subclass"></property>
+                                                                    <property name="tooltip"></property>
+                                                                    <property name="window_extra_style"></property>
+                                                                    <property name="window_style"></property>
+                                                                    <event name="OnButtonClick"></event>
                                                                 </object>
                                                             </object>
                                                         </object>
@@ -1413,41 +1211,197 @@
                                     </object>
                                     <object class="sizeritem" expanded="1">
                                         <property name="border">5</property>
-                                        <property name="flag">wxALIGN_RIGHT|wxALL</property>
+                                        <property name="flag">wxALL|wxEXPAND</property>
                                         <property name="proportion">1</property>
-                                        <object class="wxBoxSizer" expanded="0">
+                                        <object class="wxStaticBoxSizer" expanded="1">
+                                            <property name="label">QMake Variable Values</property>
                                             <property name="minimum_size"></property>
-                                            <property name="name">bSizer191</property>
-                                            <property name="orient">wxHORIZONTAL</property>
+                                            <property name="name">sbSizer13</property>
+                                            <property name="orient">wxVERTICAL</property>
                                             <object class="sizeritem" expanded="1">
                                                 <property name="border">5</property>
-                                                <property name="flag">wxALL|wxEXPAND</property>
+                                                <property name="flag">wxEXPAND</property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxButton" expanded="1">
-                                                    <property name="bg"></property>
-                                                    <property name="enabled">1</property>
-                                                    <property name="fg"></property>
-                                                    <property name="font"></property>
-                                                    <property name="hidden">0</property>
-                                                    <property name="id">wxID_ANY</property>
-                                                    <property name="label">OK</property>
-                                                    <property name="maximum_size"></property>
+                                                <object class="wxFlexGridSizer" expanded="1">
+                                                    <property name="cols">1</property>
+                                                    <property name="flexible_direction">wxBOTH</property>
+                                                    <property name="growablecols">0</property>
+                                                    <property name="growablerows">1</property>
+                                                    <property name="hgap">0</property>
                                                     <property name="minimum_size"></property>
-                                                    <property name="name">wxID_OK1</property>
-                                                    <property name="permission">protected</property>
-                                                    <property name="pos"></property>
-                                                    <property name="size"></property>
-                                                    <property name="style"></property>
-                                                    <property name="subclass"></property>
-                                                    <property name="tooltip"></property>
-                                                    <property name="window_extra_style"></property>
-                                                    <property name="window_style"></property>
-                                                    <event name="OnButtonClick"></event>
+                                                    <property name="name">fgSizer11</property>
+                                                    <property name="non_flexible_grow_mode">wxFLEX_GROWMODE_ALL</property>
+                                                    <property name="rows">3</property>
+                                                    <property name="vgap">0</property>
+                                                    <object class="sizeritem" expanded="1">
+                                                        <property name="border">5</property>
+                                                        <property name="flag">wxALL|wxEXPAND</property>
+                                                        <property name="proportion">0</property>
+                                                        <object class="wxStaticText" expanded="1">
+                                                            <property name="bg"></property>
+                                                            <property name="enabled">1</property>
+                                                            <property name="fg"></property>
+                                                            <property name="font"></property>
+                                                            <property name="hidden">0</property>
+                                                            <property name="id">wxID_ANY</property>
+                                                            <property name="label">Edit the values for the selected&#x0A;qmake variable with respect to&#x0A;the selected operator.&#x0A;Some variables are not available for&#x0A;changing, as they will be overwritten&#x0A;by QtWorkbench.</property>
+                                                            <property name="maximum_size"></property>
+                                                            <property name="minimum_size"></property>
+                                                            <property name="name">m_staticText5</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="pos"></property>
+                                                            <property name="size"></property>
+                                                            <property name="style"></property>
+                                                            <property name="subclass"></property>
+                                                            <property name="tooltip"></property>
+                                                            <property name="window_extra_style"></property>
+                                                            <property name="window_style"></property>
+                                                        </object>
+                                                    </object>
+                                                    <object class="sizeritem" expanded="1">
+                                                        <property name="border">5</property>
+                                                        <property name="flag">wxALL|wxEXPAND</property>
+                                                        <property name="proportion">0</property>
+                                                        <object class="wxListBox" expanded="1">
+                                                            <property name="bg"></property>
+                                                            <property name="choices"></property>
+                                                            <property name="enabled">1</property>
+                                                            <property name="fg"></property>
+                                                            <property name="font"></property>
+                                                            <property name="hidden">0</property>
+                                                            <property name="id">wxID_ANY</property>
+                                                            <property name="maximum_size"></property>
+                                                            <property name="minimum_size"></property>
+                                                            <property name="name">ID_VALUES_LISTBOX</property>
+                                                            <property name="permission">protected</property>
+                                                            <property name="pos"></property>
+                                                            <property name="size"></property>
+                                                            <property name="style"></property>
+                                                            <property name="subclass"></property>
+                                                            <property name="tooltip"></property>
+                                                            <property name="window_extra_style"></property>
+                                                            <property name="window_style"></property>
+                                                            <event name="OnListBox"></event>
+                                                            <event name="OnListBoxDClick"></event>
+                                                        </object>
+                                                    </object>
+                                                    <object class="sizeritem" expanded="1">
+                                                        <property name="border">5</property>
+                                                        <property name="flag">wxEXPAND</property>
+                                                        <property name="proportion">1</property>
+                                                        <object class="wxBoxSizer" expanded="1">
+                                                            <property name="minimum_size"></property>
+                                                            <property name="name">bSizer61</property>
+                                                            <property name="orient">wxHORIZONTAL</property>
+                                                            <object class="sizeritem" expanded="1">
+                                                                <property name="border">5</property>
+                                                                <property name="flag">wxALL|wxEXPAND</property>
+                                                                <property name="proportion">0</property>
+                                                                <object class="wxButton" expanded="1">
+                                                                    <property name="bg"></property>
+                                                                    <property name="enabled">1</property>
+                                                                    <property name="fg"></property>
+                                                                    <property name="font"></property>
+                                                                    <property name="hidden">0</property>
+                                                                    <property name="id">wxID_ANY</property>
+                                                                    <property name="label">Add</property>
+                                                                    <property name="maximum_size"></property>
+                                                                    <property name="minimum_size"></property>
+                                                                    <property name="name">ID_VALUE_ADD_BUTTON</property>
+                                                                    <property name="permission">protected</property>
+                                                                    <property name="pos"></property>
+                                                                    <property name="size"></property>
+                                                                    <property name="style"></property>
+                                                                    <property name="subclass"></property>
+                                                                    <property name="tooltip"></property>
+                                                                    <property name="window_extra_style"></property>
+                                                                    <property name="window_style"></property>
+                                                                    <event name="OnButtonClick"></event>
+                                                                </object>
+                                                            </object>
+                                                            <object class="spacer" expanded="1">
+                                                                <property name="border">0</property>
+                                                                <property name="flag">wxEXPAND</property>
+                                                                <property name="height">0</property>
+                                                                <property name="proportion">1</property>
+                                                                <property name="width">0</property>
+                                                            </object>
+                                                            <object class="sizeritem" expanded="1">
+                                                                <property name="border">5</property>
+                                                                <property name="flag">wxALL|wxEXPAND</property>
+                                                                <property name="proportion">0</property>
+                                                                <object class="wxButton" expanded="1">
+                                                                    <property name="bg"></property>
+                                                                    <property name="enabled">1</property>
+                                                                    <property name="fg"></property>
+                                                                    <property name="font"></property>
+                                                                    <property name="hidden">0</property>
+                                                                    <property name="id">wxID_ANY</property>
+                                                                    <property name="label">Remove</property>
+                                                                    <property name="maximum_size"></property>
+                                                                    <property name="minimum_size"></property>
+                                                                    <property name="name">ID_VALUE_REMOVE_BUTTON</property>
+                                                                    <property name="permission">protected</property>
+                                                                    <property name="pos"></property>
+                                                                    <property name="size"></property>
+                                                                    <property name="style"></property>
+                                                                    <property name="subclass"></property>
+                                                                    <property name="tooltip"></property>
+                                                                    <property name="window_extra_style"></property>
+                                                                    <property name="window_style"></property>
+                                                                    <event name="OnButtonClick"></event>
+                                                                </object>
+                                                            </object>
+                                                        </object>
+                                                    </object>
                                                 </object>
                                             </object>
                                         </object>
                                     </object>
                                 </object>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+                <object class="spacer" expanded="1">
+                    <property name="border">0</property>
+                    <property name="flag">wxEXPAND</property>
+                    <property name="height">0</property>
+                    <property name="proportion">1</property>
+                    <property name="width">0</property>
+                </object>
+                <object class="sizeritem" expanded="1">
+                    <property name="border">5</property>
+                    <property name="flag">wxALIGN_RIGHT|wxALL</property>
+                    <property name="proportion">1</property>
+                    <object class="wxBoxSizer" expanded="1">
+                        <property name="minimum_size"></property>
+                        <property name="name">bSizer19</property>
+                        <property name="orient">wxHORIZONTAL</property>
+                        <object class="sizeritem" expanded="1">
+                            <property name="border">5</property>
+                            <property name="flag">wxALL|wxEXPAND</property>
+                            <property name="proportion">1</property>
+                            <object class="wxButton" expanded="1">
+                                <property name="bg"></property>
+                                <property name="enabled">1</property>
+                                <property name="fg"></property>
+                                <property name="font"></property>
+                                <property name="hidden">0</property>
+                                <property name="id">wxID_ANY</property>
+                                <property name="label">OK</property>
+                                <property name="maximum_size">-1,-1</property>
+                                <property name="minimum_size"></property>
+                                <property name="name">wxID_OK</property>
+                                <property name="permission">protected</property>
+                                <property name="pos"></property>
+                                <property name="size"></property>
+                                <property name="style"></property>
+                                <property name="subclass"></property>
+                                <property name="tooltip"></property>
+                                <property name="window_extra_style"></property>
+                                <property name="window_style"></property>
+                                <event name="OnButtonClick"></event>
                             </object>
                         </object>
                     </object>

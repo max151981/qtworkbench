@@ -1,5 +1,5 @@
 /***************************************************************
- * Name:      qtwconfiguration.h
+ * Name:      QtWConfiguration.h
  * Purpose:   Code::Blocks plugin
  * Author:    Yorgos Pagles<y.pagles@gmail.com>
  * Copyright: (c) Yorgos Pagles
@@ -11,11 +11,11 @@
 
 #include "configurationpanel.h"
 
-class qtwConfiguration : public cbConfigurationPanel
+class QtWConfiguration : public cbConfigurationPanel
 {
 public:
-    qtwConfiguration(wxWindow* parent);
-    virtual ~qtwConfiguration();
+    QtWConfiguration(wxWindow* parent);
+    virtual ~QtWConfiguration();
 
 protected:
     virtual wxString GetTitle() const

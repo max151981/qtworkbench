@@ -19,7 +19,8 @@ class QtWProjectHandler
     bool Read();
     bool Write();
 
-    wxArrayString GetValuesFor(const wxString &identifierconst,const wxString &qmakeOperator);
+    wxArrayString GetAvailableVariables();
+    wxArrayString GetValuesFor(const wxString &identifier,const wxString &qmakeOperator);
     void SetValuesFor(const wxString &identifier, const wxArrayString& contents,const wxString &qmakeOperator);
 
     bool Contains(const wxString &identifier, const wxString& value,const wxString &qmakeOperator);

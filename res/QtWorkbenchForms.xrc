@@ -4,7 +4,7 @@
 		<style>wxCAPTION|wxCLOSE_BOX|wxMAXIMIZE_BOX|wxRESIZE_BORDER|wxSYSTEM_MENU</style>
 		<title>Qt Project Options</title>
 		<object class="wxFlexGridSizer">
-			<rows>1</rows>
+			<rows>2</rows>
 			<cols>2</cols>
 			<vgap>5</vgap>
 			<hgap>5</hgap>
@@ -22,14 +22,6 @@
 						<flag>wxALIGN_CENTER|wxEXPAND</flag>
 						<border>5</border>
 						<object class="wxListBox" name="ID_TARGET_LISTBOX">
-							<font>
-								<size>10</size>
-								<family>swiss</family>
-								<style>normal</style>
-								<weight>bold</weight>
-								<underlined>0</underlined>
-								<face>Arial</face>
-							</font>
 							<content />
 						</object>
 					</object>
@@ -39,14 +31,14 @@
 				<option>1</option>
 				<flag>wxEXPAND | wxALL</flag>
 				<border>5</border>
-				<object class="wxNotebook" name="m_notebook2">
+				<object class="wxNotebook" name="ID_NOTEBOOK">
 					<object class="notebookpage">
 						<label>Simple View</label>
 						<selected>0</selected>
 						<object class="wxPanel" name="m_panel3">
 							<style>wxTAB_TRAVERSAL</style>
 							<object class="wxFlexGridSizer">
-								<rows>5</rows>
+								<rows>4</rows>
 								<cols>1</cols>
 								<vgap>0</vgap>
 								<hgap>0</hgap>
@@ -387,23 +379,6 @@
 										</object>
 									</object>
 								</object>
-								<object class="sizeritem">
-									<option>1</option>
-									<flag>wxALIGN_RIGHT|wxALL</flag>
-									<border>5</border>
-									<object class="wxBoxSizer">
-										<orient>wxHORIZONTAL</orient>
-										<object class="sizeritem">
-											<option>1</option>
-											<flag>wxALL|wxEXPAND</flag>
-											<border>5</border>
-											<object class="wxButton" name="wxID_OK">
-												<label>OK</label>
-												<default>0</default>
-											</object>
-										</object>
-									</object>
-								</object>
 							</object>
 						</object>
 					</object>
@@ -413,188 +388,89 @@
 						<object class="wxPanel" name="m_panel4">
 							<style>wxTAB_TRAVERSAL</style>
 							<object class="wxFlexGridSizer">
-								<rows>2</rows>
-								<cols>1</cols>
+								<rows>1</rows>
+								<cols>2</cols>
 								<vgap>0</vgap>
 								<hgap>0</hgap>
-								<growablecols>0</growablecols>
+								<growablecols>0,1</growablecols>
 								<growablerows>0</growablerows>
 								<object class="sizeritem">
 									<option>1</option>
 									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
-									<object class="wxFlexGridSizer">
-										<rows>2</rows>
-										<cols>2</cols>
-										<vgap>0</vgap>
-										<hgap>0</hgap>
-										<growablecols>0,1</growablecols>
-										<growablerows>0</growablerows>
+									<object class="wxStaticBoxSizer">
+										<orient>wxVERTICAL</orient>
+										<label>QMake Variables</label>
 										<object class="sizeritem">
 											<option>1</option>
-											<flag>wxALL|wxEXPAND</flag>
+											<flag>wxEXPAND</flag>
 											<border>5</border>
-											<object class="wxStaticBoxSizer">
-												<orient>wxVERTICAL</orient>
-												<label>QMake Variables</label>
+											<object class="wxFlexGridSizer">
+												<rows>4</rows>
+												<cols>1</cols>
+												<vgap>0</vgap>
+												<hgap>0</hgap>
+												<growablecols>0</growablecols>
+												<growablerows>1</growablerows>
 												<object class="sizeritem">
-													<option>1</option>
-													<flag>wxEXPAND</flag>
+													<option>0</option>
+													<flag>wxALL|wxEXPAND</flag>
 													<border>5</border>
-													<object class="wxFlexGridSizer">
-														<rows>4</rows>
-														<cols>1</cols>
-														<vgap>0</vgap>
-														<hgap>0</hgap>
-														<growablecols>0</growablecols>
-														<growablerows>1</growablerows>
-														<object class="sizeritem">
-															<option>0</option>
-															<flag>wxALL|wxEXPAND</flag>
-															<border>5</border>
-															<object class="wxStaticText" name="m_staticText4">
-																<font>
-																	<size>8</size>
-																	<family>swiss</family>
-																	<style>normal</style>
-																	<weight>normal</weight>
-																	<underlined>0</underlined>
-																	<face>Arial</face>
-																</font>
-																<label>Select the qmake variable\nyou want to change values for.\nThe changed or added variables\nwill be updated in the\nresulting configuration file\nusing the selected operaror.</label>
-															</object>
-														</object>
-														<object class="sizeritem">
-															<option>0</option>
-															<flag>wxALL|wxEXPAND</flag>
-															<border>5</border>
-															<object class="wxListBox" name="m_listBox4">
-																<content />
-															</object>
-														</object>
-														<object class="sizeritem">
-															<option>0</option>
-															<flag>wxALL|wxEXPAND</flag>
-															<border>5</border>
-															<object class="wxChoice" name="m_choice3">
-																<content>
-																	<item>Operator: Append ( += )</item>
-																	<item>Operator: Set ( = )</item>
-																	<item>Operator: Remove ( -= )</item>
-																	<item>Operator: Replace ( ~= )</item>
-																	<item>Operator: Unique ( *= )</item>
-																</content>
-																<selection>0</selection>
-															</object>
-														</object>
-														<object class="sizeritem">
-															<option>1</option>
-															<flag>wxEXPAND</flag>
-															<border>5</border>
-															<object class="wxBoxSizer">
-																<orient>wxHORIZONTAL</orient>
-																<object class="sizeritem">
-																	<option>0</option>
-																	<flag>wxALL|wxEXPAND</flag>
-																	<border>5</border>
-																	<object class="wxButton" name="m_button10">
-																		<label>Add</label>
-																		<default>0</default>
-																	</object>
-																</object>
-																<object class="spacer">
-																	<size>0,0</size>
-																	<option>1</option>
-																	<flag>wxEXPAND</flag>
-																	<border>0</border>
-																</object>
-																<object class="sizeritem">
-																	<option>0</option>
-																	<flag>wxALL|wxEXPAND</flag>
-																	<border>5</border>
-																	<object class="wxButton" name="m_button9">
-																		<label>Remove</label>
-																		<default>0</default>
-																	</object>
-																</object>
-															</object>
-														</object>
+													<object class="wxStaticText" name="m_staticText4">
+														<label>Select the qmake variable\nyou want to change values for.\nThe changed or added variables\nwill be updated in the\nresulting configuration file\nusing the selected operaror.</label>
 													</object>
 												</object>
-											</object>
-										</object>
-										<object class="sizeritem">
-											<option>1</option>
-											<flag>wxALL|wxEXPAND</flag>
-											<border>5</border>
-											<object class="wxStaticBoxSizer">
-												<orient>wxVERTICAL</orient>
-												<label>QMake Variable Values</label>
+												<object class="sizeritem">
+													<option>0</option>
+													<flag>wxALL|wxEXPAND</flag>
+													<border>5</border>
+													<object class="wxListBox" name="ID_VARIABLES_LISTBOX">
+														<content />
+													</object>
+												</object>
+												<object class="sizeritem">
+													<option>0</option>
+													<flag>wxALL|wxEXPAND</flag>
+													<border>5</border>
+													<object class="wxChoice" name="ID_OPERATORS_CHOICE">
+														<content>
+															<item>Operator: Append ( += )</item>
+															<item>Operator: Set ( = )</item>
+															<item>Operator: Remove ( -= )</item>
+															<item>Operator: Replace ( ~= )</item>
+															<item>Operator: Unique ( *= )</item>
+														</content>
+														<selection>0</selection>
+													</object>
+												</object>
 												<object class="sizeritem">
 													<option>1</option>
 													<flag>wxEXPAND</flag>
 													<border>5</border>
-													<object class="wxFlexGridSizer">
-														<rows>3</rows>
-														<cols>1</cols>
-														<vgap>0</vgap>
-														<hgap>0</hgap>
-														<growablecols>0</growablecols>
-														<growablerows>1</growablerows>
+													<object class="wxBoxSizer">
+														<orient>wxHORIZONTAL</orient>
 														<object class="sizeritem">
 															<option>0</option>
 															<flag>wxALL|wxEXPAND</flag>
 															<border>5</border>
-															<object class="wxStaticText" name="m_staticText5">
-																<font>
-																	<size>8</size>
-																	<family>swiss</family>
-																	<style>normal</style>
-																	<weight>normal</weight>
-																	<underlined>0</underlined>
-																	<face>Arial</face>
-																</font>
-																<label>Edit the values for the selected\nqmake variable with respect to\nthe selected operator.\nSome variables are not available for\nchanging, as they will be overwritten\nby QtWorkbench.</label>
+															<object class="wxButton" name="ID_VARIABLE_ADD_BUTTON">
+																<label>Add</label>
+																<default>0</default>
 															</object>
 														</object>
-														<object class="sizeritem">
-															<option>0</option>
-															<flag>wxALL|wxEXPAND</flag>
-															<border>5</border>
-															<object class="wxListBox" name="m_listBox5">
-																<content />
-															</object>
-														</object>
-														<object class="sizeritem">
+														<object class="spacer">
+															<size>0,0</size>
 															<option>1</option>
 															<flag>wxEXPAND</flag>
+															<border>0</border>
+														</object>
+														<object class="sizeritem">
+															<option>0</option>
+															<flag>wxALL|wxEXPAND</flag>
 															<border>5</border>
-															<object class="wxBoxSizer">
-																<orient>wxHORIZONTAL</orient>
-																<object class="sizeritem">
-																	<option>0</option>
-																	<flag>wxALL|wxEXPAND</flag>
-																	<border>5</border>
-																	<object class="wxButton" name="m_button101">
-																		<label>Add</label>
-																		<default>0</default>
-																	</object>
-																</object>
-																<object class="spacer">
-																	<size>0,0</size>
-																	<option>1</option>
-																	<flag>wxEXPAND</flag>
-																	<border>0</border>
-																</object>
-																<object class="sizeritem">
-																	<option>0</option>
-																	<flag>wxALL|wxEXPAND</flag>
-																	<border>5</border>
-																	<object class="wxButton" name="m_button91">
-																		<label>Remove</label>
-																		<default>0</default>
-																	</object>
-																</object>
+															<object class="wxButton" name="ID_VARIABLE_DELETE_BUTTON">
+																<label>Remove</label>
+																<default>0</default>
 															</object>
 														</object>
 													</object>
@@ -605,22 +481,98 @@
 								</object>
 								<object class="sizeritem">
 									<option>1</option>
-									<flag>wxALIGN_RIGHT|wxALL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
-									<object class="wxBoxSizer">
-										<orient>wxHORIZONTAL</orient>
+									<object class="wxStaticBoxSizer">
+										<orient>wxVERTICAL</orient>
+										<label>QMake Variable Values</label>
 										<object class="sizeritem">
 											<option>1</option>
-											<flag>wxALL|wxEXPAND</flag>
+											<flag>wxEXPAND</flag>
 											<border>5</border>
-											<object class="wxButton" name="wxID_OK1">
-												<label>OK</label>
-												<default>0</default>
+											<object class="wxFlexGridSizer">
+												<rows>3</rows>
+												<cols>1</cols>
+												<vgap>0</vgap>
+												<hgap>0</hgap>
+												<growablecols>0</growablecols>
+												<growablerows>1</growablerows>
+												<object class="sizeritem">
+													<option>0</option>
+													<flag>wxALL|wxEXPAND</flag>
+													<border>5</border>
+													<object class="wxStaticText" name="m_staticText5">
+														<label>Edit the values for the selected\nqmake variable with respect to\nthe selected operator.\nSome variables are not available for\nchanging, as they will be overwritten\nby QtWorkbench.</label>
+													</object>
+												</object>
+												<object class="sizeritem">
+													<option>0</option>
+													<flag>wxALL|wxEXPAND</flag>
+													<border>5</border>
+													<object class="wxListBox" name="ID_VALUES_LISTBOX">
+														<content />
+													</object>
+												</object>
+												<object class="sizeritem">
+													<option>1</option>
+													<flag>wxEXPAND</flag>
+													<border>5</border>
+													<object class="wxBoxSizer">
+														<orient>wxHORIZONTAL</orient>
+														<object class="sizeritem">
+															<option>0</option>
+															<flag>wxALL|wxEXPAND</flag>
+															<border>5</border>
+															<object class="wxButton" name="ID_VALUE_ADD_BUTTON">
+																<label>Add</label>
+																<default>0</default>
+															</object>
+														</object>
+														<object class="spacer">
+															<size>0,0</size>
+															<option>1</option>
+															<flag>wxEXPAND</flag>
+															<border>0</border>
+														</object>
+														<object class="sizeritem">
+															<option>0</option>
+															<flag>wxALL|wxEXPAND</flag>
+															<border>5</border>
+															<object class="wxButton" name="ID_VALUE_REMOVE_BUTTON">
+																<label>Remove</label>
+																<default>0</default>
+															</object>
+														</object>
+													</object>
+												</object>
 											</object>
 										</object>
 									</object>
 								</object>
 							</object>
+						</object>
+					</object>
+				</object>
+			</object>
+			<object class="spacer">
+				<size>0,0</size>
+				<option>1</option>
+				<flag>wxEXPAND</flag>
+				<border>0</border>
+			</object>
+			<object class="sizeritem">
+				<option>1</option>
+				<flag>wxALIGN_RIGHT|wxALL</flag>
+				<border>5</border>
+				<object class="wxBoxSizer">
+					<orient>wxHORIZONTAL</orient>
+					<object class="sizeritem">
+						<option>1</option>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>5</border>
+						<object class="wxButton" name="wxID_OK">
+							<label>OK</label>
+							<default>0</default>
 						</object>
 					</object>
 				</object>

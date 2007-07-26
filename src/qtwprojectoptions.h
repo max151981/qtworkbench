@@ -9,11 +9,11 @@
 
 class cbProject;
 class QtWProjectHandler;
-class qtwProjectOptions : public wxDialog
+class QtWProjectOptions : public wxDialog
 {
 public:
-    qtwProjectOptions(wxWindow* parent);
-    ~qtwProjectOptions();
+    QtWProjectOptions(wxWindow* parent);
+    ~QtWProjectOptions();
 private:
     cbProject* CurrentActiveProject();
 
@@ -23,11 +23,15 @@ private:
     void PopulateRequirements();
     void PopulateModules();
     void PopulateFileLocations();
+    void PopulateVariablesList();
+    void PopulateValuesList();
 
     void OnBrowseMocButtonClick(wxCommandEvent&);
     void OnBrowseUicButtonClick(wxCommandEvent&);
     void OnBrowseRccButtonClick(wxCommandEvent&);
     void OnTargetListClick(wxCommandEvent&);
+    void OnNotebookPageChange(wxNotebookEvent&);
+    void OnUpdateAdvancedView(wxCommandEvent&);
 
     void EndModal(int retCode);
     void Update();

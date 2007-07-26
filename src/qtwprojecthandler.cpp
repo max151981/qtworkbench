@@ -178,6 +178,17 @@ bool QtWProjectHandler::Write()
     return true;
 }
 
+wxArrayString QtWProjectHandler::GetAvailableVariables(){
+    wxArrayString variables;
+    QMakeVariablesMap::iterator it;
+    for ( it = m_VariableMap.begin(); it != m_VariableMap.end(); ++it )
+    {
+        wxString key = it->first;
+        variables.Add(key);
+    }
+    return variables;
+}
+
 wxArrayString QtWProjectHandler::GetValuesFor(const wxString &identifier,const wxString &qmakeOperator)
 {
     wxArrayStringMap values = m_VariableMap[identifier];
@@ -187,6 +198,11 @@ wxArrayString QtWProjectHandler::GetValuesFor(const wxString &identifier,const w
 void QtWProjectHandler::SetValuesFor(const wxString &identifier, const wxArrayString& contentsArray,const wxString &qmakeOperator)
 {
     wxArrayStringMap values = m_VariableMap[identifier];
+    wxArrayString current = values[qmakeOperator];
+    if(!current.GetCount() && !contentsArray.GetCount() )
+    {
+        return;
+    }
     values[qmakeOperator] = contentsArray;
     m_VariableMap[identifier] = values;
 }

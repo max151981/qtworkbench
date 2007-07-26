@@ -1,5 +1,5 @@
 /***************************************************************
- * Name:      qtwconfiguration.cpp
+ * Name:      QtWConfiguration.cpp
  * Purpose:   Code::Blocks plugin
  * Author:    Yorgos Pagles<y.pagles@gmail.com>
  * Copyright: (c) Yorgos Pagles
@@ -9,22 +9,22 @@
 #include "qtwmkspecbrowser.h"
 #include "qtwconfiguration.h"
 
-BEGIN_EVENT_TABLE(qtwConfiguration, wxPanel)
-EVT_BUTTON(XRCID("ID_BUTTON_QTDIR"),qtwConfiguration::OnBrowseQtDir)
-EVT_BUTTON(XRCID("ID_BUTTON_QMAKESPEC"),qtwConfiguration::OnBrowseQtMakeSpec)
-EVT_TEXT(XRCID("ID_TEXTCTRL_QMAKESPEC"), qtwConfiguration::OnReReadQMakeSpecs)
+BEGIN_EVENT_TABLE(QtWConfiguration, wxPanel)
+EVT_BUTTON(XRCID("ID_BUTTON_QTDIR"),QtWConfiguration::OnBrowseQtDir)
+EVT_BUTTON(XRCID("ID_BUTTON_QMAKESPEC"),QtWConfiguration::OnBrowseQtMakeSpec)
+EVT_TEXT(XRCID("ID_TEXTCTRL_QMAKESPEC"), QtWConfiguration::OnReReadQMakeSpecs)
 END_EVENT_TABLE()
 
-qtwConfiguration::qtwConfiguration(wxWindow* parent)
+QtWConfiguration::QtWConfiguration(wxWindow* parent)
 {
     wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgQtWConfig"));
     LoadSettings();
 }
 
-qtwConfiguration::~qtwConfiguration()
+QtWConfiguration::~QtWConfiguration()
 {}
 
-void qtwConfiguration::SaveSettings()
+void QtWConfiguration::SaveSettings()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("qtwb"));
     cfg->Write(wxT("/QtDir"), XRCCTRL(*this, "ID_TEXTCTRL_QTDIR", wxTextCtrl)->GetValue());
@@ -32,7 +32,7 @@ void qtwConfiguration::SaveSettings()
     cfg->Write(wxT("/QMkSpec"), XRCCTRL(*this, "ID_CHOICE_MKSPEC", wxChoice)->GetStringSelection());
 }
 
-void qtwConfiguration::LoadSettings()
+void QtWConfiguration::LoadSettings()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("qtwb"));
     XRCCTRL(*this, "ID_TEXTCTRL_QTDIR", wxTextCtrl)->SetValue(cfg->Read(_T("/QtDir")));
@@ -43,7 +43,7 @@ void qtwConfiguration::LoadSettings()
     XRCCTRL(*this, "ID_CHOICE_MKSPEC", wxChoice)->SetStringSelection(cfg->Read(_T("/QMkSpec")));
 }
 
-void qtwConfiguration::OnBrowseQtDir(wxCommandEvent& event)
+void QtWConfiguration::OnBrowseQtDir(wxCommandEvent& event)
 {
     wxTextCtrl *choiceQtDir = XRCCTRL(*this, "ID_TEXTCTRL_QTDIR", wxTextCtrl);
     wxString targetDir = choiceQtDir->GetValue();
@@ -59,7 +59,7 @@ void qtwConfiguration::OnBrowseQtDir(wxCommandEvent& event)
     }
 }
 
-void qtwConfiguration::OnBrowseQtMakeSpec(wxCommandEvent& event)
+void QtWConfiguration::OnBrowseQtMakeSpec(wxCommandEvent& event)
 {
     wxTextCtrl *choiceQMakeSpecDir = XRCCTRL(*this, "ID_TEXTCTRL_QMAKESPEC", wxTextCtrl);
     wxString targetDir = choiceQMakeSpecDir->GetValue();
@@ -77,13 +77,13 @@ void qtwConfiguration::OnBrowseQtMakeSpec(wxCommandEvent& event)
     }
 }
 
-void qtwConfiguration::OnReReadQMakeSpecs(wxCommandEvent& event){
+void QtWConfiguration::OnReReadQMakeSpecs(wxCommandEvent& event){
     wxString targetDir = XRCCTRL(*this, "ID_TEXTCTRL_QMAKESPEC", wxTextCtrl)->GetValue();
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(targetDir);
     PopulateMkSpecs(targetDir);
 }
 
-void qtwConfiguration::PopulateMkSpecs(const wxString &QMakeSpecDir)
+void QtWConfiguration::PopulateMkSpecs(const wxString &QMakeSpecDir)
 {
     wxChoice *availableMkSpecs = XRCCTRL(*this, "ID_CHOICE_MKSPEC", wxChoice);
     if (!wxDir::Exists(QMakeSpecDir))
