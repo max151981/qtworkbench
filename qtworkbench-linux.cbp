@@ -39,6 +39,7 @@
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="res/QtWorkbenchForms.xrc" />
+		<Unit filename="res/manifest.xml" />
 		<Unit filename="src/qtwconfiguration.cpp" />
 		<Unit filename="src/qtwconfiguration.h" />
 		<Unit filename="src/qtwmkspecbrowser.h" />
@@ -51,7 +52,9 @@
 		<Unit filename="src/qtwprojectoptions.cpp" />
 		<Unit filename="src/qtwprojectoptions.h" />
 		<Extensions>
+			<envvars />
 			<code_completion />
+			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

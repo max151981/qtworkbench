@@ -29,6 +29,8 @@ private:
     void OnBrowseMocButtonClick(wxCommandEvent&);
     void OnBrowseUicButtonClick(wxCommandEvent&);
     void OnBrowseRccButtonClick(wxCommandEvent&);
+    void OnAddValue(wxCommandEvent&);
+    void OnAddVariable(wxCommandEvent&);
     void OnTargetListClick(wxCommandEvent&);
     void OnNotebookPageChange(wxNotebookEvent&);
     void OnUpdateAdvancedView(wxCommandEvent&);

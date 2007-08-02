@@ -53,7 +53,7 @@ bool QtWProjectHandler::Read()
     {
         if (end)
         {
-            //FIXME what if double entries?
+            //FIXME what if double entries for current identifier and current operator?
             if (!currentIdentifier.IsEmpty() && !currentContents.empty())
             {
                 m_VariableMap[currentIdentifier]=currentContents;
@@ -75,7 +75,7 @@ bool QtWProjectHandler::Read()
             wxString token = tkz.GetNextToken();
             if (token.IsEmpty())
             {
-                continue; // Probably empty line
+                continue; //Empty line
             }
             wxChar commentChar('#');
             if (token[0] == commentChar)
@@ -161,7 +161,8 @@ bool QtWProjectHandler::Write()
             wxArrayString value = valueit->second;
 
             wxString line = key + wxT(" ") + qmakeOperator;
-            for(size_t i=0; i<value.GetCount(); i++){
+            for (size_t i=0; i<value.GetCount(); i++)
+            {
                 line << wxT(" ");
                 line << value[i];
             }
@@ -178,7 +179,8 @@ bool QtWProjectHandler::Write()
     return true;
 }
 
-wxArrayString QtWProjectHandler::GetAvailableVariables(){
+wxArrayString QtWProjectHandler::GetAvailableVariables()
+{
     wxArrayString variables;
     QMakeVariablesMap::iterator it;
     for ( it = m_VariableMap.begin(); it != m_VariableMap.end(); ++it )
@@ -199,7 +201,7 @@ void QtWProjectHandler::SetValuesFor(const wxString &identifier, const wxArraySt
 {
     wxArrayStringMap values = m_VariableMap[identifier];
     wxArrayString current = values[qmakeOperator];
-    if(!current.GetCount() && !contentsArray.GetCount() )
+    if (!current.GetCount() && !contentsArray.GetCount())
     {
         return;
     }

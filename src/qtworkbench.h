@@ -130,12 +130,11 @@ protected:
 
 
     void OnProjectOptions(wxCommandEvent& event);
-
     void OnProjectOptionsEdit(wxCommandEvent& event);
-
     void OnProcessTerminated(CodeBlocksEvent& event);
+    void OnBuildStarted(CodeBlocksEvent& event);
 
-    void OnRunQMake(wxCommandEvent& event);
+    void RunQMake();
 
     cbProject* CurrentActiveProject();
 

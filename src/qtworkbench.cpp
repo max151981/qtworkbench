@@ -21,13 +21,11 @@ namespace
 
 int idQtWbMenuOptions = wxNewId();
 int idQtWbMenuOptionsEdit = wxNewId();
-int idQtWbMenuRunQMake = wxNewId();
 int idQtWProcess = wxNewId();
 
 BEGIN_EVENT_TABLE(QtWorkbench, cbPlugin)
 EVT_MENU(idQtWbMenuOptions, QtWorkbench::OnProjectOptions)
 EVT_MENU(idQtWbMenuOptionsEdit, QtWorkbench::OnProjectOptionsEdit)
-EVT_MENU(idQtWbMenuRunQMake, QtWorkbench::OnRunQMake)
 EVT_PIPEDPROCESS_TERMINATED(idQtWProcess, QtWorkbench::OnProcessTerminated)
 END_EVENT_TABLE()
 
@@ -48,12 +46,10 @@ QtWorkbench::~QtWorkbench()
 
 void QtWorkbench::OnAttach()
 {
-    // do whatever initialization you need for your plugin
-    // NOTE: after this function, the inherited member variable
-    // m_IsAttached will be TRUE...
-    // You should check for it in other functions, because if it
-    // is FALSE, it means that the application did *not* "load"
-    // (see: does not need) this plugin...
+    // Register to get notified with the cbEVT_COMPILER_STARTED event.
+    // We will use this event to automatically invoke qmake before the
+    // build process.
+    Manager::Get()->RegisterEventSink(cbEVT_COMPILER_STARTED, new cbEventFunctor<QtWorkbench, CodeBlocksEvent>(this, &QtWorkbench::OnBuildStarted));
 }
 
 void QtWorkbench::OnRelease(bool appShutDown)
@@ -88,7 +84,6 @@ void QtWorkbench::BuildMenu(wxMenuBar* menuBar)
     wxMenu* projectMenu = menuBar->GetMenu(projectMenuPos);
     projectMenu->AppendSeparator();
     projectMenu->Append(idQtWbMenuOptions, wxT("Qt project options..."));
-    projectMenu->Append(idQtWbMenuRunQMake, wxT("Run qmake"));
 
     // TODO Later enable this. The parser must be of proven quality first
     // projectMenu->Append(idQtWbMenuOptionsEdit, wxT("Edit Qt project options"));
@@ -176,8 +171,8 @@ void QtWorkbench::OnProcessTerminated(CodeBlocksEvent& event)
     m_Pid = wxExecute(cmd, wxEXEC_ASYNC, m_Process);
 }
 
-void QtWorkbench::OnRunQMake(wxCommandEvent& event)
-{
+void QtWorkbench::RunQMake(){
+
     if (m_Pid)
         return;
 
@@ -227,6 +222,16 @@ void QtWorkbench::OnRunQMake(wxCommandEvent& event)
 
     CodeBlocksEvent mockEvent;
     OnProcessTerminated(mockEvent);
+}
+
+void QtWorkbench::OnBuildStarted(CodeBlocksEvent& event){
+
+    RunQMake();
+
+    while(m_Pid){
+        wxMilliSleep(10);
+        Manager::Yield();
+    }
 }
 
 cbProject* QtWorkbench::CurrentActiveProject()
