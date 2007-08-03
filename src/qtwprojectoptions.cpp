@@ -11,7 +11,7 @@
 #include "qtwprojectoptions.h"
 #include "qtwprojecthandler.h"
 
-static const wxChar * const QMakeOperators[]  = {wxT("+="),wxT("="),wxT("-="),wxT("~="),wxT("*=")};
+static const wxChar * const QMakeOperators[]  = {wxT("+="),wxT("="),wxT("-="),wxT("~="),wxT("*="),0};
 
 BEGIN_EVENT_TABLE(QtWProjectOptions, wxDialog)
     EVT_NOTEBOOK_PAGE_CHANGING(XRCID("ID_NOTEBOOK"),QtWProjectOptions::OnNotebookPageChange)
@@ -25,9 +25,9 @@ BEGIN_EVENT_TABLE(QtWProjectOptions, wxDialog)
     EVT_CHOICE(XRCID("ID_OPERATORS_CHOICE"),QtWProjectOptions::OnUpdateAdvancedView)
 
     EVT_BUTTON(XRCID("ID_VARIABLE_ADD_BUTTON"),QtWProjectOptions::OnAddVariable)
-    //    ID_VARIABLE_DELETE_BUTTON
+    EVT_BUTTON(XRCID("ID_VARIABLE_DELETE_BUTTON"),QtWProjectOptions::OnRemoveVariable)
     EVT_BUTTON(XRCID("ID_VALUE_ADD_BUTTON"),QtWProjectOptions::OnAddValue)
-    //    ID_VALUE_REMOVE_BUTTON
+    EVT_BUTTON(XRCID("ID_VALUE_REMOVE_BUTTON"),QtWProjectOptions::OnRemoveValue)
 
 END_EVENT_TABLE()
 
@@ -223,7 +223,7 @@ void QtWProjectOptions::Update()
         // Update from the "Advanced" page
         wxListBox *variablesList = XRCCTRL(*this, "ID_VARIABLES_LISTBOX", wxListBox);
         wxListBox *valuesList = XRCCTRL(*this, "ID_VALUES_LISTBOX", wxListBox);
-        wxChoice * choice = XRCCTRL(*this, "ID_OPERATORS_CHOICE", wxChoice);
+        wxChoice *choice = XRCCTRL(*this, "ID_OPERATORS_CHOICE", wxChoice);
         if (variablesList && valuesList && choice)
         {
             if (variablesList->GetSelection() != wxNOT_FOUND)
@@ -425,7 +425,7 @@ void QtWProjectOptions::OnAddValue(wxCommandEvent&)
 {
     wxTextEntryDialog dialog(this,_("Please enter the new value name."),_("New Value"));
     PlaceWindow(&dialog);
-    if (dialog.ShowModal())
+    if (dialog.ShowModal() == wxID_OK)
     {
         XRCCTRL(*this, "ID_VALUES_LISTBOX", wxListBox)->Append(dialog.GetValue());
     }
@@ -436,11 +436,51 @@ void QtWProjectOptions::OnAddVariable(wxCommandEvent&)
 {
     wxTextEntryDialog dialog(this,_("Please enter the new variable name."),_("New Variable"));
     PlaceWindow(&dialog);
-    if (dialog.ShowModal())
+    if (dialog.ShowModal() == wxID_OK)
     {
         XRCCTRL(*this, "ID_VARIABLES_LISTBOX", wxListBox)->Append(dialog.GetValue());
     }
     Update();
+}
+
+void QtWProjectOptions::OnRemoveValue(wxCommandEvent&)
+{
+    wxListBox *variablesList = XRCCTRL(*this, "ID_VARIABLES_LISTBOX", wxListBox);
+    wxListBox *valuesList = XRCCTRL(*this, "ID_VALUES_LISTBOX", wxListBox);
+    wxChoice *choice = XRCCTRL(*this, "ID_OPERATORS_CHOICE", wxChoice);
+    if (variablesList && valuesList && choice)
+    {
+        if (variablesList->GetSelection() != wxNOT_FOUND)
+        {
+            wxString variable = variablesList->GetStringSelection();
+            wxString qmakeOperator = QMakeOperators[choice->GetSelection()];
+
+            wxString value = valuesList->GetStringSelection();
+            m_Handler->Remove(variable,value,qmakeOperator);
+        }
+    }
+    PopulateWorld();
+}
+
+void QtWProjectOptions::OnRemoveVariable(wxCommandEvent&)
+{
+    wxListBox *variablesList = XRCCTRL(*this, "ID_VARIABLES_LISTBOX", wxListBox);
+    wxChoice *choice = XRCCTRL(*this, "ID_OPERATORS_CHOICE", wxChoice);
+    if (variablesList && choice)
+    {
+        if (variablesList->GetSelection() != wxNOT_FOUND)
+        {
+            wxString variable = variablesList->GetStringSelection();
+            wxString qmakeOperator = QMakeOperators[choice->GetSelection()];
+
+            wxArrayString variables = m_Handler->GetValuesFor(variable,qmakeOperator);
+            for (size_t i=0; i<variables.GetCount(); i++)
+            {
+                m_Handler->Remove(variable,variables[i],qmakeOperator);
+            }
+        }
+    }
+    PopulateWorld();
 }
 
 void QtWProjectOptions::OnTargetListClick(wxCommandEvent& event)

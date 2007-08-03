@@ -31,6 +31,8 @@ private:
     void OnBrowseRccButtonClick(wxCommandEvent&);
     void OnAddValue(wxCommandEvent&);
     void OnAddVariable(wxCommandEvent&);
+    void OnRemoveValue(wxCommandEvent&);
+    void OnRemoveVariable(wxCommandEvent&);
     void OnTargetListClick(wxCommandEvent&);
     void OnNotebookPageChange(wxNotebookEvent&);
     void OnUpdateAdvancedView(wxCommandEvent&);

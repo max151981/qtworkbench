@@ -237,6 +237,17 @@ void QtWProjectHandler::Remove(const wxString &identifier, const wxString& value
 {
     wxArrayString values = GetValuesFor(identifier,qmakeOperator);
     values.Remove(value);
-    SetValuesFor(identifier,values,qmakeOperator);
+    if (values.IsEmpty())
+    {
+        m_VariableMap[identifier].erase(qmakeOperator);
+        if (m_VariableMap[identifier].empty())
+        {
+            m_VariableMap.erase(identifier);
+        }
+    }
+    else
+    {
+        SetValuesFor(identifier,values,qmakeOperator);
+    }
 }
 
