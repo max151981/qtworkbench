@@ -36,6 +36,7 @@ private:
     void OnTargetListClick(wxCommandEvent&);
     void OnNotebookPageChange(wxNotebookEvent&);
     void OnUpdateAdvancedView(wxCommandEvent&);
+    void OnUsingQtWorkbench(wxCommandEvent&);
 
     void EndModal(int retCode);
     void Update();

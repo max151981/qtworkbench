@@ -48,20 +48,8 @@ bool QtWProjectHandler::Read()
     const wxChar AND('+');
     const wxChar OR('*');
     const wxChar NOT('~');
-    bool end=false;
     for (wxString str = file.GetFirstLine(); !file.Eof(); str = file.GetNextLine() )
     {
-        if (end)
-        {
-            //FIXME what if double entries for current identifier and current operator?
-            if (!currentIdentifier.IsEmpty() && !currentContents.empty())
-            {
-                m_VariableMap[currentIdentifier]=currentContents;
-            }
-            currentContents.clear();
-            currentIdentifier = wxT("");
-            end=false;
-        }
         str.Trim();
         str.Trim(false);
         if (str.IsEmpty())
@@ -70,8 +58,10 @@ bool QtWProjectHandler::Read()
         }
         wxChar lineContinueChar('\\');
         wxStringTokenizer tkz(str, wxT(" \t\r\n"));
+        bool doContinue=false;
         while ( tkz.HasMoreTokens() )
         {
+            doContinue=false;
             wxString token = tkz.GetNextToken();
             if (token.IsEmpty())
             {
@@ -112,21 +102,30 @@ bool QtWProjectHandler::Read()
             {
                 currentContents[currentOperator].Add(token);
             }
+            else
+            {
+                doContinue = true;
+            }
         }
-        if (str[str.Len()-1] != lineContinueChar)
+        if (!doContinue)
         {
-            end=true;
+            if (!currentIdentifier.IsEmpty() && !currentContents.empty())
+            {
+                m_VariableMap[currentIdentifier]=currentContents;
+            }
+            currentContents.clear();
+            currentIdentifier = wxT("");
         }
     }
 
     // Get the last entry
-    if (end)
-    {
-        if (!currentIdentifier.IsEmpty() && !currentContents.empty())
-        {
-            m_VariableMap[currentIdentifier]=currentContents;
-        }
-    }
+//    if (end)
+//    {
+//        if (!currentIdentifier.IsEmpty() && !currentContents.empty())
+//        {
+//            m_VariableMap[currentIdentifier]=currentContents;
+//        }
+//    }
     return file.Close();
 }
 
@@ -173,7 +172,7 @@ bool QtWProjectHandler::Write()
     if (lineNumber)
     {
         // Parser needs an empty line in the end
-        file.InsertLine(wxT(""),lineNumber);
+        // file.InsertLine(wxT(""),lineNumber);
         return file.Write();
     }
     return true;

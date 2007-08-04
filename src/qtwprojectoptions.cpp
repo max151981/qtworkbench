@@ -28,6 +28,7 @@ BEGIN_EVENT_TABLE(QtWProjectOptions, wxDialog)
     EVT_BUTTON(XRCID("ID_VARIABLE_DELETE_BUTTON"),QtWProjectOptions::OnRemoveVariable)
     EVT_BUTTON(XRCID("ID_VALUE_ADD_BUTTON"),QtWProjectOptions::OnAddValue)
     EVT_BUTTON(XRCID("ID_VALUE_REMOVE_BUTTON"),QtWProjectOptions::OnRemoveValue)
+    EVT_CHECKBOX(XRCID("ID_CHOICE_QTW"),QtWProjectOptions::OnUsingQtWorkbench)
 
 END_EVENT_TABLE()
 
@@ -90,6 +91,14 @@ void QtWProjectOptions::PopulateWorld()
     PopulateFileLocations();
     PopulateVariablesList();
     PopulateValuesList();
+
+    wxCheckBox *choice = XRCCTRL(*this, "ID_CHOICE_QTW", wxCheckBox);
+    bool usingQtW = false;
+    if (choice){
+        usingQtW = choice->GetValue();
+    }
+    XRCCTRL(*this, "ID_TARGET_LISTBOX", wxListBox)->Enable(usingQtW);
+    XRCCTRL(*this, "ID_NOTEBOOK", wxNotebook)->Enable(usingQtW);
 }
 
 void QtWProjectOptions::PopulateBuildMode()
@@ -191,8 +200,10 @@ void QtWProjectOptions::PopulateVariablesList()
     if (list)
     {
         wxArrayString variables = m_Handler->GetAvailableVariables();
+        wxString selection = list->GetStringSelection();
         list->Clear();
         list->Append(variables);
+        list->SetStringSelection(selection);
     }
 }
 
@@ -204,6 +215,7 @@ void QtWProjectOptions::PopulateValuesList()
 
     if (variablesList && valuesList && choice)
     {
+        wxString selection = valuesList->GetStringSelection();
         valuesList->Clear();
         if (variablesList->GetSelection() != wxNOT_FOUND)
         {
@@ -212,6 +224,7 @@ void QtWProjectOptions::PopulateValuesList()
 
             wxArrayString variables = m_Handler->GetValuesFor(variable,qmakeOperator);
             valuesList->Append(variables);
+            valuesList->SetStringSelection(selection);
         }
     }
 }
@@ -500,6 +513,11 @@ void QtWProjectOptions::OnNotebookPageChange(wxNotebookEvent&)
 void QtWProjectOptions::OnUpdateAdvancedView(wxCommandEvent&)
 {
     PopulateValuesList();
+}
+
+void QtWProjectOptions::OnUsingQtWorkbench(wxCommandEvent&)
+{
+    PopulateWorld();
 }
 
 void QtWProjectOptions::EndModal(int retCode)
