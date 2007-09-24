@@ -13,7 +13,7 @@
 
 static const wxChar * const QMakeOperators[]  = {wxT("+="),wxT("="),wxT("-="),wxT("~="),wxT("*="),0};
 
-BEGIN_EVENT_TABLE(QtWProjectOptions, wxDialog)
+BEGIN_EVENT_TABLE(QtWProjectOptions, cbConfigurationPanel)
     EVT_NOTEBOOK_PAGE_CHANGING(XRCID("ID_NOTEBOOK"),QtWProjectOptions::OnNotebookPageChange)
 
     EVT_BUTTON(XRCID("ID_LOC_MOC_BUTTON"),QtWProjectOptions::OnBrowseMocButtonClick)
@@ -32,40 +32,56 @@ BEGIN_EVENT_TABLE(QtWProjectOptions, wxDialog)
 
 END_EVENT_TABLE()
 
-QtWProjectOptions::QtWProjectOptions(wxWindow* parent)
+QtWProjectOptions::QtWProjectOptions(wxWindow* parent, cbProject* project, QMakeEnabledProjectsMap &enabledProjects):
+        m_Project(project),
+        m_Handler(0L),
+        m_EnabledProjects(enabledProjects)
+
 {
-    m_Handler = new QtWProjectHandler;
+    wxXmlResource::Get()->LoadPanel(this, parent, wxT("dlgQtWProjectOptions"));
 
-    wxXmlResource::Get()->LoadDialog(this, parent, wxT("dlgQtWProjectOptions"));
-
+    XRCCTRL(*this, "ID_CHOICE_QTW", wxCheckBox)->SetValue(m_EnabledProjects[m_Project->GetFilename()]);
     PopulateTargetsListBox();
+    ReadTargets();
     UpdateTarget();
     PopulateWorld();
 }
 
 QtWProjectOptions::~QtWProjectOptions()
 {
-    delete m_Handler;
-}
-
-cbProject* QtWProjectOptions::CurrentActiveProject()
-{
-    // The active project is always valid as it is checked
-    // before this dialog appears.
-    return Manager::Get()->GetProjectManager()->GetActiveProject();
+    for (int i=0; i<m_Project->GetBuildTargetsCount(); i++)
+    {
+        wxString CurrentTarget = m_Project->GetBasePath() + m_Project->GetBuildTarget(i)->GetTitle() + wxT(".pro");
+        if (m_TargetHandlers[CurrentTarget])
+        {
+            delete m_TargetHandlers[CurrentTarget];
+        }
+    }
 }
 
 void QtWProjectOptions::PopulateTargetsListBox()
 {
     wxListBox *list = XRCCTRL(*this, "ID_TARGET_LISTBOX", wxListBox);
-    int TargetsCount = CurrentActiveProject()->GetBuildTargetsCount();
+    int TargetsCount = m_Project->GetBuildTargetsCount();
     wxArrayString TargetsArray;
     for (int i=0; i<TargetsCount; i++)
     {
-        TargetsArray.Add(CurrentActiveProject()->GetBuildTarget(i)->GetTitle());
+        TargetsArray.Add(m_Project->GetBuildTarget(i)->GetTitle());
     }
     list->Set(TargetsArray);
     list->SetSelection(0);
+}
+
+void QtWProjectOptions::ReadTargets()
+{
+    int targetsCount = m_Project->GetBuildTargetsCount();
+    for (int i=0; i<targetsCount; i++)
+    {
+        wxString CurrentTarget = m_Project->GetBasePath() + m_Project->GetBuildTarget(i)->GetTitle() + wxT(".pro");
+        m_TargetHandlers[CurrentTarget] = new QtWProjectHandler;
+        m_TargetHandlers[CurrentTarget]->SetFilename(CurrentTarget);
+        m_TargetHandlers[CurrentTarget]->Read();
+    }
 }
 
 void QtWProjectOptions::UpdateTarget()
@@ -76,15 +92,18 @@ void QtWProjectOptions::UpdateTarget()
     if (currentSelection == wxNOT_FOUND)
         return;
 
-    wxString CurrentTarget = CurrentActiveProject()->GetBasePath();
+    wxString CurrentTarget = m_Project->GetBasePath();
     CurrentTarget << list->GetString(currentSelection) + wxT(".pro");
 
-    m_Handler->SetFilename(CurrentTarget);
-    m_Handler->Read();
+    m_Handler = m_TargetHandlers[CurrentTarget];
 }
 
 void QtWProjectOptions::PopulateWorld()
 {
+    if (!m_Handler)
+    {
+        return;
+    }
     PopulateBuildMode();
     PopulateRequirements();
     PopulateModules();
@@ -92,13 +111,13 @@ void QtWProjectOptions::PopulateWorld()
     PopulateVariablesList();
     PopulateValuesList();
 
-    wxCheckBox *choice = XRCCTRL(*this, "ID_CHOICE_QTW", wxCheckBox);
-    bool usingQtW = false;
-    if (choice){
-        usingQtW = choice->GetValue();
+
+    wxCheckBox * choice = XRCCTRL(*this, "ID_CHOICE_QTW", wxCheckBox);
+    if (choice)
+    {
+        XRCCTRL(*this, "ID_TARGET_LISTBOX", wxListBox)->Enable(choice->GetValue());
+        XRCCTRL(*this, "ID_NOTEBOOK", wxNotebook)->Enable(choice->GetValue());
     }
-    XRCCTRL(*this, "ID_TARGET_LISTBOX", wxListBox)->Enable(usingQtW);
-    XRCCTRL(*this, "ID_NOTEBOOK", wxNotebook)->Enable(usingQtW);
 }
 
 void QtWProjectOptions::PopulateBuildMode()
@@ -231,6 +250,10 @@ void QtWProjectOptions::PopulateValuesList()
 
 void QtWProjectOptions::Update()
 {
+    if (!m_Handler)
+    {
+        return;
+    }
     if (XRCCTRL(*this, "ID_NOTEBOOK", wxNotebook)->GetSelection()==1)
     {
         // Update from the "Advanced" page
@@ -394,7 +417,7 @@ void QtWProjectOptions::Update()
 
 void QtWProjectOptions::OnBrowseMocButtonClick(wxCommandEvent& event)
 {
-    wxString targetDir = CurrentActiveProject()->GetBasePath() +
+    wxString targetDir = m_Project->GetBasePath() +
                          XRCCTRL(*this, "ID_TARGET_LISTBOX", wxListBox)->GetStringSelection();
     wxString mocDir = ChooseDirectory(this,
                                       _("Select moc output directory (relative to target directory)"),
@@ -408,7 +431,7 @@ void QtWProjectOptions::OnBrowseMocButtonClick(wxCommandEvent& event)
 
 void QtWProjectOptions::OnBrowseUicButtonClick(wxCommandEvent& event)
 {
-    wxString targetDir = CurrentActiveProject()->GetBasePath() +
+    wxString targetDir = m_Project->GetBasePath() +
                          XRCCTRL(*this, "ID_TARGET_LISTBOX", wxListBox)->GetStringSelection();
     wxString uicDir = ChooseDirectory(this,
                                       _("Select uic output directory (relative to target directory)"),
@@ -422,7 +445,7 @@ void QtWProjectOptions::OnBrowseUicButtonClick(wxCommandEvent& event)
 
 void QtWProjectOptions::OnBrowseRccButtonClick(wxCommandEvent& event)
 {
-    wxString targetDir = CurrentActiveProject()->GetBasePath() +
+    wxString targetDir = m_Project->GetBasePath() +
                          XRCCTRL(*this, "ID_TARGET_LISTBOX", wxListBox)->GetStringSelection();
     wxString rccDir = ChooseDirectory(this,
                                       wxT("Select rcc output directory (relative to target directory)"),
@@ -499,7 +522,6 @@ void QtWProjectOptions::OnRemoveVariable(wxCommandEvent&)
 void QtWProjectOptions::OnTargetListClick(wxCommandEvent& event)
 {
     Update();
-    m_Handler->Write();
     UpdateTarget();
     PopulateWorld();
 }
@@ -520,9 +542,19 @@ void QtWProjectOptions::OnUsingQtWorkbench(wxCommandEvent&)
     PopulateWorld();
 }
 
-void QtWProjectOptions::EndModal(int retCode)
+void QtWProjectOptions::SaveSettings()
 {
-    Update();
-    m_Handler->Write();
-    wxDialog::EndModal(retCode);
+    m_EnabledProjects[m_Project->GetFilename()] = XRCCTRL(*this, "ID_CHOICE_QTW", wxCheckBox)->GetValue();
+    if (m_EnabledProjects[m_Project->GetFilename()])
+    {
+        Update();
+        for (int i=0; i<m_Project->GetBuildTargetsCount(); i++)
+        {
+            wxString CurrentTarget = m_Project->GetBasePath() + m_Project->GetBuildTarget(i)->GetTitle() + wxT(".pro");
+            if (m_TargetHandlers[CurrentTarget])
+            {
+                m_TargetHandlers[CurrentTarget]->Write();
+            }
+        }
+    }
 }
