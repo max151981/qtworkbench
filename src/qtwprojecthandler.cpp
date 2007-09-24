@@ -118,14 +118,6 @@ bool QtWProjectHandler::Read()
         }
     }
 
-    // Get the last entry
-//    if (end)
-//    {
-//        if (!currentIdentifier.IsEmpty() && !currentContents.empty())
-//        {
-//            m_VariableMap[currentIdentifier]=currentContents;
-//        }
-//    }
     return file.Close();
 }
 
@@ -171,8 +163,6 @@ bool QtWProjectHandler::Write()
     }
     if (lineNumber)
     {
-        // Parser needs an empty line in the end
-        // file.InsertLine(wxT(""),lineNumber);
         return file.Write();
     }
     return true;

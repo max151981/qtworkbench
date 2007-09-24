@@ -8,6 +8,7 @@
 
 #include <sdk.h>
 #include <annoyingdialog.h>
+#include <projectloader_hooks.h>
 
 #include "qtworkbench.h"
 #include "qtwprogenerator.h"
@@ -19,18 +20,15 @@ namespace
     PluginRegistrant<QtWorkbench> reg(_T("QtWorkbench"));
 }
 
-int idQtWbMenuOptions = wxNewId();
-int idQtWbMenuOptionsEdit = wxNewId();
 int idQtWProcess = wxNewId();
 
 BEGIN_EVENT_TABLE(QtWorkbench, cbPlugin)
-EVT_MENU(idQtWbMenuOptions, QtWorkbench::OnProjectOptions)
-EVT_MENU(idQtWbMenuOptionsEdit, QtWorkbench::OnProjectOptionsEdit)
-EVT_PIPEDPROCESS_TERMINATED(idQtWProcess, QtWorkbench::OnProcessTerminated)
+    EVT_PIPEDPROCESS_TERMINATED(idQtWProcess, QtWorkbench::OnProcessTerminated)
 END_EVENT_TABLE()
 
 QtWorkbench::QtWorkbench():
         m_Process(0L),
+        m_HookId(0L),
         m_Pid(0L)
 {
     if (!Manager::LoadResource(_T("QtWorkbench.zip")))
@@ -50,15 +48,21 @@ void QtWorkbench::OnAttach()
     // We will use this event to automatically invoke qmake before the
     // build process.
     Manager::Get()->RegisterEventSink(cbEVT_COMPILER_STARTED, new cbEventFunctor<QtWorkbench, CodeBlocksEvent>(this, &QtWorkbench::OnBuildStarted));
+
+    // Hook to project loading procedure. We will use this to verify
+    // that QtWorkbench is actually used for the project so we start
+    // qmake automaticaly whe the user invokes the build procedure
+    ProjectLoaderHooks::HookFunctorBase* myhook = new ProjectLoaderHooks::HookFunctor<QtWorkbench>(this, &QtWorkbench::OnProjectLoadingHook);
+    m_HookId = ProjectLoaderHooks::RegisterHook(myhook);
+
 }
 
 void QtWorkbench::OnRelease(bool appShutDown)
 {
-    // do de-initialization for your plugin
-    // if appShutDown is true, the plugin is unloaded because Code::Blocks is being shut down,
-    // which means you must not use any of the SDK Managers
-    // NOTE: after this function, the inherited member variable
-    // m_IsAttached will be FALSE...
+    if (m_HookId)
+    {
+        ProjectLoaderHooks::UnregisterHook(m_HookId, true);
+    }
 }
 
 int QtWorkbench::Configure()
@@ -70,32 +74,13 @@ int QtWorkbench::Configure()
 cbConfigurationPanel* QtWorkbench::GetConfigurationPanel(wxWindow* parent)
 {
     QtWConfiguration* dlg = new QtWConfiguration(parent);
-    // deleted by the caller
-
     return dlg;
 }
 
-void QtWorkbench::BuildMenu(wxMenuBar* menuBar)
+cbConfigurationPanel* QtWorkbench::GetProjectConfigurationPanel(wxWindow* parent, cbProject* project)
 {
-    if (!m_IsAttached)
-        return;
-
-    int projectMenuPos = menuBar->FindMenu(_("&Project"));
-    wxMenu* projectMenu = menuBar->GetMenu(projectMenuPos);
-    projectMenu->AppendSeparator();
-    projectMenu->Append(idQtWbMenuOptions, wxT("Qt project options..."));
-
-    // TODO Later enable this. The parser must be of proven quality first
-    // projectMenu->Append(idQtWbMenuOptionsEdit, wxT("Edit Qt project options"));
-}
-
-void QtWorkbench::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
-{
-    //Some library module is ready to display a pop-up menu.
-    //Check the parameter \"type\" and see which module it is
-    //and append any items you need in the menu...
-    //TIP: for consistency, add a separator as the first item...
-    NotImplemented(_T("QtWorkbench::BuildModuleMenu()"));
+    QtWProjectOptions* dlg = new QtWProjectOptions(parent, project, m_EnabledProjects);
+    return dlg;
 }
 
 bool QtWorkbench::BuildToolBar(wxToolBar* toolBar)
@@ -109,37 +94,37 @@ bool QtWorkbench::BuildToolBar(wxToolBar* toolBar)
     return false;
 }
 
-void QtWorkbench::OnProjectOptions(wxCommandEvent& event)
+void QtWorkbench::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, bool loading)
 {
-    if (!CurrentActiveProject())
+    TiXmlElement* node = elem->FirstChildElement("qtworkbench");
+    if (loading)
     {
-        // There are events signaling that a project has been opened etc.
-        // The menu item should start deactivated and activate
-        // when an active project exists. For now a messagebox is enough.
-        cbMessageBox(_T("Please open/create a project first."), _("Error"), wxICON_ERROR);
-        return;
-    }
-    QtWProjectOptions qtwpo(Manager::Get()->GetAppWindow());
-    PlaceWindow(&qtwpo);
-    qtwpo.ShowModal();
-}
+        bool enabled = false;
+        if (node)
+        {
+            TiXmlElement* enabledElem = node->FirstChildElement("enabled");
+            if (enabledElem->Attribute("value"))
+            {
+                enabled = (cbC2U("true") == cbC2U(enabledElem->Attribute("value")));
+            }
+        }
 
-void QtWorkbench::OnProjectOptionsEdit(wxCommandEvent& event)
-{
-    cbProject *project = CurrentActiveProject();
-    if (!project)
+        // The C::B project filename is the only unique
+        // way to identify the different projects.
+        m_EnabledProjects[project->GetFilename()] = enabled;
+    }
+    else
     {
-        cbMessageBox(_T("Please open/create a project first."), _("Error"), wxICON_ERROR);
-        return;
-    }
+        if (!node)
+        {
+            node = elem->InsertEndChild(TiXmlElement("qtworkbench"))->ToElement();
+        }
+        node->Clear();
 
-    wxString filename = project->GetBasePath();
-    filename << wxFileName::GetPathSeparator();
-    filename << project->GetActiveBuildTarget();
-    filename << wxT(".pro");
+        TiXmlElement* enabledElem = node->InsertEndChild(TiXmlElement("enabled"))->ToElement();
+        enabledElem->SetAttribute("value",m_EnabledProjects[project->GetFilename()] ? cbU2C(wxT("true")) : cbU2C(wxT("false")));
 
-    if(wxFile::Exists(filename)){
-        Manager::Get()->GetEditorManager()->Open(filename);
+        m_EnabledProjects.erase(project->GetFilename());
     }
 }
 
@@ -149,7 +134,8 @@ void QtWorkbench::OnProcessTerminated(CodeBlocksEvent& event)
     m_Process = NULL;
     m_Pid = 0L;
 
-    if(!m_TargetNames.GetCount()){
+    if (!m_TargetNames.GetCount())
+    {
         return;
     }
 
@@ -171,7 +157,8 @@ void QtWorkbench::OnProcessTerminated(CodeBlocksEvent& event)
     m_Pid = wxExecute(cmd, wxEXEC_ASYNC, m_Process);
 }
 
-void QtWorkbench::RunQMake(){
+void QtWorkbench::RunQMake()
+{
 
     if (m_Pid)
         return;
@@ -203,9 +190,9 @@ void QtWorkbench::RunQMake(){
         {
             AnnoyingDialog dlg( _("qmake location could not be establised"),
                                 _("You have not specified a Qt installation directory\n"
-                                   "and the QTDIR environmental variable is not set.\n"
-                                   "If qmake is also not located in a directory listed in\n"
-                                   "your PATH environmental variable then invoking qmake will fail."),
+                                  "and the QTDIR environmental variable is not set.\n"
+                                  "If qmake is also not located in a directory listed in\n"
+                                  "your PATH environmental variable then invoking qmake will fail."),
                                 wxART_INFORMATION,AnnoyingDialog::OK,wxID_OK);
             dlg.ShowModal();
             // We will try to run qmake anyway...
@@ -220,15 +207,22 @@ void QtWorkbench::RunQMake(){
         m_TargetNames.Add(target->GetTitle());
     }
 
+    // Is this a good approach?
     CodeBlocksEvent mockEvent;
     OnProcessTerminated(mockEvent);
 }
 
-void QtWorkbench::OnBuildStarted(CodeBlocksEvent& event){
-
+void QtWorkbench::OnBuildStarted(CodeBlocksEvent& event)
+{
+    // Do nothing is the project is not using QtWorkbench
+    if (!m_EnabledProjects[CurrentActiveProject()->GetFilename()])
+    {
+        return;
+    }
     RunQMake();
 
-    while(m_Pid){
+    while (m_Pid)
+    {
         wxMilliSleep(10);
         Manager::Yield();
     }
@@ -239,7 +233,8 @@ cbProject* QtWorkbench::CurrentActiveProject()
     return Manager::Get()->GetProjectManager()->GetActiveProject();
 }
 
-wxString QtWorkbench::QMakeCommand(){
+wxString QtWorkbench::QMakeCommand()
+{
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("qtwb"));
     wxString cmd = cfg->Read(_T("/QtDir"));
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(cmd);

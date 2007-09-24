@@ -33,9 +33,6 @@ class QtWProjectHandler
     WX_DECLARE_STRING_HASH_MAP(wxArrayString, wxArrayStringMap);
     WX_DECLARE_STRING_HASH_MAP(wxArrayStringMap, QMakeVariablesMap);
     QMakeVariablesMap m_VariableMap;
-
-    WX_DECLARE_STRING_HASH_MAP(wxString, wxStringMap);
-    //wxStringMap m_VariableMap;
 };
 
 #endif
