@@ -6,7 +6,7 @@
  * License:   GPL
  **************************************************************/
 #include <sdk.h>
-#include "qtwmkspecbrowser.h"
+#include "qtwutilities.h"
 #include "qtwconfiguration.h"
 
 BEGIN_EVENT_TABLE(QtWConfiguration, wxPanel)

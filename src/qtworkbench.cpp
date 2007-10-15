@@ -117,14 +117,24 @@ void QtWorkbench::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
     {
         if (!node)
         {
-            node = elem->InsertEndChild(TiXmlElement("qtworkbench"))->ToElement();
+            if (m_EnabledProjects[project->GetFilename()])
+            {
+                // Create the node only if needed (project actually uses the plugin)
+                node = elem->InsertEndChild(TiXmlElement("qtworkbench"))->ToElement();
+            }
         }
-        node->Clear();
 
-        TiXmlElement* enabledElem = node->InsertEndChild(TiXmlElement("enabled"))->ToElement();
-        enabledElem->SetAttribute("value",m_EnabledProjects[project->GetFilename()] ? cbU2C(wxT("true")) : cbU2C(wxT("false")));
+        if (node)
+        {
+            // The node was already there or has just been created because the
+            // project uses the plugin.
 
-        m_EnabledProjects.erase(project->GetFilename());
+            node->Clear();
+
+            TiXmlElement* enabledElem = node->InsertEndChild(TiXmlElement("enabled"))->ToElement();
+            enabledElem->SetAttribute("value", m_EnabledProjects[project->GetFilename()] ? cbU2C(wxT("true")) : cbU2C(wxT("false")));
+            m_EnabledProjects.erase(project->GetFilename());
+        }
     }
 }
 
