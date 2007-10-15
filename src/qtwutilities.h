@@ -28,6 +28,6 @@ private:
     wxArrayString& mkspec_dirs;
 };
 
-WX_DECLARE_STRING_HASH_MAP(int, QMakeEnabledProjectsMap);
+WX_DECLARE_STRING_HASH_MAP(bool, QMakeEnabledProjectsMap);
 
 #endif
