@@ -22,7 +22,7 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="default;" />
+			<Add alias="All" targets="default" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -69,9 +69,9 @@
 		</ExtraCommands>
 		<Unit filename="res\QtWorkbenchForms.xrc" />
 		<Unit filename="res\manifest.xml" />
+		<Unit filename="scripts\wizard.script" />
 		<Unit filename="src\qtwconfiguration.cpp" />
 		<Unit filename="src\qtwconfiguration.h" />
-		<Unit filename="src\qtwmkspecbrowser.h" />
 		<Unit filename="src\qtworkbench.cpp" />
 		<Unit filename="src\qtworkbench.h" />
 		<Unit filename="src\qtwprogenerator.cpp" />
@@ -80,6 +80,7 @@
 		<Unit filename="src\qtwprojecthandler.h" />
 		<Unit filename="src\qtwprojectoptions.cpp" />
 		<Unit filename="src\qtwprojectoptions.h" />
+		<Unit filename="src\qtwutilities.h" />
 		<Extensions>
 			<code_completion>
 				<search_path add="$(#qt.include)" />
