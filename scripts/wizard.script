@@ -1,0 +1,49 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// QtWorkbench project wizard
+//
+////////////////////////////////////////////////////////////////////////////////
+
+function BeginWizard()
+{
+    local intro_msg = _T("Welcome to the new Trolltech Qt4 project wizard!\n" +
+                         "This wizard will guide you to create a new Qt4 project\n" +
+                         "using the QtWorkbench plugin.\n" +
+                         "If you haven't still done so, set your Qt installation\n" +
+                         "path in the QtWorkbench configuration dialog under\n"
+                         "Settings->Environment-> QtWorkbench.\n\n" +
+                         "Trolltech, Qt and the Trolltech logo\n" +
+                         "are registered trademarks of Trolltech\n" +
+                         "When you're ready to proceed, please click \"Next\"...");
+
+    Wizard.AddInfoPage(_T("QtIntro"), intro_msg);
+    Wizard.AddProjectPathPage();
+}
+
+// return the files this project contains
+function GetFilesDir()
+{
+    return _T("qtw/files");
+}
+
+// setup the already created project
+function SetupProject(project)
+{
+    project.SetMakefileCustom(true);
+    project.SetMakeCommandFor(mcBuild ,_T("$make -f $makefile.$target"));
+    project.SetMakeCommandFor(mcClean,_T("$make -f $makefile.$target clean"));
+    project.SetMakeCommandFor(mcDistClean,_T("$make -f $makefile.$target distclean"));
+
+    // enable compiler warnings (project-wide)
+    WarningsOn(project, Wizard.GetCompilerID());
+
+    // Debug
+    local target = project.AddBuildTarget(_T("default"));
+    if (!IsNull(target))
+    {
+        target.SetMakeCommandFor(mcBuild ,_T("$make -f $makefile.$target"));
+        target.SetMakeCommandFor(mcClean,_T("$make -f $makefile.$target clean"));
+        target.SetMakeCommandFor(mcDistClean,_T("$make -f $makefile.$target distclean"));
+    }
+    return true;
+}
