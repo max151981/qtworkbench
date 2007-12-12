@@ -42,7 +42,6 @@
 		<Unit filename="res/manifest.xml" />
 		<Unit filename="src/qtwconfiguration.cpp" />
 		<Unit filename="src/qtwconfiguration.h" />
-		<Unit filename="src/qtwmkspecbrowser.h" />
 		<Unit filename="src/qtworkbench.cpp" />
 		<Unit filename="src/qtworkbench.h" />
 		<Unit filename="src/qtwprogenerator.cpp" />
@@ -51,6 +50,7 @@
 		<Unit filename="src/qtwprojecthandler.h" />
 		<Unit filename="src/qtwprojectoptions.cpp" />
 		<Unit filename="src/qtwprojectoptions.h" />
+		<Unit filename="src/qtwutilities.h" />
 		<Extensions>
 			<envvars />
 			<code_completion />
