@@ -5,17 +5,32 @@
  * Copyright: (c) Yorgos Pagles
  * License:   GPL
  **************************************************************/
-#include <wx/dialog.h>
+#include "configurationpanel.h"
+#include "qtwutilities.h"
 
 class cbProject;
 class QtWProjectHandler;
-class qtwProjectOptions : public wxDialog
+class QtWProjectOptions : public cbConfigurationPanel
 {
 public:
-    qtwProjectOptions(wxWindow* parent);
-    ~qtwProjectOptions();
+    QtWProjectOptions(wxWindow* parent, cbProject* project, QMakeEnabledProjectsMap &enabledProjects);
+    ~QtWProjectOptions();
+
+    virtual wxString GetTitle() const
+    {
+        return _("Qt Workbench");
+    }
+    virtual wxString GetBitmapBaseName() const
+    {
+        return _T("generic-plugin");
+    }
+    virtual void OnApply()
+    {
+        SaveSettings();
+    }
+    virtual void OnCancel()
+    {}
 private:
-    cbProject* CurrentActiveProject();
 
     void PopulateTargetsListBox();
     void PopulateWorld();
@@ -23,17 +38,32 @@ private:
     void PopulateRequirements();
     void PopulateModules();
     void PopulateFileLocations();
+    void PopulateVariablesList();
+    void PopulateValuesList();
 
     void OnBrowseMocButtonClick(wxCommandEvent&);
     void OnBrowseUicButtonClick(wxCommandEvent&);
     void OnBrowseRccButtonClick(wxCommandEvent&);
+    void OnAddValue(wxCommandEvent&);
+    void OnAddVariable(wxCommandEvent&);
+    void OnRemoveValue(wxCommandEvent&);
+    void OnRemoveVariable(wxCommandEvent&);
     void OnTargetListClick(wxCommandEvent&);
+    void OnNotebookPageChange(wxNotebookEvent&);
+    void OnUpdateAdvancedView(wxCommandEvent&);
+    void OnUsingQtWorkbench(wxCommandEvent&);
 
-    void EndModal(int retCode);
+    void SaveSettings();
     void Update();
+    void ReadTargets();
     void UpdateTarget();
 
+    cbProject* m_Project;
     QtWProjectHandler *m_Handler;
-    wxArrayString m_ExtraConfigurations;
+    QMakeEnabledProjectsMap &m_EnabledProjects;
+
+    WX_DECLARE_STRING_HASH_MAP(QtWProjectHandler *, QtWProjectHandlersMap);
+    QtWProjectHandlersMap m_TargetHandlers;
+
     DECLARE_EVENT_TABLE()
 };

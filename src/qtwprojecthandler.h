@@ -19,7 +19,8 @@ class QtWProjectHandler
     bool Read();
     bool Write();
 
-    wxArrayString GetValuesFor(const wxString &identifierconst,const wxString &qmakeOperator);
+    wxArrayString GetAvailableVariables();
+    wxArrayString GetValuesFor(const wxString &identifier,const wxString &qmakeOperator);
     void SetValuesFor(const wxString &identifier, const wxArrayString& contents,const wxString &qmakeOperator);
 
     bool Contains(const wxString &identifier, const wxString& value,const wxString &qmakeOperator);
@@ -32,9 +33,6 @@ class QtWProjectHandler
     WX_DECLARE_STRING_HASH_MAP(wxArrayString, wxArrayStringMap);
     WX_DECLARE_STRING_HASH_MAP(wxArrayStringMap, QMakeVariablesMap);
     QMakeVariablesMap m_VariableMap;
-
-    WX_DECLARE_STRING_HASH_MAP(wxString, wxStringMap);
-    //wxStringMap m_VariableMap;
 };
 
 #endif

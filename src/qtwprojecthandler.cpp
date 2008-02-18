@@ -48,20 +48,8 @@ bool QtWProjectHandler::Read()
     const wxChar AND('+');
     const wxChar OR('*');
     const wxChar NOT('~');
-    bool end=false;
     for (wxString str = file.GetFirstLine(); !file.Eof(); str = file.GetNextLine() )
     {
-        if (end)
-        {
-            //FIXME what if double entries?
-            if (!currentIdentifier.IsEmpty() && !currentContents.empty())
-            {
-                m_VariableMap[currentIdentifier]=currentContents;
-            }
-            currentContents.clear();
-            currentIdentifier = wxT("");
-            end=false;
-        }
         str.Trim();
         str.Trim(false);
         if (str.IsEmpty())
@@ -70,12 +58,14 @@ bool QtWProjectHandler::Read()
         }
         wxChar lineContinueChar('\\');
         wxStringTokenizer tkz(str, wxT(" \t\r\n"));
+        bool doContinue=false;
         while ( tkz.HasMoreTokens() )
         {
+            doContinue=false;
             wxString token = tkz.GetNextToken();
             if (token.IsEmpty())
             {
-                continue; // Probably empty line
+                continue; //Empty line
             }
             wxChar commentChar('#');
             if (token[0] == commentChar)
@@ -112,21 +102,22 @@ bool QtWProjectHandler::Read()
             {
                 currentContents[currentOperator].Add(token);
             }
+            else
+            {
+                doContinue = true;
+            }
         }
-        if (str[str.Len()-1] != lineContinueChar)
+        if (!doContinue)
         {
-            end=true;
+            if (!currentIdentifier.IsEmpty() && !currentContents.empty())
+            {
+                m_VariableMap[currentIdentifier]=currentContents;
+            }
+            currentContents.clear();
+            currentIdentifier = wxT("");
         }
     }
 
-    // Get the last entry
-    if (end)
-    {
-        if (!currentIdentifier.IsEmpty() && !currentContents.empty())
-        {
-            m_VariableMap[currentIdentifier]=currentContents;
-        }
-    }
     return file.Close();
 }
 
@@ -161,7 +152,8 @@ bool QtWProjectHandler::Write()
             wxArrayString value = valueit->second;
 
             wxString line = key + wxT(" ") + qmakeOperator;
-            for(size_t i=0; i<value.GetCount(); i++){
+            for (size_t i=0; i<value.GetCount(); i++)
+            {
                 line << wxT(" ");
                 line << value[i];
             }
@@ -171,11 +163,21 @@ bool QtWProjectHandler::Write()
     }
     if (lineNumber)
     {
-        // Parser needs an empty line in the end
-        file.InsertLine(wxT(""),lineNumber);
         return file.Write();
     }
     return true;
+}
+
+wxArrayString QtWProjectHandler::GetAvailableVariables()
+{
+    wxArrayString variables;
+    QMakeVariablesMap::iterator it;
+    for ( it = m_VariableMap.begin(); it != m_VariableMap.end(); ++it )
+    {
+        wxString key = it->first;
+        variables.Add(key);
+    }
+    return variables;
 }
 
 wxArrayString QtWProjectHandler::GetValuesFor(const wxString &identifier,const wxString &qmakeOperator)
@@ -186,11 +188,12 @@ wxArrayString QtWProjectHandler::GetValuesFor(const wxString &identifier,const w
 
 void QtWProjectHandler::SetValuesFor(const wxString &identifier, const wxArrayString& contentsArray,const wxString &qmakeOperator)
 {
-    if(contentsArray.IsEmpty())
+    wxArrayStringMap values = m_VariableMap[identifier];
+    wxArrayString current = values[qmakeOperator];
+    if (!current.GetCount() && !contentsArray.GetCount())
     {
         return;
     }
-    wxArrayStringMap values = m_VariableMap[identifier];
     values[qmakeOperator] = contentsArray;
     m_VariableMap[identifier] = values;
 }
@@ -223,6 +226,17 @@ void QtWProjectHandler::Remove(const wxString &identifier, const wxString& value
 {
     wxArrayString values = GetValuesFor(identifier,qmakeOperator);
     values.Remove(value);
-    SetValuesFor(identifier,values,qmakeOperator);
+    if (values.IsEmpty())
+    {
+        m_VariableMap[identifier].erase(qmakeOperator);
+        if (m_VariableMap[identifier].empty())
+        {
+            m_VariableMap.erase(identifier);
+        }
+    }
+    else
+    {
+        SetValuesFor(identifier,values,qmakeOperator);
+    }
 }
 

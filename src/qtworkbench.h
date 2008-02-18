@@ -17,6 +17,7 @@
 #endif
 
 #include <cbplugin.h>
+#include "qtwutilities.h"
 
 class QtWorkbench : public cbPlugin
 {
@@ -64,10 +65,7 @@ public:
       * @param project The project that is being edited.
       * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
       */
-    virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project)
-    {
-        return 0;
-    }
+    virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project);
 
     /** This method is called by Code::Blocks and is used by the plugin
       * to add any menu items it needs on Code::Blocks's menu bar.\n
@@ -76,7 +74,7 @@ public:
       * just do nothing ;)
       * @param menuBar the wxMenuBar to create items in
       */
-    virtual void BuildMenu(wxMenuBar* menuBar);
+    virtual void BuildMenu(wxMenuBar* menuBar){}
 
     /** This method is called by Code::Blocks core modules (EditorManager,
       * ProjectManager etc) and is used by the plugin to add any menu
@@ -93,7 +91,7 @@ public:
       * @param menu pointer to the popup menu
       * @param data pointer to FileTreeData object (to access/modify the file tree)
       */
-    virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
+    virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0){}
 
     /** This method is called by Code::Blocks and is used by the plugin
       * to add any toolbar items it needs on Code::Blocks's toolbar.\n
@@ -129,13 +127,11 @@ protected:
     virtual void OnRelease(bool appShutDown);
 
 
-    void OnProjectOptions(wxCommandEvent& event);
-
-    void OnProjectOptionsEdit(wxCommandEvent& event);
-
+    void OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, bool loading);
     void OnProcessTerminated(CodeBlocksEvent& event);
+    void OnBuildStarted(CodeBlocksEvent& event);
 
-    void OnRunQMake(wxCommandEvent& event);
+    void RunQMake();
 
     cbProject* CurrentActiveProject();
 
@@ -144,8 +140,11 @@ protected:
 
 private:
     wxProcess* m_Process;
+    int m_HookId; // project loader hook ID
     long m_Pid;
     wxArrayString m_TargetNames;
+
+    QMakeEnabledProjectsMap m_EnabledProjects;
 
     DECLARE_EVENT_TABLE()
 };

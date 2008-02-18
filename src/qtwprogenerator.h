@@ -20,10 +20,10 @@ WX_DEFINE_ARRAY(ProjectFile*, ObjectFiles_Array); // holds object files already 
 
 class QtWProjectHandler;
 
-class qtwProGenerator {
+class QtWProGenerator {
 public:
-    qtwProGenerator(cbProject*);
-    ~qtwProGenerator();
+    QtWProGenerator(cbProject*);
+    ~QtWProGenerator();
     bool CreatePro();
 
 private:
