@@ -22,7 +22,7 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="default" />
+			<Add alias="All" targets="default;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -38,7 +38,6 @@
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DcbDEBUG" />
-			<Add option="-DTIXML_USE_STL" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(#CB)\sdk" />
 			<Add directory="$(#CB.INCLUDE)" />
@@ -88,6 +87,7 @@
 				<search_path add="$(#qt.include)/QtGui" />
 			</code_completion>
 			<envvars />
+			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

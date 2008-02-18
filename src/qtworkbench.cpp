@@ -100,7 +100,11 @@ void QtWorkbench::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
     if (loading)
     {
         bool enabled = false;
-        if (node)
+        if (m_EnabledProjects.find(project->GetFilename()) != m_EnabledProjects.end())
+        {
+            enabled = m_EnabledProjects[project->GetFilename()];
+        }
+        else if (node)
         {
             TiXmlElement* enabledElem = node->FirstChildElement("enabled");
             if (enabledElem->Attribute("value"))
